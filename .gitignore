@@ -1,0 +1,10 @@
+www_logs
+www_logs/*
+config.inc.php
+connect.php
+admin/Runtime
+admin/Runtime/*
+index/Runtime
+index/Runtime/*
+chymistry
+chymistry/*

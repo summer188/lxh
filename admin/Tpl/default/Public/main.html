@@ -1,0 +1,316 @@
+﻿<include file="Public:header" />
+<link href="__ROOT__/statics/admin/css/main.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+$(function(){	
+	$(".main_con").hover(
+			  function () {
+			    $(this).css("background","#ffffcc");
+			  },
+			  function () {
+			    $(this).css("background","#ffffff");
+			  }
+	);
+})
+</script>
+<div style="padding:10px; overflow:hidden;">
+	<!--div class="main_top" style="clear:both;">			
+		<if condition="$no_security_info eq 1">
+			<h4>安全提示</h4>	
+			 <volist name="security_info" id="v">              
+					<p class="red" style="font-size:14px;">※　{$v}</p>				
+	       	</volist>	
+		</if>	
+		<h4>网站无法显示</h4>	
+		<p class="green">网站以前正常显示，现在无法显示请清除缓存试试，【<a href="{:u('Cache/index')}">{$Think.lang.flush_cache}</a>】</p>
+		
+	</div-->
+	<div style="width:50%;" class="fl">
+		<div class="main_con fl">
+			<h6>版权信息</h6>
+			<div class="content">
+								
+				<p>开发与支持团队：Bruce</p>
+				<p>UI/美工设计：Wany</p>	
+				<p>版权所有：北京蚂蚁学教育科技有限公司</p>
+				<div class="hr">			
+				</div>				
+				<!--p>官方论坛：<a href="http://bbs.lexuehai.com" target="_blank">bbs.lexuehai.com</a></p-->
+			</div>
+		</div>		
+		<!--div class="main_con fl">
+			<h6>配置信息</h6>
+			<div class="content">				
+				<volist name="server_info" id="v">
+					<p>{$key} : {$v}</p>                   
+                </volist>
+				<div class="hr">			
+				</div>					
+			
+			</div>
+		</div-->		
+	</div>
+	<!--div style="width:49%;" class="fr">		
+		<div class="main_con fl">
+			<h6><span class="more"><a href="http://bbs.lexuehai.com/forum.php?mod=forumdisplay&fid=62" target="_blank">more>></a></span>官网公告</h6>
+			<div class="content">	
+				<ul>
+					<script type="text/javascript" src="http://bbs.lexuehai.com/api.php?mod=js&bid=22"></script>
+				</ul>				
+			</div>
+		</div>	
+		<div class="main_con fl">
+			<h6><span class="more"><a href="http://bbs.lexuehai.com/forum.php?mod=forumdisplay&fid=62" target="_blank">more>></a></span>官方推荐</h6>
+			<div class="content">				
+				<script type="text/javascript" src="http://bbs.lexuehai.com/api.php?mod=js&bid=23"></script>
+			</div>
+		</div>
+	</div-->
+</div>
+</body>
+</html>
+
+<!--DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/jquery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $(".click").click(function(){
+  $(".tip").fadeIn(200);
+  });
+  
+  $(".tiptop a").click(function(){
+  $(".tip").fadeOut(200);
+});
+
+  $(".sure").click(function(){
+  $(".tip").fadeOut(100);
+});
+
+  $(".cancel").click(function(){
+  $(".tip").fadeOut(100);
+});
+
+});
+</script>
+
+
+</head>
+
+
+<body>
+
+	<div class="place">
+    <span>位置：</span>
+    <ul class="placeul">
+    <li><a href="#">首页</a></li>
+    <li><a href="#">千校云题库</a></li>
+    <li><a href="#">题库列表</a></li>
+    </ul>
+    </div>
+    
+    <div class="rightinfo">
+    
+    <div class="tools">
+    
+    	<ul class="toolbar">
+        <li><span><img src="images/t01.png" /></span>添加</li>
+        <li class="click"><span><img src="images/t02.png" /></span>修改</li>
+        <li><span><img src="images/t03.png" /></span>删除</li>
+        <li><span><img src="images/t04.png" /></span>统计</li>
+        </ul>
+        
+        
+        <ul class="toolbar1">
+        <li><span><img src="images/t05.png" /></span>设置</li>
+        </ul>
+    
+    </div>
+    
+    
+    <table class="tablelist">
+    	<thead>
+    	<tr>
+        <th><input name="" type="checkbox" value=""/></th>
+        <th>编号<i class="sort"><img src="images/px.gif" /></i></th>
+        <th>题文</th>
+        <th>答案与解析</th>
+        <th>一级知识点</th>
+		<th>二级知识点</th>
+		<th>三级知识点</th>
+        <th>发布时间</th>
+        <th>是否审核</th>
+        <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150908</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-09 15:05</td>
+        <td>已审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink"> 删除</a></td>
+        </tr> 
+        
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150907</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-08 14:02</td>
+        <td>未审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink">删除</a></td>
+        </tr>
+        
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150906</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-07 13:16</td>
+        <td>未审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink">删除</a></td>
+        </tr>
+        
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150905</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-06 10:36</td>
+        <td>已审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink">删除</a></td>
+        </tr>
+        
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150904</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-05 13:25</td>
+        <td>已审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink">删除</a></td>
+        </tr>
+        
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150903</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-04 12:00</td>
+        <td>已审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink">删除</a></td>
+        </tr>
+        
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150902</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-03 00:05</td>
+        <td>未审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink">删除</a></td>
+        </tr>
+        
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150901</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-02 15:05</td>
+        <td>未审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink">删除</a></td>
+        </tr>
+        
+        <tr>
+        <td><input name="" type="checkbox" value="" /></td>
+        <td>20150900</td>
+        <td>某个命题与正整数有关，如果当时命题成立，那么可推得</td>
+        <td>本题考查的知识点是数学归纳法</td>
+        <td>有理数</td>
+		<td>有理数的四则运算</td>
+		<td>有理数乘除法</td>
+        <td>2015-09-01 10:26</td>
+        <td>已审核</td>
+        <td><a href="#" class="tablelink">查看</a>     <a href="#" class="tablelink">下载</a>     <a href="#" class="tablelink">删除</a></td>
+        </tr>        
+        </tbody>
+    </table>
+    
+   
+    <div class="pagin">
+    	<div class="message">共<i class="blue">1256</i>条记录，当前显示第&nbsp;<i class="blue">2&nbsp;</i>页</div>
+        <ul class="paginList">
+        <li class="paginItem"><a href="javascript:;"><span class="pagepre"></span></a></li>
+        <li class="paginItem"><a href="javascript:;">1</a></li>
+        <li class="paginItem current"><a href="javascript:;">2</a></li>
+        <li class="paginItem"><a href="javascript:;">3</a></li>
+        <li class="paginItem"><a href="javascript:;">4</a></li>
+        <li class="paginItem"><a href="javascript:;">5</a></li>
+        <li class="paginItem more"><a href="javascript:;">...</a></li>
+        <li class="paginItem"><a href="javascript:;">10</a></li>
+        <li class="paginItem"><a href="javascript:;"><span class="pagenxt"></span></a></li>
+        </ul>
+    </div>
+    
+    
+    <div class="tip">
+    	<div class="tiptop"><span>提示信息</span><a></a></div>
+        
+      <div class="tipinfo">
+        <span><img src="images/ticon.png" /></span>
+        <div class="tipright">
+        <p>是否确认对此题的修改 ？</p>
+        <cite>如果是请点击确定按钮 ，否则请点取消。</cite>
+        </div>
+        </div>
+        
+        <div class="tipbtn">
+        <input name="" type="button"  class="sure" value="确定" />&nbsp;
+        <input name="" type="button"  class="cancel" value="取消" />
+        </div>
+    
+    </div>
+    
+    
+    
+    
+    </div>
+    
+    <script type="text/javascript">
+	$('.tablelist tbody tr:odd').addClass('odd');
+	</script>
+
+</body>
+
+</html-->

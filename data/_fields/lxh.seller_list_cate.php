@@ -1,0 +1,1 @@
+<?php	return array ( 0 => 'list_id', 1 => 'cate_id', '_autoinc' => false, '_type' => array ( 'list_id' => 'int(11)', 'cate_id' => 'int(11)', ), );?>
