@@ -218,4 +218,22 @@ function miao_client($appkey,$appsecret)
 	$_api59miao=new Api59miao($AppKeySecret);			
 	return $_api59miao;
 }
+/**
+ * 按照指定的key重新组合二维数组数据
+ * smm添加于2016-03-30
+ *
+ * @param Array $arrOld--要进行组合的目标数组
+ * @param String $key--指定的key
+ * @return Array
+ */
+function array_to_key($arrOld, $key) {
+	$arrNew = array();
+	if(is_array($arrOld)) {
+		foreach($arrOld as $value) {
+			$newKey = $value[$key];
+			$arrNew[$newKey] = $value;
+		}
+	}
+	return $arrNew;
+}
 ?>
