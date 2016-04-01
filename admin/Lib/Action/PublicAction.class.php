@@ -94,6 +94,23 @@ class PublicAction extends BaseAction
 					$this->error(L('verify_error'));
 				}
 			}
+
+            //smm修改于2016-3-27
+            //用户名和密码存入cookie，实现记住密码功能
+            if(empty($_COOKIE['admin_pwd']) && $_POST['password']){
+                cookie('admin_name',$_POST['username']);
+                cookie('admin_pwd',$_POST['password']);
+            }
+            //cookie中‘remember_login’为用户选择的是否记住密码的事件值
+            if(!empty($_POST['loginFlag'])){
+                if($_POST['loginFlag']=='yes'){
+                    cookie('remember_login','yes');
+                }elseif($_POST['loginFlag']=='no'){
+                    cookie('remember_login','no');
+                }
+                unset($_POST['loginFlag']);
+            }
+
 			//生成认证条件
 			$map  = array();
 			// 支持使用绑定帐号登录
@@ -125,7 +142,7 @@ class PublicAction extends BaseAction
 	{
 		if(isset($_SESSION['admin_info'])) {
 			unset($_SESSION['admin_info']);			
-			$this->success('退出登录成功！',u('Public/login'));
+			$this->success('退出登录成功！',"http://{$_SERVER['SERVER_NAME']}/login.php");
 		}else {
 			$this->error('已经退出登录！');
 		}

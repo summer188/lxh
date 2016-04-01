@@ -31,6 +31,12 @@ $array = array(
     'APP_AUTOLOAD_PATH' => '@.TagLib', //自动加载项目类库
 	'TMPL_ACTION_ERROR'     => 'Public:error',
     'TMPL_ACTION_SUCCESS'   => 'Public:success',
+
+    /* Cookie设置 */
+    'COOKIE_EXPIRE'         => 3600*24*30,    // Coodie有效期
+    'COOKIE_DOMAIN'         => $_SERVER['SERVER_NAME'],      // Cookie有效域名
+    'COOKIE_PATH'           => '/',     // Cookie路径
+    'COOKIE_PREFIX'         => '',      // Cookie前缀 避免冲突
 );
 return array_merge($config,$array);
 ?>

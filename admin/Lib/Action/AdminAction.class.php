@@ -66,17 +66,21 @@ class AdminAction extends BaseAction
 			if($count>0){
 				$this->error('用户名已经存在！');
 			}
-			//print_r($count);exit;
-			if ($_POST['password']) {
-			    if($_POST['password'] != $_POST['repassword']){
-				    $this->error('两次输入的密码不相同');
-			    }
-			    $_POST['password'] = md5($_POST['password']);
-			} else {
-			    unset($_POST['password']);
-			}
-			unset($_POST['repassword']);
-			if (false === $admin_mod->create()) {
+
+            //smm修改于2016-3-26
+            //密码若为空或默认初始值000000，则不更新表中原有密码记录
+            if($_POST['password'] && $_POST['password']!='000000'){
+                if($_POST['password'] != $_POST['repassword']){
+                    $this->error('两次输入的密码不相同');
+                }
+                $_POST['password'] = md5($_POST['password']);
+            }else{
+                unset($_POST['password']);
+            }
+
+            unset($_POST['repassword']);
+            $data = $admin_mod->create();
+			if (false === $data) {
 				$this->error($admin_mod->getError());
 			}
 
