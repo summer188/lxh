@@ -10,10 +10,10 @@
                 <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
                 <th width=100>{:L('user_name')}</th>
                 <th>{:L('role_id')}</th>
-				<!--th>{:L('user_school')}</th>
-				<th>{:L('user_subject')}</th>
-      			<th>{:L('add_time')} :</th>
-                <th>{:L('last_time')}</th-->
+				<th>{:L('user_school')}</th>
+				<!--<th>{:L('user_subject')}</th>-->
+      			<!--<th>{:L('add_time')} :</th>-->
+                <!--<th>{:L('last_time')}</th>-->
                 <th width=60>{:L('status')}</th>
                 <th width=60>{:L('operational')}</th>
             </tr>
@@ -25,10 +25,10 @@
             <td align="center"><input type="checkbox" value="{$val.id}" name="id[]" <if condition="$val['id'] eq '1'">disabled="disabled"</if>></td>            
             <td align="center">{$val.user_name}</td>
             <td align="center">{$val.role_name}</td>
-			<!--td align="center">{$val.user_school}</td>
-			<td align="center">{$val.user_subject}</td>
-     		<td align="center">{$val.add_time|date='Y-m-d H:i:s',###}</td>
-            <td align="center">{$val.last_time|date='Y-m-d H:i:s',###}</td-->
+			<td align="center">{$val.user_school}</td>
+			<!--<td align="center">{$val.user_subject}</td>-->
+     		<!--<td align="center">{$val.add_time|date='Y-m-d H:i:s',###}</td>-->
+            <!--<td align="center">{$val.last_time|date='Y-m-d H:i:s',###}</td>-->
             <td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
             <td align="center"><a href="javascript:edit({$val.id},'{$val.user_name}')">编辑</a></td>
         </tr>

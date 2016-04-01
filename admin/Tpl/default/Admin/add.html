@@ -25,18 +25,18 @@
         </select>
       </td>
     </tr>
-	<!--tr>
+	<tr>
       <th>{:L('user_school')} :</th>
       <td>
       	<input type="text" name="user_school" id="user_school" class="input-text">
       </td>
     </tr>
-	<tr>
+	<!--<tr>
       <th>{:L('user_subject')} :</th>
       <td>
       	<input type="text" name="user_subject" id="user_subject" class="input-text">
       </td>
-    </tr-->
+    </tr>-->
     <tr>
       <th>{:L('status')} :</th>
       <td>
@@ -56,6 +56,8 @@
 		$("#password").formValidator({onshow:"填写密码",onfocus:"填写6位以上密码"}).inputValidator({min:6,onerror:"请填写6位以上密码"});
 		
 		$("#repassword").formValidator({onshow:"确认密码",onfocus:"确认密码",oncorrect:"填写正确"}).compareValidator({desid:"password",operateor:"=",onerror:"两次输入密码不一致"});
+
+        $("#user_school").formValidator({onshow:"所属学校",onfocus:"所属学校"}).inputValidator({min:1,onerror:"请填写所属学校"});
 	})
 </script>
 </div>

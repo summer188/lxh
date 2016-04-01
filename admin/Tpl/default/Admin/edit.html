@@ -5,7 +5,7 @@
 <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
 	<tr> 
 		<th width="100">{:L('user_name')} :</th>
-		<td><input type="text" name="user_name" id="user_name" class="input-text" value="{$admin_info.user_name}" <if condition="$admin_info['user_name'] eq 'admin'">readonly="readonly"</if>></td>
+		<td><input type="text" name="user_name" id="user_name" class="input-text" value="{$admin_info.user_name}"></td>
     </tr>
 
     <tr> 
@@ -25,14 +25,14 @@
         </select>
 		</td>
     </tr>
-	<!--tr> 
+	<tr>
 	<th>{:L('user_school')} :</th>
-		<td><input type="text" name="user_school" id="user_school" class="input-text"></td>
+		<td><input type="text" name="user_school" id="user_school" class="input-text" value="{$admin_info.user_school}"></td>
     </tr>
-	<tr> 
-	<th>{:L('user_subject')} :</th>
-		<td><input type="text" name="user_subject" id="user_subject" class="input-text"></td>
-    </tr-->
+	<!--<tr> -->
+	<!--<th>{:L('user_subject')} :</th>-->
+		<!--<td><input type="text" name="user_subject" id="user_subject" class="input-text"></td>-->
+    <!--</tr>-->
 	<tr>
 		<th>{:L('status')} :</th>
 		<td>
@@ -45,8 +45,8 @@
 <input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
 </form>
 <script type="text/javascript">
-var admin_id = "{$admin_info.id}";
 var admin_name="{$admin_info.user_name}";
+var admin_school = "{$admin_info.user_school}";
 $(function(){
 	$.formValidator.initConfig({formid:"myform",
 		autotip:true,
@@ -58,14 +58,24 @@ $(function(){
 				})
 		}
 	});
-		
-	$("#user_name").formValidator({onshow:"填写帐号昵称",onfocus:"填写帐号昵称"})
-		.inputValidator({min:1,onerror:"请填写帐号昵称"});
-	$("#password").formValidator({onshow:"填写密码",onfocus:"填写6位以上密码"})
-		.inputValidator({min:6,onerror:"请填写6位以上密码"});
-		
-	$("#repassword").formValidator({onshow:"确认密码",onfocus:"确认密码",oncorrect:"填写正确"})
-		.compareValidator({desid:"password",operateor:"=",onerror:"两次输入密码不一致"});
+
+    //smm修改于2016-3-26
+    //defaultvalue属性是 formvalidator.js 提供的设置默认初始值的参数；
+    // defaultPassed()方法可设置defaultvalue初始值默认通过验证
+    $("#user_name").formValidator({onshow:"填写帐号昵称",onfocus:"填写帐号昵称",defaultvalue:admin_name})
+            .inputValidator({min:1,onerror:"请填写帐号昵称"}).defaultPassed();
+
+    //密码设置的默认初始值为000000
+    $("#password").formValidator({onshow:"填写密码",onfocus:"填写6位以上密码",defaultvalue:'000000'})
+            .inputValidator({min:6,onerror:"请填写6位以上密码"}).defaultPassed();
+
+    $("#repassword").formValidator({onshow:"确认密码",onfocus:"确认密码",oncorrect:"填写正确",defaultvalue:'000000'})
+            .compareValidator({desid:"password",operateor:"=",onerror:"两次输入密码不一致"}).defaultPassed();
+
+    $("#user_school").formValidator({onshow:"所属学校",onfocus:"所属学校",oncorrect:"填写正确",defaultvalue:admin_school})
+            .inputValidator({min:1,onerror:"请填写所属学校"}).defaultPassed();
+
+
 })
 </script>
 </div>
