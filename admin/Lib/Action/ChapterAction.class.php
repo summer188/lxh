@@ -88,6 +88,7 @@ class ChapterAction extends BaseAction{
         }
         $page = $p->show();
         $this->assign('page',$page);
+        $this->assign('controller',MODULE_NAME);
         $this->assign('chapter_list',$chapter_list);
         $this->assign('grade_list',$this->grade_list);
         $this->assign('cate_list',$this->cate_list);
@@ -97,6 +98,7 @@ class ChapterAction extends BaseAction{
     //增加
     public function add()
     {
+        $this->assign('controller',MODULE_NAME);
         $this->assign('grade_list',$this->grade_list);
         $this->assign('cate_list',$this->cate_list);
         $this->display();
@@ -127,6 +129,7 @@ class ChapterAction extends BaseAction{
             $chapter_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : $this->error(L('please_select'));
         }
         $chapter_info = $this->chapter_mod->where('id='.$chapter_id)->find();
+        $this->assign('controller',MODULE_NAME);
         $this->assign('show_header', false);
         $this->assign('chapter_info',$chapter_info);
         $this->assign('grade_list',$this->grade_list);

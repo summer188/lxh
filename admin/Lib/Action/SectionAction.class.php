@@ -99,6 +99,7 @@ class SectionAction extends BaseAction{
         }
         $page = $p->show();
         $this->assign('page',$page);
+        $this->assign('controller',MODULE_NAME);
         $this->assign('section_list',$section_list);
         $this->assign('grade_list',$this->grade_list);
         $this->assign('cate_list',$this->cate_list);
@@ -121,6 +122,7 @@ class SectionAction extends BaseAction{
     //增加
     public function add()
     {
+        $this->assign('controller',MODULE_NAME);
         $this->assign('grade_list',$this->grade_list);
         $this->assign('cate_list',$this->cate_list);
         $this->display();
@@ -153,6 +155,7 @@ class SectionAction extends BaseAction{
         $section_info = $this->section_mod->where('id='.$section_id)->find();
         $where = "grade_id={$section_info['grade_id']} AND cate_id={$section_info['cate_id']}";
         $chapter_list = M("chapter")->where($where)->select();
+        $this->assign('controller',MODULE_NAME);
         $this->assign('show_header', false);
         $this->assign('section_info',$section_info);
         $this->assign('grade_list',$this->grade_list);

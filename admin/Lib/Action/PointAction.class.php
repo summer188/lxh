@@ -87,6 +87,7 @@ class PointAction extends BaseAction{
 		}
 		$page = $p->show();
 		$this->assign('page',$page);
+        $this->assign('controller',MODULE_NAME);
 		$this->assign('point_list',$point_list);
 		$this->assign('grade_list',$this->grade_list);
 		$this->assign('cate_list',$this->cate_list);
@@ -96,6 +97,7 @@ class PointAction extends BaseAction{
 	//增加
 	public function add()
 	{
+        $this->assign('controller',MODULE_NAME);
 		$this->assign('grade_list',$this->grade_list);
 		$this->assign('cate_list',$this->cate_list);
 		$this->display();
@@ -127,6 +129,7 @@ class PointAction extends BaseAction{
 		}
 		$point_info = $this->point_mod->where('id='.$point_id)->find();
 		$this->assign('show_header', false);
+        $this->assign('controller',MODULE_NAME);
 		$this->assign('point_info',$point_info);
 		$this->assign('grade_list',$this->grade_list);
 		$this->assign('cate_list',$this->cate_list);
