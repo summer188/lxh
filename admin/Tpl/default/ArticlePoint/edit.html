@@ -63,10 +63,10 @@
                 }});
 
             $("#name").formValidator({
-                onshow:"不能为空",onfocus:"不能为空"
+                onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
             }).inputValidator({
-                min:1,onerror:"请填写分类名称"
-            });
+                min:1,onerror:"知识点名称不能少于1个字"
+            }).defaultPassed();
 
 
         })

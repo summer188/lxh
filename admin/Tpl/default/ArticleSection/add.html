@@ -1,8 +1,12 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad_10">
-    <form action="{:u('SellerPoint/insert')}" method="post" name="myform" id="myform">
+    <form action="{:u('ArticleSection/insert')}" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
+            <tr>
+                <th width="80">{:L('alias')} :</th>
+                <td><input type="text" name="alias" id="alias" class="input-text"></td>
+            </tr>
             <tr>
                 <th width="80">{:L('name')} :</th>
                 <td><input type="text" name="name" id="name" class="input-text"></td>
@@ -10,7 +14,7 @@
             <tr>
                 <th width="80">{:L('grade')} :</th>
                 <td>
-                    <select name="grade_id">
+                    <select name="grade_id" id="grade_id" onchange="getChapterList()">
                         <volist name="grade_list" id="val">
                             <option value="{$val.id}">{$val.name}</option>
                         </volist>
@@ -20,11 +24,17 @@
             <tr>
                 <th width="80">{:L('cate')} :</th>
                 <td>
-                    <select name="cate_id">
+                    <select name="cate_id" id="cate_id" onchange="getChapterList()">
                         <volist name="cate_list" id="val">
                             <option value="{$val.id}">{$val.name}</option>
                         </volist>
                     </select>
+                </td>
+            </tr>
+            <tr>
+                <th width="80">{:L('chapter')} :</th>
+                <td>
+                    <select name="chapter_id" id="chapter_id"></select>
                 </td>
             </tr>
             <tr>
@@ -59,14 +69,39 @@
                             })
                 }});
 
-            $("#name").formValidator({
-                onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
+            $("#alias").formValidator({
+                onshow:"请填写节标识，如第一节",onfocus:"请填写节标识，如第一节"
             }).inputValidator({
-                min:1,onerror:"知识点名称不能少于1个字"
+                min:1,onerror:"节标识不能少于1个字"
             });
 
+            $("#name").formValidator({
+                onshow:"请填写节名称",onfocus:"请填写节名称"
+            }).inputValidator({
+                min:1,onerror:"节名称不能少于1个字"
+            });
 
-        })
+            getChapterList();
+
+        });
+        //获取章列表
+        function getChapterList(){
+            var grade_id = $("#grade_id").val();
+            var cate_id = $("#cate_id").val();
+            if(grade_id == ''){
+                grade_id = $("#grade_id option:first").val();
+            }
+            if(cate_id == ''){
+                cate_id = $("#cate_id option:first").val();
+            }
+            $.get("{:u('ArticleSection/getChapterList')}", { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
+                $("#chapter_id").find("option").remove();
+                $.each(jsondata,function(idx,obj){
+                    $("#chapter_id").append("<option value='"+obj.id+"'>"+obj.alias+' '+obj.name+"</option>");
+                });
+
+            });
+        }
     </script>
 </div>
 </body>

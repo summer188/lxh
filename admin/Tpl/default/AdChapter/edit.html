@@ -1,18 +1,22 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad_10">
-    <form action="{:u('SellerPoint/insert')}" method="post" name="myform" id="myform">
+    <form action="{:u('AdChapter/update')}" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
             <tr>
+                <th width="80">{:L('alias')} :</th>
+                <td><input type="text" name="alias" id="alias" class="input-text" value="{$chapter_info.alias}" ></td>
+            </tr>
+            <tr>
                 <th width="80">{:L('name')} :</th>
-                <td><input type="text" name="name" id="name" class="input-text"></td>
+                <td><input type="text" name="name" id="name" class="input-text" value="{$chapter_info.name}" /></td>
             </tr>
             <tr>
                 <th width="80">{:L('grade')} :</th>
                 <td>
                     <select name="grade_id">
                         <volist name="grade_list" id="val">
-                            <option value="{$val.id}">{$val.name}</option>
+                            <option value="{$val.id}" <if condition="$chapter_info['grade_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
                         </volist>
                     </select>
                 </td>
@@ -22,22 +26,25 @@
                 <td>
                     <select name="cate_id">
                         <volist name="cate_list" id="val">
-                            <option value="{$val.id}">{$val.name}</option>
+                            <option value="{$val.id}" <if condition="$chapter_info.cate_id eq $val.id">selected="selected"</if>>{$val.name}</option>
                         </volist>
                     </select>
                 </td>
             </tr>
             <tr>
                 <th>{:L('sort')}  :</th>
-                <td><input type="text" name="sort" id="sort" class="input-text"></td>
+                <td><input type="text" name="sort" id="sort" class="input-text" value="{$chapter_info.sort}" /></td>
             </tr>
             <tr>
                 <th>{:L('state')} :</th>
                 <td>
-                    <input type="radio" name="status" class="radio_style" value="1" checked="checked" > &nbsp;有效&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="status" class="radio_style" value="0"> &nbsp;禁用
+                    <input type="radio" name="status" class="radio_style" value="1" <if condition="$chapter_info.status eq 1">checked="checked"</if>
+
+                    > &nbsp;有效&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="status" class="radio_style" value="0" <if condition="$chapter_info.status eq 0">checked="checked"</if>> &nbsp;禁用
                 </td>
             </tr>
+            <input type="hidden" name="id" value="{$chapter_info.id}" />
         </table>
         <input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
     </form>
@@ -59,11 +66,17 @@
                             })
                 }});
 
+            $("#alias").formValidator({
+                onshow:"请填写章标识，如第一章",onfocus:"请填写章标识，如第一章"
+            }).inputValidator({
+                min:1,onerror:"章标识不能少于1个字"
+            }).defaultPassed();
+
             $("#name").formValidator({
                 onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
             }).inputValidator({
                 min:1,onerror:"知识点名称不能少于1个字"
-            });
+            }).defaultPassed();
 
 
         })

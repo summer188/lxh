@@ -3,9 +3,9 @@
 <div class="pad-lr-10">
     <div class="data_top">
         <!--a class="cat" href="{:u('SellerCate/addb2ccate')}">同步分类</a-->
-        <a class="cat" href="javascript:add()">添加知识点</a>
+        <a class="cat" href="javascript:add()">添加节</a>
     </div>
-    <form name="searchform" id="searchform" action="" method="get" >
+    <form name="searchform" id="searchform" action="" method="get">
         <table width="100%" cellspacing="0" class="search-form">
             <tbody>
             <tr>
@@ -14,21 +14,28 @@
                         &nbsp;名称 :
                         <input name="keyword" id="keyword" type="text" class="input-text" size="25" value="{$keyword}" />
                         &nbsp;&nbsp;&nbsp;&nbsp;年级 :
-                        <select name="grade_id" id="grade_id">
+                        <select name="grade_id" id="grade_id" onchange="getChapterList(this)">
                             <option value="">请选择</option>
                             <volist name="grade_list" id="val">
                                 <option value="{$val.id}" <if condition="$grade_id eq $val['id']">selected="selected"</if>>{$val.name}</option>
                             </volist>
                         </select>
                         &nbsp;&nbsp;&nbsp;&nbsp;学科 :
-                        <select name="cate_id" id="cate_id">
+                        <select name="cate_id" id="cate_id" onchange="getChapterList(this)">
                             <option value="">请选择</option>
                             <volist name="cate_list" id="val">
                                 <option value="{$val.id}" <if condition="$cate_id eq $val['id']">selected="selected"</if>>{$val.name}</option>
                             </volist>
                         </select>
+                        &nbsp;&nbsp;&nbsp;&nbsp;章 :
+                        <select name="chapter_id" id="chapter_id" onclick="isChecked()">
+                            <option value="">请选择</option>
+                            <volist name="chapter_list" id="val">
+                                <option value="{$val.id}" <if condition="$chapter_id eq $val['id']">selected="selected"</if>>{$val.alias}.&nbsp;{$val.name}</option>
+                            </volist>
+                        </select>
                         &nbsp;&nbsp;
-                        <input type="hidden" name="m" value="SellerPoint" />
+                        <input type="hidden" name="m" value="AdSection" />
                         <input type="submit" name="search" class="button" value="搜索" />
                         <input type="button" class="button" value="重置" onclick="clean()"/>
                     </div>
@@ -37,16 +44,18 @@
             </tbody>
         </table>
     </form>
-    <form id="myform" name="myform" action="{:u('SellerPoint/delete')}" method="post" onsubmit="return check();">
+    <form id="myform" name="myform" action="{:u('AdSection/delete')}" method="post" onsubmit="return check();">
         <div class="table-list">
             <table width="100%" cellspacing="0">
                 <thead>
                 <tr>
                     <th width=50>ID</th>
                     <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
+                    <th>{:L(alias)}</th>
                     <th>{:L(name)}</th>
                     <th>{:L(grade)}</th>
                     <th>{:L(cate)}</th>
+                    <th>{:L(chapter)}</th>
                     <th width=80>{:L('sort')}</th>
                     <!--th width=160>返现商家页面显示</th-->
                     <th width=80>{:L('state')}</th>
@@ -54,13 +63,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <volist name="point_list" id="val" key="k" >
+                <volist name="section_list" id="val" key="k" >
                     <tr>
                         <td align="center">{$val.id}</td>
                         <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
+                        <td align="center">{$val.alias}</td>
                         <td align="center">{$val.name}</td>
                         <td align="center">{$val.grade}</td>
                         <td align="center">{$val.cate}</td>
+                        <td align="center">{$val.chapter}</td>
                         <td align="center"><input type="text" class="input-text-c input-text" onblur="sort({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>
                         <!--td align="center" onclick="status({$val.id},'seller_status')" id="seller_status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.seller_status}.gif" /></td-->
                         <td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
@@ -95,7 +106,7 @@
         window.top.art.dialog({
                     title:lang_add,
                     id:'add',
-                    iframe:'?m=SellerPoint&a=add',width:'480',height:'170'
+                    iframe:'?m=AdSection&a=add',width:'480',height:'170'
                 },
                 function()
                 {
@@ -116,7 +127,7 @@
         window.top.art.dialog({
                     title:lang_edit+'--'+name,
                     id:'edit',
-                    iframe:'?m=SellerPoint&a=edit&id='+id,width:'480',height:'170'
+                    iframe:'?m=AdSection&a=edit&id='+id,width:'480',height:'170'
                 },
                 function()
                 {
@@ -130,23 +141,45 @@
                 });
     }
     function status(id,type){
-        $.get("{:u('SellerPoint/status')}", { id: id, type: type }, function(jsondata){
+        $.get("{:u('AdSection/status')}", { id: id, type: type }, function(jsondata){
             var return_data  = eval("("+jsondata+")");
             $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data+'.gif');
         });
     }
     //排序方法
     function sort(id,type,num){
-        $.get("{:u('SellerPoint/sort')}", { id: id, type: type,num:num }, function(jsondata){
+        $.get("{:u('AdSection/sort')}", { id: id, type: type,num:num }, function(jsondata){
             var return_data  = eval("("+jsondata+")");
             $("#"+type+"_"+id+" ").attr('value', return_data);
         });
+    }
+    //获取章列表
+    function getChapterList(){
+        var grade_id = $("#grade_id").val();
+        var cate_id = $("#cate_id").val();
+        if(grade_id && cate_id){
+            $("#searchform").submit();
+        }
+    }
+    //判断年级和学科有没有选择
+    function isChecked(){
+        var grade_id = $("#grade_id").val();
+        var cate_id = $("#cate_id").val();
+        if(grade_id == ""){
+            alert("请先选择年级！");
+            return false;
+        }
+        if(cate_id == ""){
+            alert("请先选择学科！");
+            return false;
+        }
     }
     //重置
     function clean(){
         $("#keyword").val('');
         $("#grade_id").val('');
         $("#cate_id").val('');
+        $("#chapter_id").val('');
         $("#searchform").submit();
     }
 </script>

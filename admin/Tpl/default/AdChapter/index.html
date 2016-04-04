@@ -3,7 +3,7 @@
 <div class="pad-lr-10">
     <div class="data_top">
         <!--a class="cat" href="{:u('SellerCate/addb2ccate')}">同步分类</a-->
-        <a class="cat" href="javascript:add()">添加知识点</a>
+        <a class="cat" href="javascript:add()">添加章</a>
     </div>
     <form name="searchform" id="searchform" action="" method="get" >
         <table width="100%" cellspacing="0" class="search-form">
@@ -28,7 +28,7 @@
                             </volist>
                         </select>
                         &nbsp;&nbsp;
-                        <input type="hidden" name="m" value="SellerPoint" />
+                        <input type="hidden" name="m" value="AdChapter" />
                         <input type="submit" name="search" class="button" value="搜索" />
                         <input type="button" class="button" value="重置" onclick="clean()"/>
                     </div>
@@ -37,13 +37,14 @@
             </tbody>
         </table>
     </form>
-    <form id="myform" name="myform" action="{:u('SellerPoint/delete')}" method="post" onsubmit="return check();">
+    <form id="myform" name="myform" action="{:u('AdChapter/delete')}" method="post" onsubmit="return check();">
         <div class="table-list">
             <table width="100%" cellspacing="0">
                 <thead>
                 <tr>
                     <th width=50>ID</th>
                     <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
+                    <th>{:L(alias)}</th>
                     <th>{:L(name)}</th>
                     <th>{:L(grade)}</th>
                     <th>{:L(cate)}</th>
@@ -54,10 +55,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <volist name="point_list" id="val" key="k" >
+                <volist name="chapter_list" id="val" key="k" >
                     <tr>
                         <td align="center">{$val.id}</td>
                         <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
+                        <td align="center">{$val.alias}</td>
                         <td align="center">{$val.name}</td>
                         <td align="center">{$val.grade}</td>
                         <td align="center">{$val.cate}</td>
@@ -95,7 +97,7 @@
         window.top.art.dialog({
                     title:lang_add,
                     id:'add',
-                    iframe:'?m=SellerPoint&a=add',width:'480',height:'170'
+                    iframe:'?m=AdChapter&a=add',width:'480',height:'170'
                 },
                 function()
                 {
@@ -116,7 +118,7 @@
         window.top.art.dialog({
                     title:lang_edit+'--'+name,
                     id:'edit',
-                    iframe:'?m=SellerPoint&a=edit&id='+id,width:'480',height:'170'
+                    iframe:'?m=AdChapter&a=edit&id='+id,width:'480',height:'170'
                 },
                 function()
                 {
@@ -130,14 +132,14 @@
                 });
     }
     function status(id,type){
-        $.get("{:u('SellerPoint/status')}", { id: id, type: type }, function(jsondata){
+        $.get("{:u('AdChapter/status')}", { id: id, type: type }, function(jsondata){
             var return_data  = eval("("+jsondata+")");
             $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data+'.gif');
         });
     }
     //排序方法
     function sort(id,type,num){
-        $.get("{:u('SellerPoint/sort')}", { id: id, type: type,num:num }, function(jsondata){
+        $.get("{:u('AdChapter/sort')}", { id: id, type: type,num:num }, function(jsondata){
             var return_data  = eval("("+jsondata+")");
             $("#"+type+"_"+id+" ").attr('value', return_data);
         });

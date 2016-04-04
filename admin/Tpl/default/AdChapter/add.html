@@ -1,8 +1,12 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad_10">
-    <form action="{:u('SellerPoint/insert')}" method="post" name="myform" id="myform">
+    <form action="{:u('AdChapter/insert')}" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
+            <tr>
+                <th width="80">{:L('alias')} :</th>
+                <td><input type="text" name="alias" id="alias" class="input-text"></td>
+            </tr>
             <tr>
                 <th width="80">{:L('name')} :</th>
                 <td><input type="text" name="name" id="name" class="input-text"></td>
@@ -59,10 +63,16 @@
                             })
                 }});
 
-            $("#name").formValidator({
-                onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
+            $("#alias").formValidator({
+                onshow:"请填写章标识，如第一章",onfocus:"请填写章标识，如第一章"
             }).inputValidator({
-                min:1,onerror:"知识点名称不能少于1个字"
+                min:1,onerror:"章标识不能少于1个字"
+            });
+
+            $("#name").formValidator({
+                onshow:"请填写章名称",onfocus:"请填写章名称"
+            }).inputValidator({
+                min:1,onerror:"章名称不能少于1个字"
             });
 
 
