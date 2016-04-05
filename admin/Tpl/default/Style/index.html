@@ -2,8 +2,7 @@
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad-lr-10">
     <div class="data_top">
-        <!--a class="cat" href="{:u('SellerCate/addb2ccate')}">同步分类</a-->
-        <a class="cat" href="javascript:add()">添加章</a>
+        <a class="cat" href="javascript:add()">添加类型</a>
     </div>
     <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=index" method="get" >
         <table width="100%" cellspacing="0" class="search-form">
@@ -11,22 +10,8 @@
             <tr>
                 <td>
                     <div class="explain-col">
-                        &nbsp;名称 :
+                        &nbsp;关键字 :
                         <input name="keyword" id="keyword" type="text" class="input-text" size="25" value="{$keyword}" />
-                        &nbsp;&nbsp;&nbsp;&nbsp;年级 :
-                        <select name="grade_id" id="grade_id">
-                            <option value="">请选择</option>
-                            <volist name="grade_list" id="val">
-                                <option value="{$val.id}" <if condition="$grade_id eq $val['id']">selected="selected"</if>>{$val.name}</option>
-                            </volist>
-                        </select>
-                        &nbsp;&nbsp;&nbsp;&nbsp;学科 :
-                        <select name="cate_id" id="cate_id">
-                            <option value="">请选择</option>
-                            <volist name="cate_list" id="val">
-                                <option value="{$val.id}" <if condition="$cate_id eq $val['id']">selected="selected"</if>>{$val.name}</option>
-                            </volist>
-                        </select>
                         &nbsp;&nbsp;
                         <input type="hidden" name="m" value="{$controller}" />
                         <input type="submit" name="search" class="button" value="搜索" />
@@ -42,29 +27,21 @@
             <table width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                    <th width=50>ID</th>
-                    <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
-                    <th>{:L(alias)}</th>
-                    <th>{:L(name)}</th>
-                    <th>{:L(grade)}</th>
-                    <th>{:L(cate)}</th>
-                    <th width=80>{:L('sort')}</th>
-                    <!--th width=160>返现商家页面显示</th-->
-                    <th width=80>{:L('state')}</th>
-                    <th width=80>操作</th>
+                    <th width=100>ID</th>
+                    <th width=50><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
+                    <th>类型名称</th>
+                    <th width=150>排序</th>
+                    <th width=150>状态</th>
+                    <th width=150>操作</th>
                 </tr>
                 </thead>
                 <tbody>
-                <volist name="chapter_list" id="val" key="k" >
+                <volist name="style_list" id="val" key="k" >
                     <tr>
                         <td align="center">{$val.id}</td>
                         <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
-                        <td align="center">{$val.alias}</td>
                         <td align="center">{$val.name}</td>
-                        <td align="center">{$val.grade}</td>
-                        <td align="center">{$val.cate}</td>
                         <td align="center"><input type="text" class="input-text-c input-text" onblur="sort({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>
-                        <!--td align="center" onclick="status({$val.id},'seller_status')" id="seller_status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.seller_status}.gif" /></td-->
                         <td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
                         <td align="center"><a href="javascript:edit({$val.id},'{$val.name}')">编辑</a></td>
                     </tr>
@@ -104,11 +81,13 @@
                     var d = window.top.art.dialog({id:'add'}).data.iframe;
                     var form=d.document.getElementById('dosubmit').click();
                     form.click();return false;
+
                 },
                 function()
                 {
                     window.top.art.dialog({id:'add'}).close()
                 });
+
     }
     function edit(id, name) {
         var lang_edit = "{$Think.lang.edit}";
@@ -147,8 +126,6 @@
     //重置
     function clean(){
         $("#keyword").val('');
-        $("#grade_id").val('');
-        $("#cate_id").val('');
         $("#searchform").submit();
     }
 </script>

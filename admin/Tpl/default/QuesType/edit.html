@@ -4,43 +4,33 @@
     <form action="admin.php?m={$controller}&a=update" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
             <tr>
-                <th width="80">{:L('name')} :</th>
-                <td><input type="text" name="name" id="name" class="input-text" value="{$point_info.name}" /></td>
+                <th width="80">名称 :</th>
+                <td><input type="text" name="name" id="name" class="input-text" value="{$type_info.name}" /></td>
             </tr>
             <tr>
-                <th width="80">{:L('grade')} :</th>
-                <td>
-                    <select name="grade_id">
-                        <volist name="grade_list" id="val">
-                            <option value="{$val.id}" <if condition="$point_info['grade_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
-                        </volist>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <th width="80">{:L('cate')} :</th>
+                <th width="80">所属学科 :</th>
                 <td>
                     <select name="cate_id">
                         <volist name="cate_list" id="val">
-                            <option value="{$val.id}" <if condition="$point_info['cate_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
+                            <option value="{$val.id}" <if condition="$type_info['cate_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
                         </volist>
                     </select>
                 </td>
             </tr>
             <tr>
-                <th>{:L('sort')}  :</th>
-                <td><input type="text" name="sort" id="sort" class="input-text" value="{$point_info.sort}" /></td>
+                <th>排序  :</th>
+                <td><input type="text" name="sort" id="sort" class="input-text" value="{$type_info.sort}" /></td>
             </tr>
             <tr>
-                <th>{:L('state')} :</th>
+                <th>状态 :</th>
                 <td>
-                    <input type="radio" name="status" class="radio_style" value="1" <if condition="$point_info.status eq 1">checked="checked"</if>
+                    <input type="radio" name="status" class="radio_style" value="1" <if condition="$type_info.status eq 1">checked="checked"</if>
 
                     > &nbsp;有效&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="status" class="radio_style" value="0" <if condition="$point_info.status eq 0">checked="checked"</if>> &nbsp;禁用
+                    <input type="radio" name="status" class="radio_style" value="0" <if condition="$type_info.status eq 0">checked="checked"</if>> &nbsp;禁用
                 </td>
             </tr>
-            <input type="hidden" name="id" value="{$point_info.id}" />
+            <input type="hidden" name="id" value="{$type_info.id}" />
         </table>
         <input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
     </form>
@@ -63,9 +53,9 @@
                 }});
 
             $("#name").formValidator({
-                onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
+                onshow:"请填写类型名称",onfocus:"请填写类型名称"
             }).inputValidator({
-                min:1,onerror:"知识点名称不能少于1个字"
+                min:1,onerror:"类型名称不能少于1个字"
             }).defaultPassed();
 
 

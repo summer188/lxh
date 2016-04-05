@@ -24,9 +24,9 @@
             <tr>
                 <th width="80">{:L('cate')} :</th>
                 <td>
-                    <select name="cate_id" id="cate_id" onchange="getChapterList()">
+                    <select name="cate_id">
                         <volist name="cate_list" id="val">
-                            <option value="{$val.id}" <if condition="$section_info.cate_id eq $val.id">selected="selected"</if>>{$val.name}</option>
+                            <option value="{$val.id}" <if condition="$section_info['cate_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
                         </volist>
                     </select>
                 </td>
