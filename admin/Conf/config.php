@@ -25,7 +25,22 @@ $array = array(
 		),array(
 			'module_name'=>'Cache',
 			'action_list'=>array()
-		),
+		),array(
+			'module_name'=>'Ad',
+			'action_list'=>array(
+				'getPointList','getChapterList','getTypeList','upsave','yun','school','my'
+			)
+		),array(
+			'module_name'=>'SellerList',
+			'action_list'=>array(
+				'getPointList','getChapterList','getTypeList','upsave','yun','school','my'
+			)
+		),array(
+			'module_name'=>'Article',
+			'action_list'=>array(
+				'getPointList','getChapterList','getTypeList','upsave','yun','school','my'
+			)
+		)
 	),
   //'URL_CASE_INSENSITIVE' =>true,    
     'APP_AUTOLOAD_PATH' => '@.TagLib', //自动加载项目类库

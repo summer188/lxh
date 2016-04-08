@@ -14,6 +14,64 @@ class QuestionAction extends BaseAction{
 	 *
 	 */
 	public function yun(){
+		$question_mod = M('question');
+		$grade_list = $this->getGradeList();
+		$cate_list = $this->getCateList();
+		$style_list = $this->getStyleList();
+		//获取搜索条件
+		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		$chapter_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		$section_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		$style_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		$type_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		//搜索
+		$period_id = $this->getPeriod();
+		$where = "period_id={$period_id}";
+		if ($grade_id!='') {
+			$where .= " AND grade_id=$grade_id";
+			$this->assign('grade_id', $grade_id);
+		}
+		if ($cate_id!='') {
+			$where .= " AND cate_id=$cate_id";
+			$this->assign('cate_id', $cate_id);
+		}
+		if ($point_id!='') {
+			$where .= " AND point_id=$point_id";
+			$this->assign('point_id', $point_id);
+		}
+		if ($chapter_id!='') {
+			$where .= " AND chapter_id=$chapter_id";
+			$this->assign('chapter_id', $chapter_id);
+		}
+		if ($section_id!='') {
+			$where .= " AND section_id=$section_id";
+			$this->assign('section_id', $section_id);
+		}
+		if ($style_id!='') {
+			$where .= " AND style_id=$style_id";
+			$this->assign('style_id', $style_id);
+		}
+		if ($type_id!='') {
+			$where .= " AND type_id=$type_id";
+			$this->assign('type_id', $type_id);
+		}
+		import("ORG.Util.Page");
+		$count = $question_mod->where($where)->count();
+		$p = new Page($count,15);
+		$question_list = $question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,sort asc')->select();
+		foreach($question_list as $key=>$value){
+			$question_list[$key]['grade'] = $grade_list[$value['grade_id']]['name'];
+			$question_list[$key]['cate'] = $cate_list[$value['cate_id']]['name'];
+			$question_list[$key]['style'] = $style_list[$value['cate_id']]['name'];
+		}
+		$page = $p->show();
+		$this->assign('page',$page);
+		$this->assign('controller',MODULE_NAME);
+		$this->assign('grade_list',$grade_list);
+		$this->assign('cate_list',$cate_list);
+		$this->assign('style_list',$style_list);
 		$this->display();
 	}
 
@@ -97,10 +155,10 @@ class QuestionAction extends BaseAction{
 	}
 
 	/**
- * 获取知识点列表
- *
- * @return Array
- */
+	 * 获取知识点列表
+	 *
+	 * @return Array
+	 */
 	public function getPointList(){
 		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
 		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
@@ -179,7 +237,7 @@ class QuestionAction extends BaseAction{
 	public function getStyleList(){
 		$period_id = $this->getPeriod();
 		$style_list = M('style')->where("period_id=$period_id")->field('id,name')->select();
-		return $style_list;
+		return array_to_key($style_list,'id');
 	}
 
 	/**

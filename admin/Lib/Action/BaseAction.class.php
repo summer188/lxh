@@ -137,15 +137,6 @@ class BaseAction extends Action {
 		$this->assign('returnjs',$returnjs);
 		parent::success($message,$url_forward,$ajax);
 	}
-	//成功页面重写
-	protected function parentSuccess($message, $url_forward='',$ms = 3, $dialog=false, $ajax=false, $returnjs = '')
-	{
-		//$this->jumpUrl = $url_forward;
-		$this->waitSecond = $ms;
-		$this->assign('dialog',$dialog);
-		$this->assign('returnjs',$returnjs);
-		parent::success($message,$url_forward,$ajax);
-	}
 	/*
 	 * 通用删除操作
 	 * */

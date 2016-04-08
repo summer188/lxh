@@ -126,6 +126,7 @@ function getChapterList(){
     }
     var url = "admin.php?m={$controller}&a=getChapterList";
     $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
+        console.log(jsondata);
         $("#chapter_id").find("option").remove();
         $.each(jsondata,function(idx,obj){
             $("#chapter_id").append("<option value='"+obj.id+"'>"+obj.alias+' '+obj.name+"</option>");
