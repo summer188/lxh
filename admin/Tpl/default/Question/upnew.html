@@ -1,0 +1,181 @@
+<include file="Public:header" />
+<style type="text/css"> table {font-size: 12px} </style>
+<!--<input type="hidden" name="chapter_list" id="chapter_list" value="{$chapter_list}"/>-->
+<form action="admin.php?m={$controller}&a=upsave" method="post" name="myform" id="myform" onsubmit="return check()">
+    <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
+        <tr>
+            <th width="80">年级 :</th>
+            <td>
+                <select name="grade_id" id="grade_id" onchange="getAllList()">
+                    <volist name="grade_list" id="val">
+                        <option value="{$val.id}">{$val.name}</option>
+                    </volist>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th width="80">学科 :</th>
+            <td>
+                <select name="cate_id" id="cate_id" onchange="getAllList()">
+                    <volist name="cate_list" id="val">
+                        <option value="{$val.id}">{$val.name}</option>
+                    </volist>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th width="80">知识点 :</th>
+            <td>
+                <select name="point_id" id="point_id"></select>
+            </td>
+        </tr>
+        <tr>
+            <th width="80">章 :</th>
+            <td>
+                <select name="chapter_id" id="chapter_id"></select>
+            </td>
+        </tr>
+        <tr>
+            <th width="80">节 :</th>
+            <td>
+                <select name="section_id" id="section_id"></select>
+            </td>
+        </tr>
+        <tr>
+            <th width="80">测验类型 :</th>
+            <td>
+                <select name="style_id" id="style_id">
+                    <volist name="style_list" id="val">
+                        <option value="{$val.id}">{$val.name}</option>
+                    </volist>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>题目类型 :</th>
+            <td><select name="type_id" id="type_id"></select></td>
+        </tr>
+        <tr>
+            <th>题干 :</th>
+            <td><textarea name="title" id="title" style="width:700px;height:100px;"></textarea></td>
+        </tr>
+        <tr>
+            <th>题目解析 :</th>
+            <td><textarea name="info" id="info" style="width:700px;height:100px;"></textarea></td>
+        </tr>
+        <tr>
+            <th>排序 :</th>
+            <td><input name="sort" id="sort" /></td>
+        </tr>
+        <tr>
+            <th>状态 :</th>
+            <td>
+                <input type="radio" name="status" class="radio_style" value="1" <if condition="$point_info.status eq 1">checked="checked"</if>
+
+                > &nbsp;有效&nbsp;&nbsp;&nbsp;
+                <input type="radio" name="status" class="radio_style" value="0" <if condition="$point_info.status eq 0">checked="checked"</if>> &nbsp;禁用
+            </td>
+        </tr>
+        <tr>
+            <th></th>
+            <td>
+                <input type="submit" value="上传" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:290px;"/>
+                <input type="reset" value="重置" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:20px;"/>
+            </td>
+        </tr>
+    </table>
+    <!--<input type="submit" name="dosubmit" id="dosubmit" class="dialog" value="提交">-->
+</form>
+<script type="text/javascript">
+$(function(){
+    getAllList();
+});
+//获取所有基于学段id和学科id的列表
+function getAllList(){
+    getPointList();
+    getChapterList();
+    getTypeList();
+}
+//获取题干列表
+function getPointList(){
+    var grade_id = $("#grade_id").val();
+    var cate_id = $("#cate_id").val();
+    if(grade_id == ''){
+        grade_id = $("#grade_id option:first").val();
+    }
+    if(cate_id == ''){
+        cate_id = $("#cate_id option:first").val();
+    }
+    var url = "admin.php?m={$controller}&a=getPointList";
+    $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
+        $("#point_id").find("option").remove();
+        $.each(jsondata,function(idx,obj){
+            $("#point_id").append("<option value='"+obj.id+"'>"+obj.name+"</option>");
+        });
+    });
+}
+//获取章列表
+function getChapterList(){
+    var grade_id = $("#grade_id").val();
+    var cate_id = $("#cate_id").val();
+    if(grade_id == ''){
+        grade_id = $("#grade_id option:first").val();
+    }
+    if(cate_id == ''){
+        cate_id = $("#cate_id option:first").val();
+    }
+    var url = "admin.php?m={$controller}&a=getChapterList";
+    $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
+        $("#chapter_id").find("option").remove();
+        $.each(jsondata,function(idx,obj){
+            $("#chapter_id").append("<option value='"+obj.id+"'>"+obj.alias+' '+obj.name+"</option>");
+        });
+
+        //章未发生change事件时节列表的初始设置
+        if($("#chapter_id").val() == jsondata[0].id){
+            $("#section_id").find("option").remove();
+            $.each(jsondata[0].section,function(id,object){
+                $("#section_id").append("<option value='"+object.id+"'>"+object.alias+' '+object.name+"</option>");
+            });
+        }
+
+        //设置章节列表联动(节随章动)
+        $("#chapter_id").change(function(){
+            $("#section_id").find("option").remove();
+            $.each(jsondata,function(idx,obj){
+                if($("#chapter_id").val() == obj.id){
+                    $.each(obj.section,function(id,object){
+                        $("#section_id").append("<option value='"+object.id+"'>"+object.alias+' '+object.name+"</option>");
+                    });
+                }
+            });
+        });
+    });
+}
+//获取测验类型列表
+function getTypeList(){
+    var cate_id = $("#cate_id").val();
+    if(cate_id == ''){
+        cate_id = $("#cate_id option:first").val();
+    }
+    var url = "admin.php?m={$controller}&a=getTypeList";
+    $.get(url, { cate_id: cate_id }, function(jsondata){
+        $("#type_id").find("option").remove();
+        $.each(jsondata,function(idx,obj){
+            $("#type_id").append("<option value='"+obj.id+"'>"+obj.name+"</option>");
+        });
+    });
+}
+KindEditor.ready(function(K) {
+    window.editor = K.create('#title');
+});
+KindEditor.ready(function(K) {
+    window.editor = K.create('#info');
+});
+function check(){
+
+}
+</script>
+</div>
+</body>
+</html>

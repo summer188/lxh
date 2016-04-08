@@ -1,7 +1,5 @@
 <?php
-
-
-class AdAction extends BaseAction
+class AdAction extends QuestionAction
 {
 	function index()
 	{
@@ -61,7 +59,7 @@ class AdAction extends BaseAction
 		            }
 	                break;
 	            case 'code':
-	                $data['code'] = preg_replace("/[\s]{2,}/","",$_POST['code']);
+	                $data['code'] = preg_replace("/[\f\n\r\t\v]{2,}/","",$_POST['code']);
 	                break;
 	            case 'flash':
 	                if ($_FILES['flash']['name']!='') {
@@ -128,7 +126,7 @@ class AdAction extends BaseAction
 		            }
 	                break;
 	            case 'code':
-	                $data['code'] = preg_replace("/[\s]{2,}/","",$_POST['code']);
+	                $data['code'] = preg_replace("/[\f\n\r\t\v]{2,}/","",$_POST['code']);
 	                break;
 	            case 'flash':
 	                if ($_FILES['flash']['name']!='') {
@@ -236,5 +234,39 @@ class AdAction extends BaseAction
         }
         return $type_list;
     }
+
+	//从该行至本类末尾为smm添加于2016-4-5
+	public function upnew(){
+		R('Question/upnew');
+	}
+	//获取知识点列表--响应ajax请求
+//	public function getPointList(){
+//		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+//		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+//		$point_list = R('Question/getPointList',array('grade_id'=>$grade_id,'cate_id'=>$cate_id));
+//		$this->ajaxReturn($point_list,'JSON');
+//	}
+	//获取章列表--响应ajax请求
+//	public function getChapterList(){
+//		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+//		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+//		$chapter_list = R('Question/getChapterList',array('grade_id'=>$grade_id,'cate_id'=>$cate_id));
+//		$this->ajaxReturn($chapter_list,'JSON');
+//	}
+//	//获取题目类型列表--响应ajax请求
+//	public function getTypeList(){
+//		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+//		$type_list = R('Question/getTypeList',array('cate_id'=>$cate_id));
+//		$this->ajaxReturn($type_list,'JSON');
+//	}
+	public function upsave(){
+		$arrPost = $_POST;
+		$result = R('Question/upsave',array('arrInfo'=>$arrPost));
+		if($result){
+			$this->success(L('operation_success'), '', '', 'add');
+		}else{
+			$this->error(L('operation_failure'));
+		}
+	}
 }
 ?>

@@ -80,7 +80,7 @@ class ChapterAction extends BaseAction{
         }
         import("ORG.Util.Page");
         $count = $this->chapter_mod->where($where)->count();
-        $p = new Page($count,20);
+        $p = new Page($count,15);
         $chapter_list = $this->chapter_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,sort asc')->select();
         foreach($chapter_list as $key=>$value){
             $chapter_list[$key]['grade'] = $this->grade_list[$value['grade_id']]['name'];
@@ -108,12 +108,12 @@ class ChapterAction extends BaseAction{
     public function insert()
     {
         $data = $this->chapter_mod->create();
+		if(false === $data){
+			$this->error($this->chapter_mod->error());
+		}
         $data['period_id'] = $this->period_id;
         $data['create_id'] = $_SESSION['admin_info']['id'];
         $data['create_time'] = time();
-        if(false === $data){
-            $this->error($this->chapter_mod->error());
-        }
         $result = $this->chapter_mod->add($data);
         if($result){
             $this->success(L('operation_success'), '', '', 'add');

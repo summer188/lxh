@@ -25,9 +25,15 @@
         </select>
 		</td>
     </tr>
-	<tr>
-	<th>{:L('user_school')} :</th>
-		<td><input type="text" name="user_school" id="user_school" class="input-text" value="{$admin_info.user_school}"></td>
+    <tr>
+        <th width="80">{:L('user_school')} :</th>
+        <td>
+            <select name="school_id">
+                <volist name="school_list" id="val">
+                    <option value="{$val.id}" <if condition="$admin_info['school_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
+                </volist>
+            </select>
+        </td>
     </tr>
 	<!--<tr> -->
 	<!--<th>{:L('user_subject')} :</th>-->

@@ -79,7 +79,7 @@ class PointAction extends BaseAction{
 		}
 		import("ORG.Util.Page");
 		$count = $this->point_mod->where($where)->count();
-		$p = new Page($count,20);
+		$p = new Page($count,15);
 		$point_list = $this->point_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,sort asc')->select();
 		foreach($point_list as $key=>$value){
 			$point_list[$key]['grade'] = $this->grade_list[$value['grade_id']]['name'];
@@ -107,12 +107,12 @@ class PointAction extends BaseAction{
 	public function insert()
 	{
 		$data = $this->point_mod->create();
-		$data['period_id'] = $this->period_id;
-		$data['create_id'] = $_SESSION['admin_info']['id'];
-		$data['create_time'] = time();
 		if(false === $data){
 			$this->error($this->point_mod->error());
 		}
+		$data['period_id'] = $this->period_id;
+		$data['create_id'] = $_SESSION['admin_info']['id'];
+		$data['create_time'] = time();
 		$result = $this->point_mod->add($data);
 		if($result){
 			$this->success(L('operation_success'), '', '', 'add');

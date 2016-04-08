@@ -214,5 +214,19 @@ class ArticleAction extends BaseAction
 		$this->ajaxReturn($values[$type]);
 	}
 
+	//smm添加于2016-4-5
+	//上传新题
+	public function upnew(){
+		R('Question/upnew');
+	}
+	//获取章列表--响应ajax请求
+	public function getChapterList(){
+		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		$chapter_list = R('Question/getChapterList',array('grade_id'=>$grade_id,'cate_id'=>$cate_id));
+		$this->ajaxReturn($chapter_list,'JSON');
+
+	}
+
 }
 ?>

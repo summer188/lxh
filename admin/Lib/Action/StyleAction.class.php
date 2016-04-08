@@ -66,12 +66,12 @@ class StyleAction extends BaseAction{
 	public function insert()
 	{
 		$data = $this->style_mod->create();
-		$data['period_id'] = $this->period_id;
-		$data['create_id'] = $_SESSION['admin_info']['id'];
-		$data['create_time'] = time();
 		if(false === $data){
 			$this->error($this->style_mod->error());
 		}
+		$data['period_id'] = $this->period_id;
+		$data['create_id'] = $_SESSION['admin_info']['id'];
+		$data['create_time'] = time();
 		$result = $this->style_mod->add($data);
 		if($result){
 			$this->success(L('operation_success'), '', '', 'add');

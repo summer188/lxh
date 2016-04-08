@@ -2,6 +2,11 @@
 
 class AdminAction extends BaseAction
 {
+	public $school_list;
+	public function __construct(){
+		$this->school_list = M('school')->select();
+		$this->school_list = array_to_key($this->school_list,'id');
+	}
 	function index()
 	{
 		$admin_mod = D('admin');
@@ -19,6 +24,7 @@ class AdminAction extends BaseAction
 		$this->assign('page',$page);
 		$this->assign('big_menu',$big_menu);
 		$this->assign('admin_list',$admin_list);
+		$this->assign('school_list',$this->school_list);
 		$this->display();
 	}
 
@@ -55,7 +61,7 @@ class AdminAction extends BaseAction
 		    $role_mod = D('role');
 		    $role_list = $role_mod->where('status=1')->select();
 		    $this->assign('role_list',$role_list);
-
+			$this->assign('school_list',$this->school_list);
 		    $this->assign('show_header', false);
 			$this->display();
 	    }
@@ -107,6 +113,7 @@ class AdminAction extends BaseAction
 			$admin_info = $admin_mod->where('id='.$id)->find();
 			$this->assign('admin_info', $admin_info);
 			$this->assign('show_header', false);
+			$this->assign('school_list',$this->school_list);
 			$this->display();
 		}
 	}
@@ -162,6 +169,135 @@ class AdminAction extends BaseAction
 		$sql 	= "update ".C('DB_PREFIX')."admin set $type=($type+1)%2 where id='$id'";
 		$res 	= $admin_mod->execute($sql);
 		$values = $admin_mod->where('id='.$id)->find();
+		$this->ajaxReturn($values[$type]);
+	}
+
+	//以下均为smm添加于2016-4-8
+	//学校列表
+	public function school(){
+		$school_mod = M('school');
+		//获取搜索条件
+		$keyword=isset($_GET['keyword'])?trim($_GET['keyword']):'';
+
+		//搜索
+		$where = '';
+		if ($keyword!='') {
+			$where .= " AND name LIKE '%".$keyword."%'";
+			$this->assign('keyword', $keyword);
+		}
+		import("ORG.Util.Page");
+		$count = $school_mod->where($where)->count();
+		$p = new Page($count,15);
+		$school_list = $school_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('sort asc')->select();
+		$page = $p->show();
+		$this->assign('page',$page);
+		$this->assign('school_list',$school_list);
+		$this->display();
+	}
+
+	//增加学校
+	public function addSchool()
+	{
+		$this->display();
+	}
+
+	//插入学校信息数据
+	public function insertSchool()
+	{
+		$school_mod = M("school");
+		$data = $school_mod->create();
+		if(false === $data){
+			$this->error($school_mod->error());
+		}
+		$data['create_id'] = $_SESSION['admin_info']['id'];
+		$data['create_time'] = time();
+		$result = $school_mod->add($data);
+		if($result){
+			$this->success(L('operation_success'), '', '', 'addSchool');
+		}else{
+			$this->error(L('operation_failure'));
+		}
+	}
+
+	//修改学校信息
+	public function editSchool()
+	{
+		if( isset($_GET['id']) ){
+			$school_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : $this->error(L('please_select'));
+		}
+		$school_info = M('school')->where('id='.$school_id)->find();
+		$this->assign('show_header', false);
+		$this->assign('school_info',$school_info);
+		$this->display();
+	}
+
+	//更新学校信息
+	public function updateSchool()
+	{
+		if((!isset($_POST['id']) || empty($_POST['id']))) {
+			$this->error('请选择要编辑的数据');
+		}
+		$school_mod = M('school');
+		$data = $school_mod->create();
+		if(false === $data){
+			$this->error($school_mod->error());
+		}
+		$data['update_id'] = $_SESSION['admin_info']['id'];
+		$data['update_time'] = time();
+		$result = $school_mod->save($data);
+		if(false !== $result){
+			$this->success(L('operation_success'), '', '', 'editSchool');
+		}else{
+			$this->error(L('operation_failure'));
+		}
+	}
+
+	//删除学校
+	public function deleteSchool(){
+		$flag = true;
+		if (isset($_POST['id']) && is_array($_POST['id'])) {
+			$id_array=$_POST['id'];
+			for ($i=0;$i<count($id_array);$i++){
+				$result = M('school')->where("id='{$id_array[$i]}'")->delete();
+				if(!$result){
+					$flag = false;
+				}
+			}
+		}
+		if($flag){
+			$this->success(L('operation_success'));
+		}else{
+			$this->error(L('operation_failure'));
+		}
+	}
+
+	//修改学校状态
+	function statusSchool()
+	{
+		$school_mod = M('school');
+		$id = intval($_REQUEST['id']);
+		$type = trim($_REQUEST['type']);
+		$sql = "update " . C('DB_PREFIX') . "school set $type=($type+1)%2 where id='$id'";
+		$school_mod->execute($sql);
+		$values = $school_mod->where('id=' . $id)->find();
+		$this->ajaxReturn($values[$type]);
+	}
+
+	//学校排序
+	public function sortSchool(){
+		$school_mod = M('school');
+		$id = intval($_REQUEST['id']);
+		$type = trim($_REQUEST['type']);
+		$num = trim($_REQUEST['num']);
+		if(!is_numeric($num)){
+			$values = $school_mod->where('id='.$id)->find();
+			$this->ajaxReturn($values[$type]);
+			exit;
+		}
+		$sql    = "update ".C('DB_PREFIX').'school'." set $type=$num where id='$id'";
+
+		$school_mod->execute($sql);
+		$values = $school_mod->where('id='.$id)->find();
 		$this->ajaxReturn($values[$type]);
 	}
 }

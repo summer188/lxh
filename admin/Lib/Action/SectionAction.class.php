@@ -89,7 +89,7 @@ class SectionAction extends BaseAction{
         }
         import("ORG.Util.Page");
         $count = $this->section_mod->where($where)->count();
-        $p = new Page($count,20);
+        $p = new Page($count,15);
         $section_list = $this->section_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,sort asc')->select();
         foreach($section_list as $key=>$value){
             $section_list[$key]['grade'] = $this->grade_list[$value['grade_id']]['name'];
@@ -132,12 +132,12 @@ class SectionAction extends BaseAction{
     public function insert()
     {
         $data = $this->section_mod->create();
+		if(false === $data){
+			$this->error($this->section_mod->error());
+		}
         $data['period_id'] = $this->period_id;
         $data['create_id'] = $_SESSION['admin_info']['id'];
         $data['create_time'] = time();
-        if(false === $data){
-            $this->error($this->section_mod->error());
-        }
         $result = $this->section_mod->add($data);
         if($result){
             $this->success(L('operation_success'), '', '', 'add');

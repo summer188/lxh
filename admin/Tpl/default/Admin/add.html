@@ -28,7 +28,11 @@
 	<tr>
       <th>{:L('user_school')} :</th>
       <td>
-      	<input type="text" name="user_school" id="user_school" class="input-text">
+          <select name="school_id">
+              <volist name="school_list" id="val">
+                  <option value="{$val.id}">{$val.name}</option>
+              </volist>
+          </select>
       </td>
     </tr>
 	<!--<tr>
@@ -57,7 +61,6 @@
 		
 		$("#repassword").formValidator({onshow:"确认密码",onfocus:"确认密码",oncorrect:"填写正确"}).compareValidator({desid:"password",operateor:"=",onerror:"两次输入密码不一致"});
 
-        $("#user_school").formValidator({onshow:"所属学校",onfocus:"所属学校"}).inputValidator({min:1,onerror:"请填写所属学校"});
 	})
 </script>
 </div>
