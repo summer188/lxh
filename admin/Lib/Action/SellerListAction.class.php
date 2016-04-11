@@ -1,6 +1,6 @@
 <?php
 
-class SellerListAction extends BaseAction
+class SellerListAction extends QuestionAction
 {	//显示列表
 	public function index()
 	{

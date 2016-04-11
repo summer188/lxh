@@ -22,10 +22,10 @@ class QuestionAction extends BaseAction{
 		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
 		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
 		$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
-		$chapter_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
-		$section_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
-		$style_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
-		$type_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
+		$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
+		$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
+		$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
 		//搜索
 		$period_id = $this->getPeriod();
 		$where = "period_id={$period_id}";
@@ -36,6 +36,14 @@ class QuestionAction extends BaseAction{
 		if ($cate_id!='') {
 			$where .= " AND cate_id=$cate_id";
 			$this->assign('cate_id', $cate_id);
+			$type_list = $this->getTypeAll($cate_id);
+			$this->assign('type_list',$type_list);
+		}
+		if($grade_id!='' && $cate_id!='') {
+			$point_list = $this->getPointAll($grade_id,$cate_id);
+			$chapter_list = $this->getChapterAll($grade_id,$cate_id);
+			$this->assign('point_list',$point_list);
+			$this->assign('chapter_list',$chapter_list);
 		}
 		if ($point_id!='') {
 			$where .= " AND point_id=$point_id";
@@ -44,6 +52,8 @@ class QuestionAction extends BaseAction{
 		if ($chapter_id!='') {
 			$where .= " AND chapter_id=$chapter_id";
 			$this->assign('chapter_id', $chapter_id);
+			$section_list = $this->getSectionList($chapter_id);
+			$this->assign('section_list',$section_list);
 		}
 		if ($section_id!='') {
 			$where .= " AND section_id=$section_id";
@@ -65,6 +75,16 @@ class QuestionAction extends BaseAction{
 			$question_list[$key]['grade'] = $grade_list[$value['grade_id']]['name'];
 			$question_list[$key]['cate'] = $cate_list[$value['cate_id']]['name'];
 			$question_list[$key]['style'] = $style_list[$value['cate_id']]['name'];
+			$title = $this->cleanFormat(file_get_contents($value['title_url']));
+			$question_list[$key]['title'] = $this->cutString($title,8);
+			$point = M('point')->where("id={$value['point_id']}")->find();
+			$question_list[$key]['point'] = $this->cutString($point['name'],8);
+			$chapter = M('chapter')->where("id={$value['chapter_id']}")->find();
+			$question_list[$key]['chapter'] = $this->cutString($chapter['name'],8);
+			$section = M('section')->where("id={$value['section_id']}")->find();
+			$question_list[$key]['section'] = $this->cutString($section['name'],8);
+			$type = M('question_type')->where("id={$value['type_id']}")->find();
+			$question_list[$key]['type'] = $this->cutString($type['name'],8);
 		}
 		$page = $p->show();
 		$this->assign('page',$page);
@@ -72,11 +92,71 @@ class QuestionAction extends BaseAction{
 		$this->assign('grade_list',$grade_list);
 		$this->assign('cate_list',$cate_list);
 		$this->assign('style_list',$style_list);
+
+		$this->assign('question_list',$question_list);
 		$this->display();
 	}
 
 	/**
-	 * 上传新题
+	 * 修改题目状态
+	 *
+	 */
+	function statusQuestion()
+	{
+		$question_mod = M('question');
+		$id = intval($_REQUEST['id']);
+		$type = trim($_REQUEST['type']);
+		$sql = "update " . C('DB_PREFIX') . "question set $type=($type+1)%2 where id='$id'";
+		$question_mod->execute($sql);
+		$values = $question_mod->where('id=' . $id)->find();
+		$this->ajaxReturn($values[$type]);
+	}
+
+	/**
+	 * 题目排序
+	 *
+	 */
+	public function sortQuestion(){
+		$question_mod = M('question');
+		$id = intval($_REQUEST['id']);
+		$type = trim($_REQUEST['type']);
+		$num = trim($_REQUEST['num']);
+		if(!is_numeric($num)){
+			$values = $question_mod->where('id='.$id)->find();
+			$this->ajaxReturn($values[$type]);
+			exit;
+		}
+		$sql    = "update ".C('DB_PREFIX').'question'." set $type=$num where id='$id'";
+
+		$question_mod->execute($sql);
+		$values = $question_mod->where('id='.$id)->find();
+		$this->ajaxReturn($values[$type]);
+	}
+
+	/**
+	 * 删除题目
+	 *
+	 */
+	public function deleteQuestion(){
+		$flag = true;
+		if (isset($_POST['id']) && is_array($_POST['id'])) {
+			$id_array=$_POST['id'];
+			for ($i=0;$i<count($id_array);$i++){
+				$result = M('question')->where("id='{$id_array[$i]}'")->delete();
+				if(!$result){
+					$flag = false;
+				}
+			}
+		}
+		if($flag){
+			$this->success(L('operation_success'));
+		}else{
+			$this->error(L('operation_failure'));
+		}
+	}
+
+	/**
+	 * 上传新题或编辑题目
 	 *
 	 */
 	public function upnew(){
@@ -155,13 +235,25 @@ class QuestionAction extends BaseAction{
 	}
 
 	/**
-	 * 获取知识点列表
+	 * 获取知识点列表--响应ajax请求
 	 *
 	 * @return Array
 	 */
 	public function getPointList(){
 		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
 		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		$point_list = $this->getPointAll($grade_id,$cate_id);
+		$this->ajaxReturn($point_list,'JSON');
+	}
+
+	/**
+	 * 根据条件获取章列表
+	 *
+	 * @param String $grade_id 年级id
+	 * @param String $cate_id 学科id
+	 * @return Array
+	 */
+	public function getPointAll($grade_id='',$cate_id=''){
 		$point_list = array();
 		if($grade_id!='' && $cate_id!=''){
 			$period_id = $this->getPeriod();
@@ -169,18 +261,44 @@ class QuestionAction extends BaseAction{
 			$where .= " AND grade_id=$grade_id";
 			$where .= " AND cate_id=$cate_id";
 			$point_list = M("point")->where($where)->field('id,name')->select();
+			if($point_list){
+				//超过8个字就把多余的字符换成...显示
+				foreach($point_list as $key=>&$value){
+					$value['name'] = $this->cutString($value['name'],8);
+				}
+			}
 		}
-		$this->ajaxReturn($point_list,'JSON');
+		return $point_list;
 	}
 
 	/**
-	 * 获取章列表
+	 * 获取章列表--响应ajax请求
 	 *
 	 * @return Array
 	 */
 	public function getChapterList(){
 		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
 		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		$chapter_list = $this->getChapterAll($grade_id,$cate_id);
+		if(!empty($chapter_list)){
+			foreach($chapter_list as $key=>&$value){
+				//获取节列表
+				$value['section'] = $this->getSectionList($value['id']);
+			}
+		}
+		$this->ajaxReturn($chapter_list,'JSON');
+
+	}
+
+	/**
+	 * 根据条件获取章列表
+	 *
+	 * @param String $grade_id 年级id
+	 * @param String $cate_id 学科id
+	 * @return Array
+	 */
+	public function getChapterAll($grade_id='',$cate_id=''){
+		$chapter_list = array();
 		if($grade_id!='' && $cate_id!=''){
 			$period_id = $this->getPeriod();
 			$where = "period_id=$period_id";
@@ -188,12 +306,13 @@ class QuestionAction extends BaseAction{
 			$where .= " AND cate_id=$cate_id";
 			$chapter_list = M("chapter")->where($where)->field('id,alias,name')->select();
 			if($chapter_list){
+				//超过8个字就把多余的字符换成...显示
 				foreach($chapter_list as $key=>&$value){
-					$value['section'] = $this->getSectionList($value['id']);
+					$value['name'] = $this->cutString($value['name'],8);
 				}
 			}
-			$this->ajaxReturn($chapter_list,'JSON');
 		}
+		return $chapter_list;
 	}
 
 	/**
@@ -206,28 +325,61 @@ class QuestionAction extends BaseAction{
 		if($chapter_id!=''){
 			$where = "chapter_id=$chapter_id";
 			$section_list = M("section")->where($where)->field('id,alias,name')->select();
+			if($section_list){
+				//超过8个字就把多余的字符换成...显示
+				foreach($section_list as $key=>&$value){
+					$value['name'] = $this->cutString($value['name'],8);
+				}
+			}
 			return $section_list;
+		}else{
+			return false;
 		}
 	}
 
 	/**
-	 * 获取题目类型列表
+	 * 获取题目类型列表--响应ajax请求
 	 *
 	 * @return Array
 	 */
 	public function getTypeList(){
 		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		$cate_list = $this->getTypeAll($cate_id);
+		$this->ajaxReturn($cate_list,'JSON');
+	}
+
+	/**
+	 * 根据条件获取题目类型列表
+	 *
+	 * @param String $cate_id 学科id
+	 * @return Array
+	 */
+	public function getTypeAll($cate_id=''){
 		$period_id = $this->getPeriod();
+		//获取所有学科下的题目类型
 		$all_list = M("question_type")->where("period_id=$period_id AND cate_id=-1")->field('id,name')->select();
+		if($all_list){
+			//超过8个字就把多余的字符换成...显示
+			foreach($all_list as $key=>&$value){
+				$value['name'] = $this->cutString($value['name'],8);
+			}
+		}
+		//存取单一学科的题目类型
 		$type_list = array();
 		if($cate_id!=''){
 			$where = "period_id=$period_id";
 			$where .= " AND cate_id=$cate_id";
 			$type_list = M("question_type")->where($where)->select();
-
+			if($type_list){
+				//超过8个字就把多余的字符换成...显示
+				foreach($type_list as $key=>&$value){
+					$value['name'] = $this->cutString($value['name'],8);
+				}
+			}
 		}
-		$this->ajaxReturn(array_merge($all_list,$type_list),'JSON');
+		return array_merge($all_list,$type_list);
 	}
+
 
 	/**
 	 * 获取测验类型列表
@@ -237,6 +389,12 @@ class QuestionAction extends BaseAction{
 	public function getStyleList(){
 		$period_id = $this->getPeriod();
 		$style_list = M('style')->where("period_id=$period_id")->field('id,name')->select();
+		if($style_list){
+			//超过8个字就把多余的字符换成...显示
+			foreach($style_list as $key=>&$value){
+				$value['name'] = $this->cutString($value['name'],8);
+			}
+		}
 		return array_to_key($style_list,'id');
 	}
 
@@ -261,6 +419,11 @@ class QuestionAction extends BaseAction{
 		}
 		$cate_list = M($cate_mod)->field('id,name')->select();
 		if(!empty($cate_list)){
+			//超过8个字就把多余的字符换成...显示
+			foreach($cate_list as $key=>&$value){
+				$value['name'] = $this->cutString($value['name'],8);
+			}
+
 			//把id的值作为键名，重新组合数组
 			$cate_list = array_to_key($cate_list,'id');
 		}
@@ -276,6 +439,10 @@ class QuestionAction extends BaseAction{
 		$period_id = $this->getPeriod();
 		$grade_list = M('grade')->where("period_id=$period_id")->field('id,name')->select();
 		if(!empty($grade_list)){
+			//超过8个字就把多余的字符换成...显示
+			foreach($grade_list as $key=>&$value){
+				$value['name'] = $this->cutString($value['name'],8);
+			}
 			//把id的值作为键名，重新组合数组
 			$grade_list = array_to_key($grade_list,'id');
 		}
@@ -300,6 +467,38 @@ class QuestionAction extends BaseAction{
 				break;
 		}
 		return $period_id;
+	}
+
+	/**
+	 * 字符串超过一定个数截断显示
+	 *
+	 * @param String $str 要截掉的字符串
+	 * @param Int $num 允许显示的字符最大个数
+	 * @return String
+	 */
+	public function cutString($str,$num){
+		if(is_string($str) && !empty($str)){
+			$str = mb_strlen($str,'utf8')>$num ? mb_substr($str,0,$num,'utf8').'...' : $str;
+		}
+		return $str;
+	}
+
+	/**
+	 * 去除字符串的所有格式，获取纯文本内容
+	 *
+	 * @param String $str 目标字符串
+	 * @return String
+	 */
+	public function cleanFormat($str){
+		$str = trim($str); //清除字符串两边的空格
+		$str = strip_tags($str,""); //利用php自带的函数清除html格式
+		$str = preg_replace("/\t/","",$str); //使用正则表达式替换内容，如：空格，换行，并将替换为空。
+		$str = preg_replace("/\r\n/","",$str);
+		$str = preg_replace("/\r/","",$str);
+		$str = preg_replace("/\n/","",$str);
+		$str = preg_replace("/ /","",$str);
+		$str = preg_replace("/&nbsp;/","",$str);  //匹配html中的空格
+		return trim($str);
 	}
 
 	/**

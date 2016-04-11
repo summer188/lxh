@@ -1,6 +1,6 @@
 <?php
 
-class ArticleAction extends BaseAction
+class ArticleAction extends QuestionAction
 {
 	public function index()
 	{
