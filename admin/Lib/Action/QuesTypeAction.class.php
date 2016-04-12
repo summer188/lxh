@@ -108,15 +108,17 @@ class QuesTypeAction extends BaseAction{
 	//修改
 	public function edit()
 	{
-		if( isset($_GET['id']) ){
-			$type_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : $this->error(L('please_select'));
+		if(isset($_GET['id']) && intval($_GET['id'])){
+			$id = intval($_GET['id']);
+			$type_info = $this->type_mod->where('id='.$id)->find();
+			$this->assign('show_header', false);
+			$this->assign('controller',MODULE_NAME);
+			$this->assign('cate_list',$this->cate_list);
+			$this->assign('type_info',$type_info);
+			$this->display();
+		}else{
+			$this->error(L('please_select'));
 		}
-		$type_info = $this->type_mod->where('id='.$type_id)->find();
-		$this->assign('show_header', false);
-		$this->assign('controller',MODULE_NAME);
-		$this->assign('cate_list',$this->cate_list);
-		$this->assign('type_info',$type_info);
-		$this->display();
 	}
 
 	//更新

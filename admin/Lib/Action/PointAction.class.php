@@ -124,16 +124,18 @@ class PointAction extends BaseAction{
 	//修改
 	public function edit()
 	{
-		if( isset($_GET['id']) ){
-			$point_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : $this->error(L('please_select'));
+		if(isset($_GET['id']) && intval($_GET['id'])){
+			$id = intval($_GET['id']);
+			$point_info = $this->point_mod->where('id='.$id)->find();
+			$this->assign('show_header', false);
+			$this->assign('controller',MODULE_NAME);
+			$this->assign('point_info',$point_info);
+			$this->assign('grade_list',$this->grade_list);
+			$this->assign('cate_list',$this->cate_list);
+			$this->display();
+		}else{
+			$this->error(L('please_select'));
 		}
-		$point_info = $this->point_mod->where('id='.$point_id)->find();
-		$this->assign('show_header', false);
-        $this->assign('controller',MODULE_NAME);
-		$this->assign('point_info',$point_info);
-		$this->assign('grade_list',$this->grade_list);
-		$this->assign('cate_list',$this->cate_list);
-		$this->display();
 	}
 
 	//更新

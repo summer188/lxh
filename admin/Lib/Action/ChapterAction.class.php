@@ -125,16 +125,18 @@ class ChapterAction extends BaseAction{
     //修改
     public function edit()
     {
-        if( isset($_GET['id']) ){
-            $chapter_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : $this->error(L('please_select'));
-        }
-        $chapter_info = $this->chapter_mod->where('id='.$chapter_id)->find();
-        $this->assign('controller',MODULE_NAME);
-        $this->assign('show_header', false);
-        $this->assign('chapter_info',$chapter_info);
-        $this->assign('grade_list',$this->grade_list);
-        $this->assign('cate_list',$this->cate_list);
-        $this->display();
+		if(isset($_GET['id']) && intval($_GET['id'])){
+			$id = intval($_GET['id']);
+			$chapter_info = $this->chapter_mod->where('id='.$id)->find();
+			$this->assign('controller',MODULE_NAME);
+			$this->assign('show_header', false);
+			$this->assign('chapter_info',$chapter_info);
+			$this->assign('grade_list',$this->grade_list);
+			$this->assign('cate_list',$this->cate_list);
+			$this->display();
+		}else{
+			$this->error(L('please_select'));
+		}
     }
 
     //更新

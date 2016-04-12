@@ -83,14 +83,16 @@ class StyleAction extends BaseAction{
 	//修改
 	public function edit()
 	{
-		if( isset($_GET['id']) ){
-			$style_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : $this->error(L('please_select'));
+		if(isset($_GET['id']) && intval($_GET['id'])){
+			$id = intval($_GET['id']);
+			$style_info = $this->style_mod->where('id='.$id)->find();
+			$this->assign('show_header', false);
+			$this->assign('controller',MODULE_NAME);
+			$this->assign('style_info',$style_info);
+			$this->display();
+		}else{
+			$this->error(L('please_select'));
 		}
-		$style_info = $this->style_mod->where('id='.$style_id)->find();
-		$this->assign('show_header', false);
-		$this->assign('controller',MODULE_NAME);
-		$this->assign('style_info',$style_info);
-		$this->display();
 	}
 
 	//更新

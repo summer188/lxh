@@ -1,13 +1,14 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <form action="admin.php?m={$controller}&a=upsave" method="post" name="myform" id="myform" onsubmit="return check()">
+    <input type="hidden" name="id" id="id" value="{$id}" />
     <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
         <tr>
             <th width="80">年级 :</th>
             <td>
                 <select name="grade_id" id="grade_id" onchange="getAllList()">
                     <volist name="grade_list" id="val">
-                        <option value="{$val.id}">{$val.name}</option>
+                        <option value="{$val.id}" <if condition="$question_info['grade_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
                     </volist>
                 </select>
             </td>
@@ -17,7 +18,7 @@
             <td>
                 <select name="cate_id" id="cate_id" onchange="getAllList()">
                     <volist name="cate_list" id="val">
-                        <option value="{$val.id}">{$val.name}</option>
+                        <option value="{$val.id}" <if condition="$question_info['cate_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
                     </volist>
                 </select>
             </td>
@@ -25,19 +26,31 @@
         <tr>
             <th width="80">知识点 :</th>
             <td>
-                <select name="point_id" id="point_id"></select>
+                <select name="point_id" id="point_id">
+                    <volist name="point_list" id="val">
+                        <option value="{$val.id}" <if condition="$question_info['point_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
+                    </volist>
+                </select>
             </td>
         </tr>
         <tr>
             <th width="80">章 :</th>
             <td>
-                <select name="chapter_id" id="chapter_id"></select>
+                <select name="chapter_id" id="chapter_id">
+                    <volist name="chapter_list" id="val">
+                        <option value="{$val.id}" <if condition="$question_info['chapter_id'] eq $val['id']">selected="selected"</if>>{$val.alias}.&nbsp;{$val.name}</option>
+                    </volist>
+                </select>
             </td>
         </tr>
         <tr>
             <th width="80">节 :</th>
             <td>
-                <select name="section_id" id="section_id"></select>
+                <select name="section_id" id="section_id">
+                    <volist name="section_list" id="val">
+                        <option value="{$val.id}" <if condition="$question_info['section_id'] eq $val['id']">selected="selected"</if>>{$val.alias}.&nbsp;{$val.name}</option>
+                    </volist>
+                </select>
             </td>
         </tr>
         <tr>
@@ -45,40 +58,54 @@
             <td>
                 <select name="style_id" id="style_id">
                     <volist name="style_list" id="val">
-                        <option value="{$val.id}">{$val.name}</option>
+                        <option value="{$val.id}" <if condition="$question_info['style_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
                     </volist>
                 </select>
             </td>
         </tr>
         <tr>
             <th>题目类型 :</th>
-            <td><select name="type_id" id="type_id"></select></td>
+            <td>
+                <select name="type_id" id="type_id">
+                    <volist name="type_list" id="val">
+                        <option value="{$val.id}" <if condition="$question_info['type_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
+                    </volist>
+                </select>
+            </td>
         </tr>
         <tr>
             <th>题干 :</th>
-            <td><textarea name="title" id="title" style="width:700px;height:100px;"></textarea></td>
+            <td>
+                <textarea name="title" id="title" style="width:700px;height:100px;">
+                    {$title}
+                </textarea>
+            </td>
         </tr>
         <tr>
             <th>题目解析 :</th>
-            <td><textarea name="info" id="info" style="width:700px;height:100px;"></textarea></td>
+            <td>
+                <textarea name="info" id="info" style="width:700px;height:100px;">
+                    {$info}
+                </textarea>
+            </td>
         </tr>
         <tr>
             <th>排序 :</th>
-            <td><input name="sort" id="sort" /></td>
+            <td><input type="text" name="sort" id="sort" class="input-text" value="{$question_info.sort}" /></td>
         </tr>
         <tr>
             <th>状态 :</th>
             <td>
-                <input type="radio" name="status" class="radio_style" value="1" <if condition="$point_info.status eq 1">checked="checked"</if>
+                <input type="radio" name="status" class="radio_style" value="1" <if condition="$question_info.status eq 1">checked="checked"</if>
 
                 > &nbsp;有效&nbsp;&nbsp;&nbsp;
-                <input type="radio" name="status" class="radio_style" value="0" <if condition="$point_info.status eq 0">checked="checked"</if>> &nbsp;禁用
+                <input type="radio" name="status" class="radio_style" value="0" <if condition="$question_info.status eq 0">checked="checked"</if>> &nbsp;禁用
             </td>
         </tr>
         <tr>
             <th></th>
             <td>
-                <input type="submit" value="上传" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:290px;"/>
+                <input type="submit" value="确定" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:290px;"/>
                 <input type="reset" value="重置" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:20px;"/>
             </td>
         </tr>
@@ -87,7 +114,11 @@
 </form>
 <script type="text/javascript">
 $(function(){
-    getAllList();
+    var id = $("#id").val();
+    //上传新题时无id
+    if(id==''){
+        getAllList();
+    }
 });
 //获取所有基于学段id和学科id的列表
 function getAllList(){
@@ -125,17 +156,16 @@ function getChapterList(){
     }
     var url = "admin.php?m={$controller}&a=getChapterList";
     $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
-        console.log(jsondata);
         $("#chapter_id").find("option").remove();
         $.each(jsondata,function(idx,obj){
-            $("#chapter_id").append("<option value='"+obj.id+"'>"+obj.alias+' '+obj.name+"</option>");
+            $("#chapter_id").append("<option value='"+obj.id+"'>"+obj.alias+'. '+obj.name+"</option>");
         });
 
         //章未发生change事件时节列表的初始设置
         if($("#chapter_id").val() == jsondata[0].id){
             $("#section_id").find("option").remove();
             $.each(jsondata[0].section,function(id,object){
-                $("#section_id").append("<option value='"+object.id+"'>"+object.alias+' '+object.name+"</option>");
+                $("#section_id").append("<option value='"+object.id+"'>"+object.alias+'. '+object.name+"</option>");
             });
         }
 
@@ -145,7 +175,7 @@ function getChapterList(){
             $.each(jsondata,function(idx,obj){
                 if($("#chapter_id").val() == obj.id){
                     $.each(obj.section,function(id,object){
-                        $("#section_id").append("<option value='"+object.id+"'>"+object.alias+' '+object.name+"</option>");
+                        $("#section_id").append("<option value='"+object.id+"'>"+object.alias+'. '+object.name+"</option>");
                     });
                 }
             });
@@ -166,14 +196,28 @@ function getTypeList(){
         });
     });
 }
+var editorTitle;
+var editorInfo;
 KindEditor.ready(function(K) {
-    window.editor = K.create('#title');
+    editorTitle = K.create('#title');
+    editorTitle.sync();
 });
 KindEditor.ready(function(K) {
-    window.editor = K.create('#info');
+    editorInfo = K.create('#info');
+    editorInfo.sync();
 });
 function check(){
-
+    var title = editorTitle.html();
+    var info = editorInfo.html();
+    if(title==''){
+        alert('请填写题干！');
+        return false;
+    }
+    if(info==''){
+        alert('请填写题目解析！');
+        return false;
+    }
+    return true;
 }
 </script>
 </div>

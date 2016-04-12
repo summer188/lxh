@@ -70,11 +70,11 @@ class QuestionAction extends BaseAction{
 		import("ORG.Util.Page");
 		$count = $question_mod->where($where)->count();
 		$p = new Page($count,15);
-		$question_list = $question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,sort asc')->select();
+		$question_list = $question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,sort asc,id desc')->select();
 		foreach($question_list as $key=>$value){
 			$question_list[$key]['grade'] = $grade_list[$value['grade_id']]['name'];
 			$question_list[$key]['cate'] = $cate_list[$value['cate_id']]['name'];
-			$question_list[$key]['style'] = $style_list[$value['cate_id']]['name'];
+			$question_list[$key]['style'] = $style_list[$value['style_id']]['name'];
 			$title = $this->cleanFormat(file_get_contents($value['title_url']));
 			$question_list[$key]['title'] = $this->cutString($title,8);
 			$point = M('point')->where("id={$value['point_id']}")->find();
@@ -92,9 +92,21 @@ class QuestionAction extends BaseAction{
 		$this->assign('grade_list',$grade_list);
 		$this->assign('cate_list',$cate_list);
 		$this->assign('style_list',$style_list);
-
 		$this->assign('question_list',$question_list);
 		$this->display();
+	}
+
+	/**
+	 * 编辑题目
+	 *
+	 */
+	public function editQuestion(){
+		if(isset($_GET['id']) && intval($_GET['id'])){
+			$id = intval($_GET['id']);
+			$this->upnew($id);
+		}else{
+			$this->error(L('please_select'));
+		}
 	}
 
 	/**
@@ -140,9 +152,17 @@ class QuestionAction extends BaseAction{
 	public function deleteQuestion(){
 		$flag = true;
 		if (isset($_POST['id']) && is_array($_POST['id'])) {
+			$question_mod = M('question');
 			$id_array=$_POST['id'];
 			for ($i=0;$i<count($id_array);$i++){
-				$result = M('question')->where("id='{$id_array[$i]}'")->delete();
+				$question_info = $question_mod->where("id={$id_array[$i]}")->find();
+				//先删除题目信息存放文件和目录
+				unlink($question_info['title_url']);
+				unlink($question_info['info_url']);
+				$question_dir = $this->getQuestionDir($question_info['grade_id'],$question_info['cate_id'],$id_array[$i]);
+				rmdir($question_dir);
+				//再删除数据表中数据
+				$result = $question_mod->where("id={$id_array[$i]}")->delete();
 				if(!$result){
 					$flag = false;
 				}
@@ -158,11 +178,33 @@ class QuestionAction extends BaseAction{
 	/**
 	 * 上传新题或编辑题目
 	 *
+	 * @param String $id 题目id
 	 */
-	public function upnew(){
+	public function upnew($id=''){
 		$grade_list = $this->getGradeList();
 		$cate_list = $this->getCateList();
 		$style_list = $this->getStyleList();
+		//编辑时有id
+		if($id!='' && intval($id)>0){
+			$id = intval($id);
+			$question_info = M("question")->where("id=$id")->find();
+			if($question_info){
+				$point_list = $this->getPointAll($question_info['grade_id'],$question_info['cate_id']);
+				$chapter_list = $this->getChapterAll($question_info['grade_id'],$question_info['cate_id']);
+				$section_list = $this->getSectionList($question_info['chapter_id']);
+				$type_list = $this->getTypeAll($question_info['cate_id']);
+				$title = file_get_contents($question_info['title_url']);
+				$info = file_get_contents($question_info['info_url']);
+				$this->assign('id',$id);
+				$this->assign('question_info',$question_info);
+				$this->assign('point_list',$point_list);
+				$this->assign('chapter_list',$chapter_list);
+				$this->assign('section_list',$section_list);
+				$this->assign('type_list',$type_list);
+				$this->assign('title',$title);
+				$this->assign('info',$info);
+			}
+		}
 		$this->assign('grade_list',$grade_list);
 		$this->assign('cate_list',$cate_list);
 		$this->assign('style_list',$style_list);
@@ -176,6 +218,7 @@ class QuestionAction extends BaseAction{
 	 * @return Array
 	 */
 	public function upsave(){
+		$id = intval($_POST['id']);
 		//取得题干和题目解析
 		$title = $_POST['title'];
 		unset($_POST['title']);
@@ -194,24 +237,27 @@ class QuestionAction extends BaseAction{
 		$data['school_id'] = $_SESSION['admin_info']['school_id'];
 		$data['create_id'] = $_SESSION['admin_info']['id'];
 		$data['create_time'] = time();
-		$id = $question_mod->add($data);
 		$flag = true;
-		if($id){
-			//将题干和题目解析存入文档
-			//题干和题目解析的文档存放目录均为'./控制器名/grade_id(年级id)/cate_id(学科id)/question_id(题目id)
-			$root = 'upload/'.MODULE_NAME.'/'.'grade_'.$data['grade_id'].'/cate_'.$data['cate_id'].'/';
-			$title_dir = $root.'question_'.$id.'/';
-			$this->checkDir($title_dir);
-			$title_url = $title_dir.'title_'.$id.'.txt';
-			$title_file = fopen($title_url,"w");
-			fwrite($title_file, $title);
-			fclose($title_file);
-
-			$info_url = $title_dir.'info_'.$id.'.txt';
-			$info_file = fopen($info_url,"w");
-			fwrite($info_file, $info);
-			fclose($info_file);
-
+		if($id > 0){
+			//编辑
+			$result = $question_mod->save($data);
+			if(!$result){
+				$flag = false;
+			}
+			$question_info = $question_mod->where("id=$id")->find();
+			$title_url = $question_info['title_url'];
+			$info_url = $question_info['info_url'];
+		}else{
+			//新增
+			$id = $question_mod->add($data);
+			if(!$id){
+				$flag = false;
+			}
+			//获取题干和题目解析的文档存放目录
+			$question_dir = $this->getQuestionDir($data['grade_id'],$data['cate_id'],$id);
+			$this->checkDir($question_dir);
+			$title_url = $question_dir.'title_'.$id.'.txt';
+			$info_url = $question_dir.'info_'.$id.'.txt';
 			$arr = array(
 				'id' => $id,
 				'title_url' => $title_url,
@@ -221,16 +267,24 @@ class QuestionAction extends BaseAction{
 			if(!$result){
 				$flag = false;
 			}
-
-		}else{
-			$flag = false;
 		}
 
+		//将题干和题目解析存入文档
+		$title_file = fopen($title_url,"w");
+		fwrite($title_file, $title);
+		fclose($title_file);
+
+		$info_file = fopen($info_url,"w");
+		fwrite($info_file, $info);
+		fclose($info_file);
+
 		if($flag){
-			$this->success(L('operation_success'));
+			$redirect_url = U(MODULE_NAME.'/yun');
+			$this->success(L('operation_success'),$redirect_url);
 			exit();
 		}else{
 			$this->error(L('operation_failure'));
+			exit();
 		}
 	}
 
@@ -499,6 +553,20 @@ class QuestionAction extends BaseAction{
 		$str = preg_replace("/ /","",$str);
 		$str = preg_replace("/&nbsp;/","",$str);  //匹配html中的空格
 		return trim($str);
+	}
+
+	/**
+	 * 获取题目存放目录,格式为'./控制器名/grade_id(年级id)/cate_id(学科id)/question_id(题目id)
+	 *
+	 * @param Int $grade_id 年级id
+	 * @param Int $cate_id 学科id
+	 * @param Int $id 题目id
+	 * @return String
+	 */
+	public function getQuestionDir($grade_id,$cate_id,$id){
+		$root = 'upload/'.MODULE_NAME.'/'.'grade_'.$grade_id.'/cate_'.$cate_id.'/';
+		$question_dir = $root.'question_'.$id.'/';
+		return $question_dir;
 	}
 
 	/**

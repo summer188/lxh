@@ -149,19 +149,21 @@ class SectionAction extends BaseAction{
     //修改
     public function edit()
     {
-        if( isset($_GET['id']) ){
-            $section_id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : $this->error(L('please_select'));
-        }
-        $section_info = $this->section_mod->where('id='.$section_id)->find();
-        $where = "grade_id={$section_info['grade_id']} AND cate_id={$section_info['cate_id']}";
-        $chapter_list = M("chapter")->where($where)->select();
-        $this->assign('controller',MODULE_NAME);
-        $this->assign('show_header', false);
-        $this->assign('section_info',$section_info);
-        $this->assign('grade_list',$this->grade_list);
-        $this->assign('cate_list',$this->cate_list);
-        $this->assign('chapter_list',$chapter_list);
-        $this->display();
+		if(isset($_GET['id']) && intval($_GET['id'])){
+			$id = intval($_GET['id']);
+			$section_info = $this->section_mod->where('id='.$id)->find();
+			$where = "grade_id={$section_info['grade_id']} AND cate_id={$section_info['cate_id']}";
+			$chapter_list = M("chapter")->where($where)->select();
+			$this->assign('controller',MODULE_NAME);
+			$this->assign('show_header', false);
+			$this->assign('section_info',$section_info);
+			$this->assign('grade_list',$this->grade_list);
+			$this->assign('cate_list',$this->cate_list);
+			$this->assign('chapter_list',$chapter_list);
+			$this->display();
+		}else{
+			$this->error(L('please_select'));
+		}
     }
 
     //更新
