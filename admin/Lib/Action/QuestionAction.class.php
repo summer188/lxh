@@ -214,7 +214,6 @@ class QuestionAction extends BaseAction{
 		$count = $question_mod->where($where)->count();
 		$p = new Page($count,15);
 		$question_list = $question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,sort asc,id desc')->select();
-//		echo $question_mod->getLastSql();
 		foreach($question_list as $key=>$value){
 			$question_list[$key]['grade'] = $grade_list[$value['grade_id']]['name'];
 			$question_list[$key]['cate'] = $cate_list[$value['cate_id']]['name'];
@@ -323,7 +322,7 @@ class QuestionAction extends BaseAction{
 	/**
 	 * 上传新题或编辑题目
 	 *
-	 * @param String $id 题目id
+	 * @param String $id 编辑题目id
 	 */
 	public function upnew($id=''){
 		$grade_list = $this->getGradeList();
@@ -354,7 +353,7 @@ class QuestionAction extends BaseAction{
 		$this->assign('cate_list',$cate_list);
 		$this->assign('style_list',$style_list);
 		$this->assign('controller',MODULE_NAME);
-		$this->display();
+		$this->display('upnew');
 	}
 
 	/**
@@ -401,8 +400,8 @@ class QuestionAction extends BaseAction{
 			//获取题干和题目解析的文档存放目录
 			$question_dir = $this->getQuestionDir($data['grade_id'],$data['cate_id'],$id);
 			$this->checkDir($question_dir);
-			$title_url = $question_dir.'title_'.$id.'.txt';
-			$info_url = $question_dir.'info_'.$id.'.txt';
+			$title_url = $question_dir.'title_'.$id.'.doc';
+			$info_url = $question_dir.'info_'.$id.'.doc';
 			$arr = array(
 				'id' => $id,
 				'title_url' => $title_url,

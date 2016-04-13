@@ -28,17 +28,17 @@ $array = array(
 		),array(
 			'module_name'=>'Ad',
 			'action_list'=>array(
-				'getPointList','getChapterList','getTypeList','upsave','yun','school','my'
+				'getPointList','getChapterList','getTypeList','upnew','upsave','yun','school','my'
 			)
 		),array(
 			'module_name'=>'SellerList',
 			'action_list'=>array(
-				'getPointList','getChapterList','getTypeList','upsave','yun','school','my'
+				'getPointList','getChapterList','getTypeList','upnew','upsave','yun','school','my'
 			)
 		),array(
 			'module_name'=>'Article',
 			'action_list'=>array(
-				'getPointList','getChapterList','getTypeList','upsave','yun','school','my'
+				'getPointList','getChapterList','getTypeList','upnew','upsave','yun','school','my'
 			)
 		)
 	),
