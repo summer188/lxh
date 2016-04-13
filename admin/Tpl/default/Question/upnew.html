@@ -106,11 +106,14 @@
             <th></th>
             <td>
                 <input type="submit" value="确定" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:290px;"/>
-                <input type="reset" value="重置" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:20px;"/>
+                <if condition="$id gt 0">
+                    <input type="button" value="返回" onclick="goback()" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:20px;"/>
+                <else/>
+                    <input type="reset" value="重置" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:20px;"/>
+                </if>
             </td>
         </tr>
     </table>
-    <!--<input type="submit" name="dosubmit" id="dosubmit" class="dialog" value="提交">-->
 </form>
 <script type="text/javascript">
 $(function(){
@@ -218,6 +221,9 @@ function check(){
         return false;
     }
     return true;
+}
+function goback(){
+    window.history.go(-1);
 }
 </script>
 </div>

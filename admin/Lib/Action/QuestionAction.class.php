@@ -14,21 +14,164 @@ class QuestionAction extends BaseAction{
 	 *
 	 */
 	public function yun(){
+		//获取搜索条件
+		$arrGet = array();
+		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+		if($grade_id!=''){
+			$arrGet['grade_id'] = $grade_id;
+		}
+		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		if($cate_id!=''){
+			$arrGet['cate_id'] = $cate_id;
+		}
+		$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		if($point_id!=''){
+			$arrGet['point_id'] = $point_id;
+		}
+		$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
+		if($chapter_id!=''){
+			$arrGet['chapter_id'] = $chapter_id;
+		}
+		$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
+		if($section_id!=''){
+			$arrGet['section_id'] = $section_id;
+		}
+		$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
+		if($style_id!=''){
+			$arrGet['style_id'] = $style_id;
+		}
+		$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
+		if($type_id!=''){
+			$arrGet['type_id'] = $type_id;
+		}
+
+		$this->getQuestionList('','yun',$arrGet);
+	}
+
+	/**
+	 * 本校题库
+	 *
+	 */
+	public function school(){
+		//获取搜索条件
+		$arrGet = array();
+		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+		if($grade_id!=''){
+			$arrGet['grade_id'] = $grade_id;
+		}
+		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		if($cate_id!=''){
+			$arrGet['cate_id'] = $cate_id;
+		}
+		$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		if($point_id!=''){
+			$arrGet['point_id'] = $point_id;
+		}
+		$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
+		if($chapter_id!=''){
+			$arrGet['chapter_id'] = $chapter_id;
+		}
+		$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
+		if($section_id!=''){
+			$arrGet['section_id'] = $section_id;
+		}
+		$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
+		if($style_id!=''){
+			$arrGet['style_id'] = $style_id;
+		}
+		$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
+		if($type_id!=''){
+			$arrGet['type_id'] = $type_id;
+		}
+
+		//取得管理员的所属学校id
+		$school_id = $_SESSION['admin_info']['school_id'];
+		if($school_id > 0){
+			$condition = " AND school_id=$school_id";
+		}else{
+			$condition = '';
+		}
+		$this->getQuestionList($condition,'school',$arrGet);
+	}
+
+	/**
+	 * 本校题库
+	 *
+	 */
+	public function my(){
+		//获取搜索条件
+		$arrGet = array();
+		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+		if($grade_id!=''){
+			$arrGet['grade_id'] = $grade_id;
+		}
+		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		if($cate_id!=''){
+			$arrGet['cate_id'] = $cate_id;
+		}
+		$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		if($point_id!=''){
+			$arrGet['point_id'] = $point_id;
+		}
+		$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
+		if($chapter_id!=''){
+			$arrGet['chapter_id'] = $chapter_id;
+		}
+		$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
+		if($section_id!=''){
+			$arrGet['section_id'] = $section_id;
+		}
+		$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
+		if($style_id!=''){
+			$arrGet['style_id'] = $style_id;
+		}
+		$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
+		if($type_id!=''){
+			$arrGet['type_id'] = $type_id;
+		}
+
+		//取得管理员id
+		$result = M('admin_question')->where("admin_id={$_SESSION['admin_info']['id']}")->find();
+		$question_ids = trim($result['question_ids'],',');
+		$condition = " AND id IN ($question_ids)";
+		$this->getQuestionList($condition,'my',$arrGet);
+	}
+
+	/**
+	 * 题库
+	 *
+	 * @param String $condition 固定搜索条件
+	 * @param String $display 要加载的视图文件
+	 * @param Array $arrGet 前台get来的搜索条件
+	 */
+	public function getQuestionList($condition='',$display='',$arrGet){
 		$question_mod = M('question');
 		$grade_list = $this->getGradeList();
 		$cate_list = $this->getCateList();
 		$style_list = $this->getStyleList();
+
 		//获取搜索条件
-		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
-		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
-		$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
-		$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
-		$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
-		$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
-		$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
+		if(!empty($arrGet)){
+			$grade_id = $arrGet['grade_id'];
+			$cate_id = $arrGet['cate_id'];
+			$point_id = $arrGet['point_id'];
+			$chapter_id = $arrGet['chapter_id'];
+			$section_id = $arrGet['section_id'];
+			$style_id = $arrGet['style_id'];
+			$type_id = $arrGet['type_id'];
+		}else{
+			$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+			$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+			$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+			$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
+			$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
+			$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
+			$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
+		}
+
 		//搜索
 		$period_id = $this->getPeriod();
-		$where = "period_id={$period_id}";
+		$where = "period_id={$period_id}".$condition;
 		if ($grade_id!='') {
 			$where .= " AND grade_id=$grade_id";
 			$this->assign('grade_id', $grade_id);
@@ -71,6 +214,7 @@ class QuestionAction extends BaseAction{
 		$count = $question_mod->where($where)->count();
 		$p = new Page($count,15);
 		$question_list = $question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,sort asc,id desc')->select();
+//		echo $question_mod->getLastSql();
 		foreach($question_list as $key=>$value){
 			$question_list[$key]['grade'] = $grade_list[$value['grade_id']]['name'];
 			$question_list[$key]['cate'] = $cate_list[$value['cate_id']]['name'];
@@ -93,7 +237,8 @@ class QuestionAction extends BaseAction{
 		$this->assign('cate_list',$cate_list);
 		$this->assign('style_list',$style_list);
 		$this->assign('question_list',$question_list);
-		$this->display();
+		$this->assign('display',$display);
+		$this->display($display);
 	}
 
 	/**
@@ -308,7 +453,6 @@ class QuestionAction extends BaseAction{
 	 * @return Array
 	 */
 	public function getPointAll($grade_id='',$cate_id=''){
-		$point_list = array();
 		if($grade_id!='' && $cate_id!=''){
 			$period_id = $this->getPeriod();
 			$where = "period_id=$period_id";
@@ -320,9 +464,12 @@ class QuestionAction extends BaseAction{
 				foreach($point_list as $key=>&$value){
 					$value['name'] = $this->cutString($value['name'],8);
 				}
+				return $point_list;
+			}else{
+				return array();
 			}
 		}
-		return $point_list;
+
 	}
 
 	/**
@@ -359,14 +506,17 @@ class QuestionAction extends BaseAction{
 			$where .= " AND grade_id=$grade_id";
 			$where .= " AND cate_id=$cate_id";
 			$chapter_list = M("chapter")->where($where)->field('id,alias,name')->select();
-			if($chapter_list){
+			if(is_array($chapter_list) && !empty($chapter_list)){
 				//超过8个字就把多余的字符换成...显示
 				foreach($chapter_list as $key=>&$value){
 					$value['name'] = $this->cutString($value['name'],8);
 				}
+				return $chapter_list;
+			}else{
+				return array();
 			}
 		}
-		return $chapter_list;
+
 	}
 
 	/**
@@ -379,13 +529,16 @@ class QuestionAction extends BaseAction{
 		if($chapter_id!=''){
 			$where = "chapter_id=$chapter_id";
 			$section_list = M("section")->where($where)->field('id,alias,name')->select();
-			if($section_list){
+			if(is_array($section_list) && !empty($section_list)){
 				//超过8个字就把多余的字符换成...显示
 				foreach($section_list as $key=>&$value){
 					$value['name'] = $this->cutString($value['name'],8);
 				}
+				return $section_list;
+			}else{
+				return array();
 			}
-			return $section_list;
+
 		}else{
 			return false;
 		}
@@ -398,8 +551,8 @@ class QuestionAction extends BaseAction{
 	 */
 	public function getTypeList(){
 		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
-		$cate_list = $this->getTypeAll($cate_id);
-		$this->ajaxReturn($cate_list,'JSON');
+		$type_list = $this->getTypeAll($cate_id);
+		$this->ajaxReturn($type_list,'JSON');
 	}
 
 	/**
@@ -412,11 +565,13 @@ class QuestionAction extends BaseAction{
 		$period_id = $this->getPeriod();
 		//获取所有学科下的题目类型
 		$all_list = M("question_type")->where("period_id=$period_id AND cate_id=-1")->field('id,name')->select();
-		if($all_list){
+		if(is_array($all_list) && !empty($all_list)){
 			//超过8个字就把多余的字符换成...显示
 			foreach($all_list as $key=>&$value){
 				$value['name'] = $this->cutString($value['name'],8);
 			}
+		}else{
+			$all_list = array();
 		}
 		//存取单一学科的题目类型
 		$type_list = array();
@@ -424,11 +579,13 @@ class QuestionAction extends BaseAction{
 			$where = "period_id=$period_id";
 			$where .= " AND cate_id=$cate_id";
 			$type_list = M("question_type")->where($where)->select();
-			if($type_list){
+			if(is_array($type_list) && !empty($type_list)){
 				//超过8个字就把多余的字符换成...显示
 				foreach($type_list as $key=>&$value){
 					$value['name'] = $this->cutString($value['name'],8);
 				}
+			}else{
+				$type_list = array();
 			}
 		}
 		return array_merge($all_list,$type_list);

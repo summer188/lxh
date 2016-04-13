@@ -1,7 +1,7 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad-lr-10">
-    <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=yun" method="get" >
+    <form name="searchform" id="searchform" action="admin.php?m={$controller}&a={$display}" method="get" >
         <table width="100%" cellspacing="0" class="search-form">
             <tbody>
             <tr>
@@ -64,7 +64,7 @@
                         </select>
                         <span style="margin-left:60px;"></span>
                         <input type="hidden" name="m" value="{$controller}" />
-                        <input type="hidden" name="a" value="yun" />
+                        <input type="hidden" name="a" value="{$display}" />
                         <input type="submit" name="search" class="button" value="搜索" />
                         <span style="margin-left:20px;"></span>
                         <input type="button" class="button" value="重置" onclick="clean()"/>
@@ -82,16 +82,16 @@
                     <th width=50>ID</th>
                     <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
                     <th>题干</th>
-                    <th>年级</th>
-                    <th>学科</th>
-                    <!--<th width=80>知识点</th>
-                    <th width=80>章</th>
-                    <th width=80>节</th>-->
-                    <th width=100>测验类型</th>
-                    <th width=100>题目类型</th>
-                    <th width=80>排序</th>
-                    <th width=80>状态</th>
-                    <th width=80>操作</th>
+                    <th width=60>年级</th>
+                    <th width=60>学科</th>
+                    <th width=90>知识点</th>
+                    <th width=90>章</th>
+                    <th width=90>节</th>
+                    <th width=80>测验类型</th>
+                    <th width=80>题目类型</th>
+                    <th width=50>排序</th>
+                    <th width=50>状态</th>
+                    <th width=50>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -102,9 +102,9 @@
                         <td align="center">{$val.title}</td>
                         <td align="center">{$val.grade}</td>
                         <td align="center">{$val.cate}</td>
-                        <!--<td align="center">{$val.point}</td>
+                        <td align="center">{$val.point}</td>
                         <td align="center">{$val.chapter}</td>
-                        <td align="center">{$val.section}</td>-->
+                        <td align="center">{$val.section}</td>
                         <td align="center">{$val.style}</td>
                         <td align="center">{$val.type}</td>
                         <td align="center"><input type="text" class="input-text-c input-text" onblur="sort({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>
@@ -123,183 +123,167 @@
     </form>
 </div>
 <script language="javascript">
-$(function(){
-    //从其他页面（如上传新题页面）跳转到此页面后，需要调用一下父窗口的_MP方法，才能保证样式和targetUrl是当前页面
-    var controller = "{$controller}";
-    var menuid = 0;
-    if(controller=='Ad'){
-        menuid = 152;
-    }else if(controller=='SellerList'){
-        menuid = 141;
-    }else if(controller=='Article'){
-        menuid = 103;
+    $(function(){
+        //从其他页面（如上传新题页面）跳转到此页面后，需要调用一下父窗口的_MP方法，才能保证样式和targetUrl是当前页面
+        var controller = "{$controller}";
+        var display = "{$display}";
+        var menuid = 0;
+        if(controller=='Ad'){
+            menuid = 152;
+        }else if(controller=='SellerList'){
+            menuid = 141;
+        }else if(controller=='Article'){
+            menuid = 103;
+        }
+        var src = $("#rightMain",parent.document).attr('src');
+        var targetUrl = '/admin.php?m='+controller+'&a='+display;
+        if(src!=targetUrl){
+            parent._MP(menuid,targetUrl);
+        }
+    });
+    //重置
+    function clean(){
+        $("#grade_id").val('');
+        $("#cate_id").val('');
+        $("#style_id").val('');
+        $("#type_id").val('');
+        $("#point_id").val('');
+        $("#chapter_id").val('');
+        $("#section_id").val('');
+        $("#searchform").submit();
     }
-    var src = $("#rightMain",parent.document).attr('src');
-    var targetUrl = '/admin.php?m='+controller+'&a=yun';
-    if(src!=targetUrl){
-        parent._MP(menuid,targetUrl);
+    //获取所有基于学段id和学科id的列表
+    function getAllList(){
+        getPointList();
+        getChapterList();
+        getTypeList();
     }
-});
-//重置
-function clean(){
-    $("#grade_id").val('');
-    $("#cate_id").val('');
-    $("#style_id").val('');
-    $("#type_id").val('');
-    $("#point_id").val('');
-    $("#chapter_id").val('');
-    $("#section_id").val('');
-    $("#searchform").submit();
-}
-//获取所有基于学段id和学科id的列表
-function getAllList(){
-    getPointList();
-    getChapterList();
-    getTypeList();
-}
-//判断年级和学科有没有选择
-function isChecked(){
-    var grade_id = $("#grade_id").val();
-    var cate_id = $("#cate_id").val();
-    if(grade_id == ""){
-        alert("请先选择年级！");
-        return false;
+    //判断年级和学科有没有选择
+    function isChecked(){
+        var grade_id = $("#grade_id").val();
+        var cate_id = $("#cate_id").val();
+        if(grade_id == ""){
+            alert("请先选择年级！");
+            return false;
+        }
+        if(cate_id == ""){
+            alert("请先选择学科！");
+            return false;
+        }
     }
-    if(cate_id == ""){
-        alert("请先选择学科！");
-        return false;
+    //只判断学科有没有选择
+    function cateChecked(){
+        var cate_id = $("#cate_id").val();
+        if(cate_id == ""){
+            alert("请先选择学科！");
+            return false;
+        }
     }
-}
-//只判断学科有没有选择
-function cateChecked(){
-    var cate_id = $("#cate_id").val();
-    if(cate_id == ""){
-        alert("请先选择学科！");
-        return false;
-    }
-}
-//获取知识点列表
-function getPointList(){
-    var grade_id = $("#grade_id").val();
-    var cate_id = $("#cate_id").val();
-    if(grade_id!='' && cate_id!=''){
-        var url = "admin.php?m={$controller}&a=getPointList";
-        $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
-            $("#point_id").find("option").remove();
-            $("#point_id").append("<option value=''>请选择</option>");
-            $.each(jsondata,function(idx,obj){
-                $("#point_id").append("<option value='"+obj.id+"'>"+obj.name+"</option>");
-            });
-        });
-    }
-}
-//获取章列表
-function getChapterList(){
-    var grade_id = $("#grade_id").val();
-    var cate_id = $("#cate_id").val();
-    if(grade_id!='' && cate_id!=''){
-        var url = "admin.php?m={$controller}&a=getChapterList";
-        $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
-            console.log(jsondata);
-            $("#chapter_id").find("option").remove();
-            $("#chapter_id").append("<option value=''>请选择</option>");
-            $.each(jsondata,function(idx,obj){
-                $("#chapter_id").append("<option value='"+obj.id+"'>"+obj.alias+'. '+obj.name+"</option>");
-            });
-
-            //章未发生change事件时节列表的初始设置
-            if($("#chapter_id").val() == jsondata[0].id){
-                $("#section_id").find("option").remove();
-                $("#section_id").append("<option value=''>请选择</option>");
-                $.each(jsondata[0].section,function(id,object){
-                    $("#section_id").append("<option value='"+object.id+"'>"+object.alias+'. '+object.name+"</option>");
-                });
-            }
-
-            //设置章节列表联动(节随章动)
-            $("#chapter_id").change(function(){
-                $("#section_id").find("option").remove();
-                $("#section_id").append("<option value=''>请选择</option>");
+    //获取知识点列表
+    function getPointList(){
+        var grade_id = $("#grade_id").val();
+        var cate_id = $("#cate_id").val();
+        if(grade_id!='' && cate_id!=''){
+            var url = "admin.php?m={$controller}&a=getPointList";
+            $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
+                $("#point_id").find("option").remove();
+                $("#point_id").append("<option value=''>请选择</option>");
                 $.each(jsondata,function(idx,obj){
-                    if($("#chapter_id").val() == obj.id){
-                        $.each(obj.section,function(id,object){
-                            $("#section_id").append("<option value='"+object.id+"'>"+object.alias+'. '+object.name+"</option>");
-                        });
-                    }
+                    $("#point_id").append("<option value='"+obj.id+"'>"+obj.name+"</option>");
                 });
             });
-        });
+        }
     }
-}
-//判断章有没有选择
-function chapterChecked(){
-    var chapter_id = $('#chapter_id').val();
-    if(chapter_id == ""){
-        alert("请先选择章！");
-        return false;
-    }
-}
-//获取测验类型列表
-function getTypeList(){
-    var cate_id = $("#cate_id").val();
-    if(cate_id!=''){
-        var url = "admin.php?m={$controller}&a=getTypeList";
-        $.get(url, { cate_id: cate_id }, function(jsondata){
-            $("#type_id").find("option").remove();
-            $("#type_id").append("<option value=''>请选择</option>");
-            $.each(jsondata,function(idx,obj){
-                $("#type_id").append("<option value='"+obj.id+"'>"+obj.name+"</option>");
+    //获取章列表
+    function getChapterList(){
+        var grade_id = $("#grade_id").val();
+        var cate_id = $("#cate_id").val();
+        if(grade_id!='' && cate_id!=''){
+            var url = "admin.php?m={$controller}&a=getChapterList";
+            $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
+                console.log(jsondata);
+                $("#chapter_id").find("option").remove();
+                $("#chapter_id").append("<option value=''>请选择</option>");
+                $.each(jsondata,function(idx,obj){
+                    $("#chapter_id").append("<option value='"+obj.id+"'>"+obj.alias+'. '+obj.name+"</option>");
+                });
+
+                //章未发生change事件时节列表的初始设置
+                if($("#chapter_id").val() == jsondata[0].id){
+                    $("#section_id").find("option").remove();
+                    $("#section_id").append("<option value=''>请选择</option>");
+                    $.each(jsondata[0].section,function(id,object){
+                        $("#section_id").append("<option value='"+object.id+"'>"+object.alias+'. '+object.name+"</option>");
+                    });
+                }
+
+                //设置章节列表联动(节随章动)
+                $("#chapter_id").change(function(){
+                    $("#section_id").find("option").remove();
+                    $("#section_id").append("<option value=''>请选择</option>");
+                    $.each(jsondata,function(idx,obj){
+                        if($("#chapter_id").val() == obj.id){
+                            $.each(obj.section,function(id,object){
+                                $("#section_id").append("<option value='"+object.id+"'>"+object.alias+'. '+object.name+"</option>");
+                            });
+                        }
+                    });
+                });
             });
+        }
+    }
+    //判断章有没有选择
+    function chapterChecked(){
+        var chapter_id = $('#chapter_id').val();
+        if(chapter_id == ""){
+            alert("请先选择章！");
+            return false;
+        }
+    }
+    //获取测验类型列表
+    function getTypeList(){
+        var cate_id = $("#cate_id").val();
+        if(cate_id!=''){
+            var url = "admin.php?m={$controller}&a=getTypeList";
+            $.get(url, { cate_id: cate_id }, function(jsondata){
+                $("#type_id").find("option").remove();
+                $("#type_id").append("<option value=''>请选择</option>");
+                $.each(jsondata,function(idx,obj){
+                    $("#type_id").append("<option value='"+obj.id+"'>"+obj.name+"</option>");
+                });
+            });
+        }
+    }
+    function check(){
+        var ids='';
+        $("input[name='id[]']:checked").each(function(i, n){
+            ids += $(n).val() + ',';
+        });
+        if(ids=='') {
+            window.top.art.dialog({content:lang_please_select+'菜单分类名称	',lock:true,width:'200',height:'50',time:1.5},function(){});
+            return false;
+        }
+        return true;
+    }
+    //编辑
+    function edit(id) {
+        location.href = "admin.php?m={$controller}&a=upnew&id="+id;
+    }
+    function status(id,type){
+        var url = "admin.php?m={$controller}&a=statusQuestion";
+        $.get(url, { id: id, type: type }, function(jsondata){
+            var return_data  = eval("("+jsondata+")");
+            $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data+'.gif');
         });
     }
-}
-function check(){
-    var ids='';
-    $("input[name='id[]']:checked").each(function(i, n){
-        ids += $(n).val() + ',';
-    });
-    if(ids=='') {
-        window.top.art.dialog({content:lang_please_select+'菜单分类名称	',lock:true,width:'200',height:'50',time:1.5},function(){});
-        return false;
+    //排序方法
+    function sort(id,type,num){
+        var url = "admin.php?m={$controller}&a=sortQuestion";
+        $.get(url, { id: id, type: type,num:num }, function(jsondata){
+            var return_data  = eval("("+jsondata+")");
+            $("#"+type+"_"+id+" ").attr('value', return_data);
+        });
     }
-    return true;
-}
-//编辑
-function edit(id) {
-    var lang_edit = "{$Think.lang.edit}";
-    location.href = "admin.php?m={$controller}&a=upnew&id="+id;
-//    window.top.art.dialog({id:'upnew'}).close();
-//    window.top.art.dialog({
-//                title:lang_edit+'--'+name,
-//                id:'editQuestion',
-//                iframe:"?m={$controller}&a=upnew&id="+id
-//            },
-//            function()
-//            {
-//                var d = window.top.art.dialog({id:'upnew'}).data.iframe;
-//                d.document.getElementById('dosubmit').click();
-//                return false;
-//            },
-//            function()
-//            {
-//                window.top.art.dialog({id:'upnew'}).close()
-//            });
-}
-function status(id,type){
-    var url = "admin.php?m={$controller}&a=statusQuestion";
-    $.get(url, { id: id, type: type }, function(jsondata){
-        var return_data  = eval("("+jsondata+")");
-        $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data+'.gif');
-    });
-}
-//排序方法
-function sort(id,type,num){
-    var url = "admin.php?m={$controller}&a=sortQuestion";
-    $.get(url, { id: id, type: type,num:num }, function(jsondata){
-        var return_data  = eval("("+jsondata+")");
-        $("#"+type+"_"+id+" ").attr('value', return_data);
-    });
-}
 </script>
 </body>
 </html>
