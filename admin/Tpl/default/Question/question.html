@@ -82,16 +82,18 @@
                     <th width=50>ID</th>
                     <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
                     <th>题干</th>
-                    <th width=60>年级</th>
-                    <th width=60>学科</th>
+                    <!--<th width=60>年级</th>
+                    <th width=60>学科</th>-->
                     <th width=90>知识点</th>
                     <th width=90>章</th>
                     <th width=90>节</th>
                     <th width=80>测验类型</th>
                     <th width=80>题目类型</th>
-                    <th width=50>排序</th>
-                    <th width=50>状态</th>
-                    <th width=50>操作</th>
+                    <th width=30>排序</th>
+                    <th width=30>状态</th>
+                    <th width=60>是否收藏</th>
+                    <th width=60>是否下载</th>
+                    <th width=100>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -100,16 +102,36 @@
                         <td align="center">{$val.id}</td>
                         <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
                         <td align="center">{$val.title}</td>
-                        <td align="center">{$val.grade}</td>
-                        <td align="center">{$val.cate}</td>
+                        <!--<td align="center">{$val.grade}</td>
+                        <td align="center">{$val.cate}</td>-->
                         <td align="center">{$val.point}</td>
                         <td align="center">{$val.chapter}</td>
                         <td align="center">{$val.section}</td>
                         <td align="center">{$val.style}</td>
                         <td align="center">{$val.type}</td>
-                        <td align="center"><input type="text" class="input-text-c input-text" onblur="sortQuestion({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>
+                        <td align="center">
+                            <input type="text" class="input-text-c input-text" onblur="sortQuestion({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]">
+                        </td>
                         <td align="center" onclick="statusQuestion({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
-                        <td align="center"><a href="javascript:editQuestion({$val.id})">编辑</a></td>
+                        <td align="center">
+                            <if condition="$val['is_collect'] eq 1">
+                                <span style="color:#009933;">已收藏</span>
+                            <else/>
+                                未收藏
+                            </if>
+                        </td>
+                        <td align="center">
+                            <if condition="$val['is_download'] eq 1">
+                                <span style="color:#009933;">已下载</span>
+                                <else/>
+                                未下载
+                            </if>
+                        </td>
+                        <td align="center">
+                            <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">查看</a>
+                            <a href="javascript:collectQuestion({$val.id})" style="color:#0000FF;width:20px;">收藏</a>
+                            <a href="javascript:downloadQuestion({$val.id})" style="color:#0000FF;width:20px;">下载</a>
+                        </td>
                     </tr>
                 </volist>
                 </tbody>
@@ -265,10 +287,7 @@
         }
         return true;
     }
-    //编辑
-    function editQuestion(id) {
-        location.href = "admin.php?m={$controller}&a=editQuestion&id="+id;
-    }
+
     function statusQuestion(id,type){
         var url = "admin.php?m={$controller}&a=statusQuestion";
         $.get(url, { id: id, type: type }, function(jsondata){
@@ -282,6 +301,63 @@
         $.get(url, { id: id, type: type,num:num }, function(jsondata){
             var return_data  = eval("("+jsondata+")");
             $("#"+type+"_"+id+" ").attr('value', return_data);
+        });
+    }
+    //查看、编辑
+    function editQuestion(id) {
+        location.href = "admin.php?m={$controller}&a=editQuestion&id="+id;
+    }
+    //收藏
+    function collectQuestion(id) {
+        var url = "admin.php?m={$controller}&a=collectQuestion";
+        $.get(url, { id: id }, function(jsondata){
+            window.top.art.dialog({id:'collectQuestion',content:jsondata.info,lock:true,width:'200',height:'50',time:1},function(){});
+            if(jsondata.status==1){
+                window.location.reload();
+            }
+        });
+    }
+    //下载
+    function downloadQuestion(id) {
+        var url = "admin.php?m={$controller}&a=downloadQuestion";
+        $.get(url, { id: id }, function(jsondata){
+            if(jsondata==2){
+                //已下载过，是否要重新下载
+                window.top.art.dialog({id:'downloadQuestion',content:jsondata.info,lock:true,width:'200',height:'50'}
+                        , function(){alert('111');}
+                ,function(){alert('222');});
+                if(jsondata.status==1){
+                    window.location.reload();
+                }
+//                window.top.art.dialog({id:'downloadAsk'}).close();
+//                window.top.art.dialog(
+//                        {
+//                            title:'提示',
+//                            id:'downloadAsk',
+//                            iframe:'?m={$controller}&a=downloadAsk&id='+id,
+//                            width:'200',
+//                            height:'50'
+//                        },
+//                        function(){
+//                            var d = window.top.art.dialog({id:'downloadAsk'}).data.iframe;
+//                            d.document.getElementById('dosubmit').click();
+//                            return false;
+//                        },
+//                        function(){
+//                            window.top.art.dialog({id:'downloadAsk'}).close()
+//                        }
+//                );
+//                if(confirm(jsondata.info)){
+//                    $.get("admin.php?m={$controller}&a=downloadDirect", { id: id }, function(data){
+//                        alert(data.info);
+//                    });
+//                }
+            }else{
+//                window.top.art.dialog({content:jsondata.info,lock:true,width:'200',height:'50',time:1},function(){});
+//                if(jsondata.status==1){
+//                    window.location.reload();
+//                }
+            }
         });
     }
 </script>
