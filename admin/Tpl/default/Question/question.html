@@ -311,7 +311,7 @@
     function collectQuestion(id) {
         var url = "admin.php?m={$controller}&a=collectQuestion";
         $.get(url, { id: id }, function(jsondata){
-            window.top.art.dialog({id:'collectQuestion',content:jsondata.info,lock:true,width:'200',height:'50',time:1},function(){});
+            window.top.art.dialog({id:'collectQuestion',content:jsondata.info,lock:true,width:'200',height:'50',time:1});
             if(jsondata.status==1){
                 window.location.reload();
             }
@@ -321,42 +321,36 @@
     function downloadQuestion(id) {
         var url = "admin.php?m={$controller}&a=downloadQuestion";
         $.get(url, { id: id }, function(jsondata){
-            if(jsondata==2){
+            if(jsondata.status==2){
                 //已下载过，是否要重新下载
-                window.top.art.dialog({id:'downloadQuestion',content:jsondata.info,lock:true,width:'200',height:'50'}
-                        , function(){alert('111');}
-                ,function(){alert('222');});
-                if(jsondata.status==1){
-                    window.location.reload();
-                }
-//                window.top.art.dialog({id:'downloadAsk'}).close();
-//                window.top.art.dialog(
-//                        {
-//                            title:'提示',
-//                            id:'downloadAsk',
-//                            iframe:'?m={$controller}&a=downloadAsk&id='+id,
-//                            width:'200',
-//                            height:'50'
-//                        },
-//                        function(){
-//                            var d = window.top.art.dialog({id:'downloadAsk'}).data.iframe;
-//                            d.document.getElementById('dosubmit').click();
-//                            return false;
-//                        },
-//                        function(){
-//                            window.top.art.dialog({id:'downloadAsk'}).close()
-//                        }
-//                );
+                window.top.art.dialog({id:'downloadAsk'}).close();
+                window.top.art.dialog(
+                        {
+                            title:'提示',
+                            id:'downloadAsk',
+                            iframe:'?m={$controller}&a=downloadAsk&id='+id,
+                            width:'360',
+                            height:'50'
+                        },
+                        function(){
+                            var d = window.top.art.dialog({id:'downloadAsk'}).data.iframe;
+                            d.document.getElementById('dosubmit').click();
+                            return false;
+                        },
+                        function(){
+                            window.top.art.dialog({id:'downloadAsk'}).close()
+                        }
+                );
 //                if(confirm(jsondata.info)){
 //                    $.get("admin.php?m={$controller}&a=downloadDirect", { id: id }, function(data){
 //                        alert(data.info);
 //                    });
 //                }
             }else{
-//                window.top.art.dialog({content:jsondata.info,lock:true,width:'200',height:'50',time:1},function(){});
-//                if(jsondata.status==1){
-//                    window.location.reload();
-//                }
+                window.top.art.dialog({content:jsondata.info,lock:true,width:'200',height:'50',time:1});
+                if(jsondata.status==1){
+                    window.location.reload();
+                }
             }
         });
     }

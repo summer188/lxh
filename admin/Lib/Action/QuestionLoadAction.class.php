@@ -229,6 +229,7 @@ class QuestionLoadAction extends QuestionToolAction{
 	 */
 	public function downloadAsk(){
 		if (isset($_GET['id']) && is_string($_GET['id'])) {
+			$this->assign('controller',MODULE_NAME);
 			$this->assign('id',intval($_GET['id']));
 			$this->assign('show_header', false);
 			$this->display();
@@ -241,9 +242,10 @@ class QuestionLoadAction extends QuestionToolAction{
 	 * @return Array
 	 */
 	public function downloadDirect(){
-		var_dump($_GET['id']);
-		exit;
-		$this->success('操作成功！','',3,false,true);
+		$this->success(L('operation_success'), '', 3, 'downloadAsk');
+//		var_dump($_POST['id']);
+//		exit;
+//		$this->success('操作成功！','',3,false,true);
 //		$this->error('操作失败！','',3,false,true);
 	}
 
