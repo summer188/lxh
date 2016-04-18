@@ -2,8 +2,8 @@
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad-lr-10">
     <div class="data_top">
-        <!--a class="cat" href="{:u('SellerCate/addb2ccate')}">同步分类</a-->
-        <a class="cat" href="javascript:add()">添加知识点</a>
+        <!--<a class="cat" href="javascript:add()">添加知识点</a>-->
+        <a class="cat" href="javascript:addExcel()">excel表格导入</a>
     </div>
     <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=index" method="get" >
         <table width="100%" cellspacing="0" class="search-form">
@@ -89,24 +89,47 @@
         }
         return true;
     }
-    function add() {
+//    添加知识点
+//    function add() {
+//        var lang_add = "{$Think.lang.add_cate}";
+//        window.top.art.dialog({id:'add'}).close();
+//        window.top.art.dialog({
+//                    title:lang_add,
+//                    id:'add',
+//                    iframe:"?m={$controller}&a=add",width:'480',height:'170'
+//                },
+//                function()
+//                {
+//                    var d = window.top.art.dialog({id:'add'}).data.iframe;
+//                    var form=d.document.getElementById('dosubmit').click();
+//                    form.click();return false;
+//
+//                },
+//                function()
+//                {
+//                    window.top.art.dialog({id:'add'}).close()
+//                });
+//
+//    }
+    //知识点excel表格导入
+    function addExcel() {
         var lang_add = "{$Think.lang.add_cate}";
-        window.top.art.dialog({id:'add'}).close();
+        window.top.art.dialog({id:'addExcel'}).close();
         window.top.art.dialog({
                     title:lang_add,
                     id:'add',
-                    iframe:"?m={$controller}&a=add",width:'480',height:'170'
+                    iframe:"?m={$controller}&a=addExcel",width:'480',height:'170'
                 },
                 function()
                 {
-                    var d = window.top.art.dialog({id:'add'}).data.iframe;
+                    var d = window.top.art.dialog({id:'addExcel'}).data.iframe;
                     var form=d.document.getElementById('dosubmit').click();
                     form.click();return false;
 
                 },
                 function()
                 {
-                    window.top.art.dialog({id:'add'}).close()
+                    window.top.art.dialog({id:'addExcel'}).close()
                 });
 
     }
