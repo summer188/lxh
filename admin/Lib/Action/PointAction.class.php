@@ -94,6 +94,61 @@ class PointAction extends BaseAction{
 		$this->display();
 	}
 
+	//excel表格导入
+	public function addExcel()
+	{
+		$this->assign('controller',MODULE_NAME);
+		$this->assign('grade_list',$this->grade_list);
+		$this->assign('cate_list',$this->cate_list);
+		$this->display();
+	}
+
+	//响应ajax
+	public function ajaxExcel(){
+		$file = $_FILES['files'];
+		//ajax返回数组
+		$data = array('sta'=>TRUE,'msg'=>'表格导入成功！');
+		//检查上传的文件类型是否正确
+		$correct_ext  = ".xls";
+		$correct_type = "application/vnd.ms-excel";
+		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+		if($ext!=$correct_ext || $file['type']!=$correct_type){
+			$data['sta'] = FALSE;
+			$data['msg'] = '文件类型不正确！';
+		}
+		$excel_url = "./upload/".MODULE_NAME."/point/point.xls";
+		if(!move_uploaded_file($file['tmp_name'],$excel_url)) {
+			$data['sta'] = FALSE;
+			$data['msg'] = '表格导入失败！';
+		}
+		$this->ajaxReturn($data);
+	}
+
+	//excel表格数据保存
+	public function insertExcel()
+	{
+		//
+		$data = array();
+
+		$this->error('表格导入失败！');
+		var_dump($_POST);
+		var_dump($_FILES);
+
+//		$data = $this->point_mod->create();
+//		if(false === $data){
+//			$this->error($this->point_mod->error());
+//		}
+//		$data['period_id'] = $this->period_id;
+//		$data['create_id'] = $_SESSION['admin_info']['id'];
+//		$data['create_time'] = time();
+//		$result = $this->point_mod->add($data);
+//		if($result){
+//			$this->success(L('operation_success'), '', '', 'add');
+//		}else{
+//			$this->error(L('operation_failure'));
+//		}
+	}
+
 	//增加
 	public function add()
 	{
