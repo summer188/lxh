@@ -105,6 +105,87 @@ class PointAction extends BaseAction{
 		$this->display();
 	}
 
+    //查看知识点
+    public function look()
+    {
+        if(isset($_GET['id']) && intval($_GET['id'])){
+            $id = intval($_GET['id']);
+            $point_info = $this->point_mod->where('id='.$id)->find();
+            $arr = $this->getAllLevel($point_info['alias']);
+            $point_info['alias3'] = $arr['alias3'];
+            $point_info['name3'] = $arr['name3'];
+            $point_info['id3'] = $arr['id3'];
+            $point_info['alias2'] = $arr['alias2'];
+            $point_info['name2'] = $arr['name2'];
+            $point_info['id2'] = $arr['id2'];
+            $point_info['alias1'] = $arr['alias1'];
+            $point_info['name1'] = $arr['name1'];
+            $point_info['id1'] = $arr['id1'];
+            $this->assign('show_header', false);
+            $this->assign('controller',MODULE_NAME);
+            $this->assign('point_info',$point_info);
+            $this->assign('grade_list',$this->grade_list);
+            $this->assign('cate_list',$this->cate_list);
+            $this->display();
+        }else{
+            $this->error(L('please_select'));
+        }
+    }
+
+    //编辑知识点
+    public function lookUpdate(){
+        if((!isset($_POST['id']) || empty($_POST['id']))) {
+            $this->error('请选择要编辑的数据');
+        }
+        $post = $_POST;
+        $flag = true;
+        $update_id = $_SESSION['admin_info']['id'];
+        $update_time = date('Y-m-d h:i:s',time());
+        $sql1 = "UPDATE lxh_point SET alias={$post['alias1']},name={$post['name1']},update_id=$update_id,update_time=$update_time WHERE id={$post['id1']}";
+        $result1 = mysql_query($sql1);
+        if(!$result1){
+            $flag = false;
+        }
+        $sql2 = "UPDATE lxh_point SET alias={$post['alias2']},name={$post['name2']},update_id=$update_id,update_time=$update_time WHERE id={$post['id2']}";
+        $result2 = mysql_query($sql2);
+        if(!$result2){
+            $flag = false;
+        }
+        $sql3 = "UPDATE lxh_point SET alias={$post['alias3']},name={$post['name3']},update_id=$update_id,update_time=$update_time WHERE id={$post['id3']}";
+        $result3 = mysql_query($sql3);
+        if(!$result3){
+            $flag = false;
+        }
+        $sql = "UPDATE lxh_point SET alias={$post['alias']},name={$post['name']},update_id=$update_id,update_time=$update_time WHERE id={$post['id']}";
+        $result = mysql_query($sql);
+        if(!$result){
+            $flag = false;
+        }
+
+        if($flag){
+            $this->success(L('operation_success'), '', '', 'lookUpdate');
+        }else{
+            $this->error(L('operation_failure'));
+        }
+    }
+
+    //编辑单条知识点数据
+    public function editOne($data){
+        $data = $this->point_mod->create($data);
+        if(false === $data){
+            $this->error($this->point_mod->error());
+        }
+        $data['update_id'] = $_SESSION['admin_info']['id'];
+        $data['update_time'] = date('Y-m-d h:i:s',time());
+        $result = $this->point_mod->save($data);
+        if($result){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
 	//excel表格导入
 	public function addExcel()
 	{
@@ -121,6 +202,12 @@ class PointAction extends BaseAction{
 		$grade_id = intval($_POST['grade_id']);
 		$cate_id = intval($_POST['cate_id']);
 		$file = $_FILES['file'];
+
+        $where = "grade_id=$grade_id AND cate_id=$cate_id";
+        $exist = $this->point_mod->where($where)->select();
+        if(!empty($exist)){
+            $this->error('该年级的本学科知识点已经导入过，不能重复导入！');
+        }
 
 		//检查上传的文件类型是否正确
 		$correct_ext  = "xls";
@@ -147,36 +234,36 @@ class PointAction extends BaseAction{
 		$xls->read($excel_url);
 		$data_values = '';
 		for ($i=2; $i<=$xls->sheets[0]['numRows']; $i++) {
-			$update_id = $_SESSION['admin_info']['id'];
-			$update_time = date("Y-m-d h:i:s",time());
+			$create_id = $_SESSION['admin_info']['id'];
+			$create_time = date("Y-m-d h:i:s",time());
 
 			if($xls->sheets[0]['cells'][$i][1]!='' && $xls->sheets[0]['cells'][$i][2]!=''){
 				$alias1 = $xls->sheets[0]['cells'][$i][1];
 				$name1 = $xls->sheets[0]['cells'][$i][2];
-				$data_value1 = "('$alias1','$name1','1','$this->period_id','$grade_id','$cate_id','1','$update_id','$update_time'),";
+				$data_value1 = "('$alias1','$name1','1','$this->period_id','$grade_id','$cate_id','1','$create_id','$create_time'),";
 				$data_values .= $data_value1;
 			}
 			if($xls->sheets[0]['cells'][$i][3]!='' && $xls->sheets[0]['cells'][$i][4]!=''){
 				$alias2 = $xls->sheets[0]['cells'][$i][3];
 				$name2 = $xls->sheets[0]['cells'][$i][4];
-				$data_value2 = "('$alias2','$name2','2','$this->period_id','$grade_id','$cate_id','1','$update_id','$update_time'),";
+				$data_value2 = "('$alias2','$name2','2','$this->period_id','$grade_id','$cate_id','1','$create_id','$create_time'),";
 				$data_values .= $data_value2;
 			}
 			if($xls->sheets[0]['cells'][$i][5]!='' && $xls->sheets[0]['cells'][$i][6]!=''){
 				$alias3 = $xls->sheets[0]['cells'][$i][5];
 				$name3 = $xls->sheets[0]['cells'][$i][6];
-				$data_value3 = "('$alias3','$name3','3','$this->period_id','$grade_id','$cate_id','1','$update_id','$update_time'),";
+				$data_value3 = "('$alias3','$name3','3','$this->period_id','$grade_id','$cate_id','1','$create_id','$create_time'),";
 				$data_values .= $data_value3;
 			}
 			if($xls->sheets[0]['cells'][$i][7]!='' && $xls->sheets[0]['cells'][$i][8]!=''){
 				$alias4 = $xls->sheets[0]['cells'][$i][7];
 				$name4 = $xls->sheets[0]['cells'][$i][8];
-				$data_value4 = "('$alias4','$name4','4','$this->period_id','$grade_id','$cate_id','1','$update_id','$update_time'),";
+				$data_value4 = "('$alias4','$name4','4','$this->period_id','$grade_id','$cate_id','1','$create_id','$create_time'),";
 				$data_values .= $data_value4;
 			}
 		}
 		$data_values = substr($data_values,0,-1); //去掉最后一个逗号
-		$sql = "insert into lxh_point (alias,name,level,period_id,grade_id,cate_id,status,update_id,update_time) values $data_values";
+		$sql = "insert into lxh_point (alias,name,level,period_id,grade_id,cate_id,status,create_id,create_time) values $data_values";
 		$result = mysql_query($sql);//批量插入数据表中
 		if($result){
 			$this->success('表格导入成功！', '', 3, 'addExcel');
@@ -200,16 +287,19 @@ class PointAction extends BaseAction{
 		$point3 = $this->point_mod->where("alias=$alias3")->find();
 		$arr['alias3'] = $alias3;
 		$arr['name3'] = $point3['name'];
+		$arr['id3'] = $point3['id'];
 		//获取其二级目录
 		$alias2 = substr($alias3,0,-3);
 		$point2 = $this->point_mod->where("alias=$alias2")->find();
 		$arr['alias2'] = $alias2;
 		$arr['name2'] = $point2['name'];
+        $arr['id2'] = $point2['id'];
 		//获取其一级目录
 		$alias1 = substr($alias2,0,-3);
 		$point1 = $this->point_mod->where("alias=$alias1")->find();
 		$arr['alias1'] = $alias1;
 		$arr['name1'] = $point1['name'];
+        $arr['id1'] = $point1['id'];
 
 		return $arr;
 	}
