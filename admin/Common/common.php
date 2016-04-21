@@ -236,4 +236,30 @@ function array_to_key($arrOld, $key) {
 	}
 	return $arrNew;
 }
+/**
+ * 字符串超过一定个数截断显示
+ *
+ * @param String $str 要截掉的字符串
+ * @param Int $num 允许显示的字符最大个数
+ * @return String
+ */
+function cutString($str,$num){
+	if(is_string($str) && !empty($str)){
+		$str = mb_strlen($str,'utf8')>$num ? mb_substr($str,0,$num,'utf8').'...' : $str;
+	}
+	return $str;
+}
+/**
+ * 检查并创建文件目录
+ *
+ * @param String $root	目录
+ */
+function checkDir($root){
+	if(!file_exists($root)){
+		mkdir($root);
+		if(!chmod($root, 0777)){
+			$this->error(L('OPERATION_FAILURE'));
+		}
+	}
+}
 ?>

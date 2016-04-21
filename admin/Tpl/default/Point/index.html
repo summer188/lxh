@@ -43,35 +43,46 @@
                 <thead>
                 <tr>
                     <th width=50>ID</th>
-                    <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
-                    <th>{:L(name)}</th>
-                    <th>{:L(grade)}</th>
-                    <th>{:L(cate)}</th>
-                    <th width=80>{:L('sort')}</th>
-                    <!--th width=160>返现商家页面显示</th-->
-                    <th width=80>{:L('state')}</th>
-                    <th width=80>操作</th>
+                    <!--<th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>-->
+                    <th>年级</th>
+                    <th>学科</th>
+                    <th>编号</th>
+                    <th>一级目录</th>
+                    <th>编号</th>
+                    <th>二级目录</th>
+                    <th>编号</th>
+                    <th>三级目录</th>
+                    <th>编号</th>
+                    <th>知识点</th>
+                    <th>操作</th>
                 </tr>
                 </thead>
                 <tbody>
                 <volist name="point_list" id="val" key="k" >
                     <tr>
                         <td align="center">{$val.id}</td>
-                        <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
-                        <td align="center">{$val.name}</td>
+                        <!--<td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>-->
                         <td align="center">{$val.grade}</td>
                         <td align="center">{$val.cate}</td>
-                        <td align="center"><input type="text" class="input-text-c input-text" onblur="sort({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>
+                        <td align="center">{$val.alias1}</td>
+                        <td align="center">{$val.name1}</td>
+                        <td align="center">{$val.alias2}</td>
+                        <td align="center">{$val.name2}</td>
+                        <td align="center">{$val.alias3}</td>
+                        <td align="center">{$val.name3}</td>
+                        <td align="center">{$val.alias}</td>
+                        <td align="center">{$val.name}</td>
+                        <!--<td align="center"><input type="text" class="input-text-c input-text" onblur="sort({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>-->
                         <!--td align="center" onclick="status({$val.id},'seller_status')" id="seller_status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.seller_status}.gif" /></td-->
-                        <td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
-                        <td align="center"><a href="javascript:edit({$val.id},'{$val.name}')">编辑</a></td>
+                        <!--<td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>-->
+                        <td align="center"><a href="javascript:look({$val.id},'{$val.name}')"><span style="color:blue;">查看</span></a></td>
                     </tr>
                 </volist>
                 </tbody>
             </table>
             <div class="btn">
-                <label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
-                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('{$Think.lang.sure_delete}')" style="float:left;margin-left:10px;"/>
+                <!--<label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
+                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('{$Think.lang.sure_delete}')" style="float:left;margin-left:10px;"/>-->
                 <div id="pages">{$page}</div>
             </div>
         </div>
@@ -89,28 +100,28 @@
         }
         return true;
     }
-//    添加知识点
-//    function add() {
-//        var lang_add = "{$Think.lang.add_cate}";
-//        window.top.art.dialog({id:'add'}).close();
-//        window.top.art.dialog({
-//                    title:lang_add,
-//                    id:'add',
-//                    iframe:"?m={$controller}&a=add",width:'480',height:'170'
-//                },
-//                function()
-//                {
-//                    var d = window.top.art.dialog({id:'add'}).data.iframe;
-//                    var form=d.document.getElementById('dosubmit').click();
-//                    form.click();return false;
-//
-//                },
-//                function()
-//                {
-//                    window.top.art.dialog({id:'add'}).close()
-//                });
-//
-//    }
+    //添加知识点
+    function add() {
+        var lang_add = "{$Think.lang.add_cate}";
+        window.top.art.dialog({id:'add'}).close();
+        window.top.art.dialog({
+                    title:lang_add,
+                    id:'add',
+                    iframe:"?m={$controller}&a=add",width:'480',height:'170'
+                },
+                function()
+                {
+                    var d = window.top.art.dialog({id:'add'}).data.iframe;
+                    var form=d.document.getElementById('dosubmit').click();
+                    form.click();return false;
+
+                },
+                function()
+                {
+                    window.top.art.dialog({id:'add'}).close()
+                });
+
+    }
     //知识点excel表格导入
     function addExcel() {
         var lang_add = "{$Think.lang.add_cate}";
@@ -132,6 +143,25 @@
                     window.top.art.dialog({id:'addExcel'}).close()
                 });
 
+    }
+    function look(id, name) {
+        var lang_edit = "查看";
+        window.top.art.dialog({id:'look'}).close();
+        window.top.art.dialog({
+                    title:lang_edit+'--'+name,
+                    id:'look',
+                    iframe:"?m={$controller}&a=look&id="+id,width:'480',height:'170'
+                },
+                function()
+                {
+                    var d = window.top.art.dialog({id:'look'}).data.iframe;
+                    d.document.getElementById('dosubmit').click();
+                    return false;
+                },
+                function()
+                {
+                    window.top.art.dialog({id:'look'}).close()
+                });
     }
     function edit(id, name) {
         var lang_edit = "{$Think.lang.edit}";
