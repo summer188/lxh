@@ -4,6 +4,34 @@
     <form action="admin.php?m={$controller}&a=update" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
             <tr>
+                <th width="80">编号 :</th>
+                <td><input type="text" name="alias1" id="alias1" class="input-text" value="{$point_info.alias1}" /></td>
+            </tr>
+            <tr>
+                <th width="80">一级目录 :</th>
+                <td><input type="text" name="name1" id="name1" class="input-text" value="{$point_info.name1}" /></td>
+            </tr>
+            <tr>
+                <th width="80">编号 :</th>
+                <td><input type="text" name="alias2" id="alias2" class="input-text" value="{$point_info.alias2}" /></td>
+            </tr>
+            <tr>
+                <th width="80">二级目录 :</th>
+                <td><input type="text" name="name2" id="name2" class="input-text" value="{$point_info.name2}" /></td>
+            </tr>
+            <tr>
+                <th width="80">编号 :</th>
+                <td><input type="text" name="alias3" id="alias3" class="input-text" value="{$point_info.alias3}" /></td>
+            </tr>
+            <tr>
+                <th width="80">三级目录 :</th>
+                <td><input type="text" name="name3" id="name3" class="input-text" value="{$point_info.name3}" /></td>
+            </tr>
+            <tr>
+                <th width="80">知识点编号 :</th>
+                <td><input type="text" name="alias" id="alias" class="input-text" value="{$point_info.alias}" /></td>
+            </tr>
+            <tr>
                 <th width="80">{:L('name')} :</th>
                 <td><input type="text" name="name" id="name" class="input-text" value="{$point_info.name}" /></td>
             </tr>
@@ -27,19 +55,9 @@
                     </select>
                 </td>
             </tr>
-            <tr>
-                <th>{:L('sort')}  :</th>
-                <td><input type="text" name="sort" id="sort" class="input-text" value="{$point_info.sort}" /></td>
-            </tr>
-            <tr>
-                <th>{:L('state')} :</th>
-                <td>
-                    <input type="radio" name="status" class="radio_style" value="1" <if condition="$point_info.status eq 1">checked="checked"</if>
-
-                    > &nbsp;有效&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="status" class="radio_style" value="0" <if condition="$point_info.status eq 0">checked="checked"</if>> &nbsp;禁用
-                </td>
-            </tr>
+            <input type="hidden" name="id1" value="{$point_info.id1}" />
+            <input type="hidden" name="id2" value="{$point_info.id2}" />
+            <input type="hidden" name="id3" value="{$point_info.id3}" />
             <input type="hidden" name="id" value="{$point_info.id}" />
         </table>
         <input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
@@ -61,7 +79,41 @@
                                 $(obj).focus();
                             })
                 }});
-
+            $("#alias1").formValidator({
+                onshow:"请填写编号",onfocus:"请填写编号"
+            }).inputValidator({
+                min:1,onerror:"编号不能少于1个数"
+            }).defaultPassed();
+            $("#name1").formValidator({
+                onshow:"请填写目录名称",onfocus:"请填写目录名称"
+            }).inputValidator({
+                min:1,onerror:"目录名称不能少于1个字"
+            }).defaultPassed();
+            $("#alias2").formValidator({
+                onshow:"请填写编号",onfocus:"请填写编号"
+            }).inputValidator({
+                min:1,onerror:"编号不能少于1个数"
+            }).defaultPassed();
+            $("#name2").formValidator({
+                onshow:"请填写目录名称",onfocus:"请填写目录名称"
+            }).inputValidator({
+                min:1,onerror:"目录名称不能少于1个字"
+            }).defaultPassed();
+            $("#alias3").formValidator({
+                onshow:"请填写编号",onfocus:"请填写编号"
+            }).inputValidator({
+                min:1,onerror:"编号不能少于1个数"
+            }).defaultPassed();
+            $("#name3").formValidator({
+                onshow:"请填写目录名称",onfocus:"请填写目录名称"
+            }).inputValidator({
+                min:1,onerror:"目录名称不能少于1个字"
+            }).defaultPassed();
+            $("#alias").formValidator({
+                onshow:"请填写编号",onfocus:"请填写编号"
+            }).inputValidator({
+                min:1,onerror:"编号不能少于1个数"
+            }).defaultPassed();
             $("#name").formValidator({
                 onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
             }).inputValidator({

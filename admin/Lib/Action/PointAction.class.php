@@ -106,7 +106,7 @@ class PointAction extends BaseAction{
 	}
 
     //查看知识点
-    public function look()
+    public function edit()
     {
         if(isset($_GET['id']) && intval($_GET['id'])){
             $id = intval($_GET['id']);
@@ -133,37 +133,41 @@ class PointAction extends BaseAction{
     }
 
     //编辑知识点
-    public function lookUpdate(){
+    public function update(){
         if((!isset($_POST['id']) || empty($_POST['id']))) {
             $this->error('请选择要编辑的数据');
         }
         $post = $_POST;
+		var_dump($post);
+		exit;
         $flag = true;
         $update_id = $_SESSION['admin_info']['id'];
         $update_time = date('Y-m-d h:i:s',time());
-        $sql1 = "UPDATE lxh_point SET alias={$post['alias1']},name={$post['name1']},update_id=$update_id,update_time=$update_time WHERE id={$post['id1']}";
-        $result1 = mysql_query($sql1);
+        $sql1 = "UPDATE lxh_point SET alias='{$post['alias1']}',name='{$post['name1']}',grade_id='{$post['grade_id']}',cate_id='{$post['cate_id']}',update_id='$update_id',update_time='$update_time' WHERE id='{$post['id1']}'";
+		$result1 = mysql_query($sql1);
         if(!$result1){
             $flag = false;
         }
-        $sql2 = "UPDATE lxh_point SET alias={$post['alias2']},name={$post['name2']},update_id=$update_id,update_time=$update_time WHERE id={$post['id2']}";
+        $sql2 = "UPDATE lxh_point SET alias='{$post['alias2']}',name='{$post['name2']}',grade_id='{$post['grade_id']}',cate_id='{$post['cate_id']}',update_id='$update_id',update_time='$update_time' WHERE id='{$post['id2']}'";
         $result2 = mysql_query($sql2);
         if(!$result2){
             $flag = false;
         }
-        $sql3 = "UPDATE lxh_point SET alias={$post['alias3']},name={$post['name3']},update_id=$update_id,update_time=$update_time WHERE id={$post['id3']}";
+        $sql3 = "UPDATE lxh_point SET alias='{$post['alias3']}',name='{$post['name3']}',grade_id='{$post['grade_id']}',cate_id='{$post['cate_id']}',update_id='$update_id',update_time='$update_time' WHERE id='{$post['id3']}'";
+		var_dump($sql3);
+		exit;
         $result3 = mysql_query($sql3);
         if(!$result3){
             $flag = false;
         }
-        $sql = "UPDATE lxh_point SET alias={$post['alias']},name={$post['name']},update_id=$update_id,update_time=$update_time WHERE id={$post['id']}";
+        $sql = "UPDATE lxh_point SET alias='{$post['alias']}',name='{$post['name']}',grade_id='{$post['grade_id']}',cate_id='{$post['cate_id']}',update_id='$update_id',update_time='$update_time' WHERE id='{$post['id']}'";
         $result = mysql_query($sql);
         if(!$result){
             $flag = false;
         }
 
         if($flag){
-            $this->success(L('operation_success'), '', '', 'lookUpdate');
+            $this->success(L('operation_success'), '', 3, 'edit');
         }else{
             $this->error(L('operation_failure'));
         }
@@ -326,43 +330,6 @@ class PointAction extends BaseAction{
 		$result = $this->point_mod->add($data);
 		if($result){
 			$this->success(L('operation_success'), '', '', 'add');
-		}else{
-			$this->error(L('operation_failure'));
-		}
-	}
-
-	//修改
-	public function edit()
-	{
-		if(isset($_GET['id']) && intval($_GET['id'])){
-			$id = intval($_GET['id']);
-			$point_info = $this->point_mod->where('id='.$id)->find();
-			$this->assign('show_header', false);
-			$this->assign('controller',MODULE_NAME);
-			$this->assign('point_info',$point_info);
-			$this->assign('grade_list',$this->grade_list);
-			$this->assign('cate_list',$this->cate_list);
-			$this->display();
-		}else{
-			$this->error(L('please_select'));
-		}
-	}
-
-	//更新
-	public function update()
-	{
-		if((!isset($_POST['id']) || empty($_POST['id']))) {
-			$this->error('请选择要编辑的数据');
-		}
-		$data = $this->point_mod->create();
-		if(false === $data){
-			$this->error($this->point_mod->error());
-		}
-		$data['update_id'] = $_SESSION['admin_info']['id'];
-		$data['update_time'] = time();
-		$result = $this->point_mod->save($data);
-		if(false !== $result){
-			$this->success(L('operation_success'), '', '', 'edit');
 		}else{
 			$this->error(L('operation_failure'));
 		}
