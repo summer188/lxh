@@ -1,14 +1,34 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad_10">
-    <form action="admin.php?m={$controller}&a=insert" method="post" name="myform" id="myform">
+    <form action="admin.php?m={$controller}&a=insertOne" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
+            <tr>
+                <th width="80">{:L('grade')} :</th>
+                <td>
+                    <select name="grade_id">
+                        <volist name="grade_list" id="val">
+                            <option value="{$val.id}">{$val.name}</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th width="80">{:L('cate')} :</th>
+                <td>
+                    <select name="cate_id">
+                        <volist name="cate_list" id="val">
+                            <option value="{$val.id}">{$val.name}</option>
+                        </volist>
+                    </select>
+                </td>
+            </tr>
             <tr>
                 <th width="80">编号 :</th>
                 <td><input type="text" name="alias" id="alias" class="input-text"></td>
             </tr>
             <tr>
-                <th width="80">{:L('name')} :</th>
+                <th width="80">一级目录 :</th>
                 <td><input type="text" name="name" id="name" class="input-text"></td>
             </tr>
             <tr>
@@ -42,10 +62,15 @@
                             })
                 }});
 
-            $("#name").formValidator({
-                onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
+            $("#alias").formValidator({
+                onshow:"请填写编号",onfocus:"请填写编号"
             }).inputValidator({
-                min:1,onerror:"知识点名称不能少于1个字"
+                min:1,onerror:"编号不能少于1位数"
+            });
+            $("#name").formValidator({
+                onshow:"请填写一级目录名称",onfocus:"请填写一级目录名称"
+            }).inputValidator({
+                min:1,onerror:"一级目录名称不能少于1个字"
             });
 
 

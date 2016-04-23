@@ -1,7 +1,7 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad_10">
-    <form action="admin.php?m={$controller}&a=update" method="post" name="myform" id="myform">
+    <form action="admin.php?m={$controller}&a=updateThree" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
             <tr>
                 <th width="80">{:L('grade')} :</th>
@@ -29,18 +29,10 @@
             </tr>
             <tr>
                 <th width="80">编号 :</th>
-                <td>{$point_info.alias3}</td>
-            </tr>
-            <tr>
-                <th width="80">三级目录 :</th>
-                <td>{$point_info.name3}</td>
-            </tr>
-            <tr>
-                <th width="80">编号 :</th>
                 <td>{$point_info.alias}</td>
             </tr>
             <tr>
-                <th width="80">{:L('name')} :</th>
+                <th width="80">三级目录 :</th>
                 <td><input type="text" name="name" id="name" class="input-text" value="{$point_info.name}" /></td>
             </tr>
             <input type="hidden" name="id" value="{$point_info.id}" />
@@ -66,9 +58,9 @@
                 }});
 
             $("#name").formValidator({
-                onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
+                onshow:"请填写三级目录名称",onfocus:"请填写三级目录名称"
             }).inputValidator({
-                min:1,onerror:"知识点名称不能少于1个字"
+                min:1,onerror:"三级目录名称不能少于1个字"
             }).defaultPassed();
 
 

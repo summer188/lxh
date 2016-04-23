@@ -7,55 +7,7 @@
  * Date: 2016/3/30
  * Time: 13:17
  */
-class PointAction extends BaseAction{
-	//知识点模型
-	public $point_mod;
-	//设置学段值
-	public $period_id;
-	//学科模型
-	public $cate_mod;
-	//所有年级列表
-	public $grade_list;
-	//所有学科列表
-	public $cate_list;
-
-
-	public function __construct(){
-
-		$this->point_mod = M("point");
-
-		switch(MODULE_NAME){
-			case 'AdPoint':
-				$this->period_id = 1;
-				$this->cate_mod = 'adboard';
-				break;
-			case 'SellerPoint':
-				$this->period_id = 2;
-				$this->cate_mod = 'seller_cate';
-				break;
-			case 'ArticlePoint':
-				$this->period_id = 3;
-				$this->cate_mod = 'article_cate';
-				break;
-			default:
-				$this->period_id = 1;
-				$this->cate_mod = 'adboard';
-		}
-
-		//获取所有年级列表
-		$this->grade_list = M('grade')->where("period_id=$this->period_id")->select();
-		if(!empty($this->grade_list)){
-			//把id的值作为键名，重新组合数组
-			$this->grade_list = array_to_key($this->grade_list,'id');
-		}
-
-		//获取所有学科列表
-		$this->cate_list = M($this->cate_mod)->select();
-		if(!empty($this->cate_list)){
-			//把id的值作为键名，重新组合数组
-			$this->cate_list = array_to_key($this->cate_list,'id');
-		}
-	}
+class PointAction extends PointThreeAction{
 
 	//知识点目录列表
 	public function index(){
@@ -105,27 +57,62 @@ class PointAction extends BaseAction{
 		$this->display();
 	}
 
+    //增加
+    public function add()
+    {
+        $this->assign('controller',MODULE_NAME);
+        $this->display();
+    }
+
+    //插入数据
+    public function insert()
+    {
+        $post = $_POST;
+        //取得其一级目录
+        $alias = $post['alias'];
+        $alias3 = substr($alias,0,-3);
+        $alias2 = substr($alias3,0,-3);
+        $alias1 = substr($alias2,0,-3);
+        $point1 = $this->point_mod->where("alias=$alias1")->find();
+        //数据入库
+        $data = $this->point_mod->create($post);
+        if(false === $data){
+            $this->error($this->point_mod->error());
+        }
+        $data['level'] = 4;
+        $data['period_id'] = $this->period_id;
+        $data['grade_id'] = $point1['grade_id'];
+        $data['cate_id'] = $point1['cate_id'];
+        $data['create_id'] = $_SESSION['admin_info']['id'];
+        $data['create_time'] = date("Y-m-d h:i:s",time());
+        $result = $this->point_mod->add($data);
+        if($result){
+            $this->success(L('operation_success'), '', '', 'add');
+        }else{
+            $this->error(L('operation_failure'));
+        }
+    }
+
     //查看知识点
     public function edit()
     {
         if(isset($_GET['id']) && intval($_GET['id'])){
             $id = intval($_GET['id']);
             $point_info = $this->point_mod->where('id='.$id)->find();
+            //取得年级名称
+            $point_info['grade'] = $this->grade_list[$point_info['grade_id']]['name'];
+            //取得学科名称
+            $point_info['cate'] = $this->cate_list[$point_info['cate_id']]['name'];
             $arr = $this->getAllLevel($point_info['alias']);
             $point_info['alias3'] = $arr['alias3'];
             $point_info['name3'] = $arr['name3'];
-            $point_info['id3'] = $arr['id3'];
             $point_info['alias2'] = $arr['alias2'];
             $point_info['name2'] = $arr['name2'];
-            $point_info['id2'] = $arr['id2'];
             $point_info['alias1'] = $arr['alias1'];
             $point_info['name1'] = $arr['name1'];
-            $point_info['id1'] = $arr['id1'];
             $this->assign('show_header', false);
             $this->assign('controller',MODULE_NAME);
             $this->assign('point_info',$point_info);
-            $this->assign('grade_list',$this->grade_list);
-            $this->assign('cate_list',$this->cate_list);
             $this->display();
         }else{
             $this->error(L('please_select'));
@@ -134,60 +121,19 @@ class PointAction extends BaseAction{
 
     //编辑知识点
     public function update(){
-        if((!isset($_POST['id']) || empty($_POST['id']))) {
-            $this->error('请选择要编辑的数据');
-        }
-        $post = $_POST;
-		var_dump($post);
-		exit;
-        $flag = true;
-        $update_id = $_SESSION['admin_info']['id'];
-        $update_time = date('Y-m-d h:i:s',time());
-        $sql1 = "UPDATE lxh_point SET alias='{$post['alias1']}',name='{$post['name1']}',grade_id='{$post['grade_id']}',cate_id='{$post['cate_id']}',update_id='$update_id',update_time='$update_time' WHERE id='{$post['id1']}'";
-		$result1 = mysql_query($sql1);
-        if(!$result1){
-            $flag = false;
-        }
-        $sql2 = "UPDATE lxh_point SET alias='{$post['alias2']}',name='{$post['name2']}',grade_id='{$post['grade_id']}',cate_id='{$post['cate_id']}',update_id='$update_id',update_time='$update_time' WHERE id='{$post['id2']}'";
-        $result2 = mysql_query($sql2);
-        if(!$result2){
-            $flag = false;
-        }
-        $sql3 = "UPDATE lxh_point SET alias='{$post['alias3']}',name='{$post['name3']}',grade_id='{$post['grade_id']}',cate_id='{$post['cate_id']}',update_id='$update_id',update_time='$update_time' WHERE id='{$post['id3']}'";
-		var_dump($sql3);
-		exit;
-        $result3 = mysql_query($sql3);
-        if(!$result3){
-            $flag = false;
-        }
-        $sql = "UPDATE lxh_point SET alias='{$post['alias']}',name='{$post['name']}',grade_id='{$post['grade_id']}',cate_id='{$post['cate_id']}',update_id='$update_id',update_time='$update_time' WHERE id='{$post['id']}'";
-        $result = mysql_query($sql);
-        if(!$result){
-            $flag = false;
-        }
-
-        if($flag){
-            $this->success(L('operation_success'), '', 3, 'edit');
-        }else{
-            $this->error(L('operation_failure'));
-        }
-    }
-
-    //编辑单条知识点数据
-    public function editOne($data){
-        $data = $this->point_mod->create($data);
+        $data = $this->point_mod->create();
         if(false === $data){
             $this->error($this->point_mod->error());
         }
+        $data['level'] = 4;
         $data['update_id'] = $_SESSION['admin_info']['id'];
         $data['update_time'] = date('Y-m-d h:i:s',time());
         $result = $this->point_mod->save($data);
         if($result){
-            return true;
+            $this->success(L('operation_success'), '', '', 'edit');
         }else{
-            return false;
+            $this->error(L('operation_failure'));
         }
-
     }
 
 	//excel表格导入
@@ -291,67 +237,18 @@ class PointAction extends BaseAction{
 		$point3 = $this->point_mod->where("alias=$alias3")->find();
 		$arr['alias3'] = $alias3;
 		$arr['name3'] = $point3['name'];
-		$arr['id3'] = $point3['id'];
 		//获取其二级目录
 		$alias2 = substr($alias3,0,-3);
 		$point2 = $this->point_mod->where("alias=$alias2")->find();
 		$arr['alias2'] = $alias2;
 		$arr['name2'] = $point2['name'];
-        $arr['id2'] = $point2['id'];
 		//获取其一级目录
 		$alias1 = substr($alias2,0,-3);
 		$point1 = $this->point_mod->where("alias=$alias1")->find();
 		$arr['alias1'] = $alias1;
 		$arr['name1'] = $point1['name'];
-        $arr['id1'] = $point1['id'];
 
 		return $arr;
-	}
-
-	//增加
-	public function add()
-	{
-        $this->assign('controller',MODULE_NAME);
-		$this->assign('grade_list',$this->grade_list);
-		$this->assign('cate_list',$this->cate_list);
-		$this->display();
-	}
-
-	//插入数据
-	public function insert()
-	{
-		$data = $this->point_mod->create();
-		if(false === $data){
-			$this->error($this->point_mod->error());
-		}
-		$data['period_id'] = $this->period_id;
-		$data['create_id'] = $_SESSION['admin_info']['id'];
-		$data['create_time'] = time();
-		$result = $this->point_mod->add($data);
-		if($result){
-			$this->success(L('operation_success'), '', '', 'add');
-		}else{
-			$this->error(L('operation_failure'));
-		}
-	}
-
-	//删除
-	public function delete(){
-		$flag = true;
-		if (isset($_POST['id']) && is_array($_POST['id'])) {
-			$id_array=$_POST['id'];
-			for ($i=0;$i<count($id_array);$i++){
-				$result = $this->point_mod->where("id='{$id_array[$i]}'")->delete();
-				if(!$result){
-					$flag = false;
-				}
-			}
-		}
-		if($flag){
-			$this->success(L('operation_success'));
-		}else{
-			$this->error(L('operation_failure'));
-		}
 	}
 
 	//修改状态
@@ -365,7 +262,7 @@ class PointAction extends BaseAction{
 		$this->ajaxReturn($values[$type]);
 	}
 
-	//排序
+	//排序--尚未启用
 	public function sort(){
 		$id = intval($_REQUEST['id']);
 		$type = trim($_REQUEST['type']);
@@ -381,4 +278,23 @@ class PointAction extends BaseAction{
 		$values = $this->point_mod->where('id='.$id)->find();
 		$this->ajaxReturn($values[$type]);
 	}
+
+    //删除--尚未启用
+    public function delete(){
+        $flag = true;
+        if (isset($_POST['id']) && is_array($_POST['id'])) {
+            $id_array=$_POST['id'];
+            for ($i=0;$i<count($id_array);$i++){
+                $result = $this->point_mod->where("id='{$id_array[$i]}'")->delete();
+                if(!$result){
+                    $flag = false;
+                }
+            }
+        }
+        if($flag){
+            $this->success(L('operation_success'));
+        }else{
+            $this->error(L('operation_failure'));
+        }
+    }
 }

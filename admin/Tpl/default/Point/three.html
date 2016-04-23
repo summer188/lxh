@@ -2,16 +2,15 @@
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad-lr-10">
     <div class="data_top">
-        <a class="cat" href="javascript:addExcel()">excel表格导入</a>
-        <a class="cat" href="javascript:add()">添加知识点</a>
+        <a class="cat" href="javascript:addThree()">添加三级目录</a>
     </div>
-    <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=index" method="get" >
+    <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=three" method="get" >
         <table width="100%" cellspacing="0" class="search-form">
             <tbody>
             <tr>
                 <td>
                     <div class="explain-col">
-                        &nbsp;知识点 :
+                        &nbsp;目录名称 :
                         <input name="keyword" id="keyword" type="text" class="input-text" size="25" value="{$keyword}" />
                         &nbsp;&nbsp;&nbsp;&nbsp;年级 :
                         <select name="grade_id" id="grade_id">
@@ -29,6 +28,7 @@
                         </select>
                         &nbsp;&nbsp;
                         <input type="hidden" name="m" value="{$controller}" />
+                        <input type="hidden" name="a" value="three" />
                         <input type="submit" name="search" class="button" value="搜索" />
                         <input type="button" class="button" value="重置" onclick="clean()"/>
                     </div>
@@ -37,7 +37,7 @@
             </tbody>
         </table>
     </form>
-    <form id="myform" name="myform" action="admin.php?m={$controller}&a=delete" method="post" onsubmit="return check();">
+    <form id="myform" name="myform" action="admin.php?m={$controller}&a=deleteThree" method="post" onsubmit="return checkThree();">
         <div class="table-list">
             <table width="100%" cellspacing="0">
                 <thead>
@@ -52,8 +52,6 @@
                     <th>二级目录</th>
                     <th>编号</th>
                     <th>三级目录</th>
-                    <th>编号</th>
-                    <th>知识点</th>
                     <th>状态</th>
                     <th>操作</th>
                 </tr>
@@ -69,14 +67,11 @@
                         <td align="center">{$val.name1}</td>
                         <td align="center">{$val.alias2}</td>
                         <td align="center">{$val.name2}</td>
-                        <td align="center">{$val.alias3}</td>
-                        <td align="center">{$val.name3}</td>
                         <td align="center">{$val.alias}</td>
                         <td align="center">{$val.name}</td>
                         <!--<td align="center"><input type="text" class="input-text-c input-text" onblur="sort({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>-->
-                        <!--td align="center" onclick="status({$val.id},'seller_status')" id="seller_status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.seller_status}.gif" /></td-->
-                        <td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
-                        <td align="center"><a href="javascript:edit({$val.id})"><span style="color:blue;">编辑</span></a></td>
+                        <td align="center" onclick="statusThree({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
+                        <td align="center"><a href="javascript:editThree({$val.id})"><span style="color:blue;">编辑</span></a></td>
                     </tr>
                 </volist>
                 </tbody>
@@ -90,7 +85,7 @@
     </form>
 </div>
 <script language="javascript">
-    function check(){
+    function checkThree(){
         var ids='';
         $("input[name='id[]']:checked").each(function(i, n){
             ids += $(n).val() + ',';
@@ -101,71 +96,49 @@
         }
         return true;
     }
-    //添加知识点
-    function add() {
-        var lang_add = "添加知识点";
-        window.top.art.dialog({id:'add'}).close();
+    //添加三级目录
+    function addThree() {
+        var lang_add = "添加三级目录";
+        window.top.art.dialog({id:'addThree'}).close();
         window.top.art.dialog({
                     title:lang_add,
-                    id:'add',
-                    iframe:"?m={$controller}&a=add",width:'480',height:'170'
+                    id:'addThree',
+                    iframe:"?m={$controller}&a=addThree",width:'480',height:'170'
                 },
                 function()
                 {
-                    var d = window.top.art.dialog({id:'add'}).data.iframe;
+                    var d = window.top.art.dialog({id:'addThree'}).data.iframe;
                     var form=d.document.getElementById('dosubmit').click();
                     form.click();return false;
 
                 },
                 function()
                 {
-                    window.top.art.dialog({id:'add'}).close()
+                    window.top.art.dialog({id:'addThree'}).close()
                 });
 
     }
-    //知识点excel表格导入
-    function addExcel() {
-        var lang_add = "{$Think.lang.add_cate}";
-        window.top.art.dialog({id:'addExcel'}).close();
-        window.top.art.dialog({
-                    title:'excel表格导入',
-                    id:'addExcel',
-                    iframe:"?m={$controller}&a=addExcel",width:'400',height:'150'
-                },
-                function()
-                {
-                    var d = window.top.art.dialog({id:'addExcel'}).data.iframe;
-                    var form=d.document.getElementById('dosubmit').click();
-                    form.click();return false;
-
-                },
-                function()
-                {
-                    window.top.art.dialog({id:'addExcel'}).close()
-                });
-
-    }
-    function edit(id) {
-        var lang_edit = '编辑知识点';
-        window.top.art.dialog({id:'edit'}).close();
+    function editThree(id) {
+        var lang_edit = '编辑三级目录';
+        window.top.art.dialog({id:'editThree'}).close();
         window.top.art.dialog({
                     title:lang_edit,
-                    id:'edit',
-                    iframe:"?m={$controller}&a=edit&id="+id,width:'480',height:'400'
+                    id:'editThree',
+                    iframe:"?m={$controller}&a=editThree&id="+id,width:'510',height:'280'
                 },
                 function()
                 {
-                    var d = window.top.art.dialog({id:'edit'}).data.iframe;
+                    var d = window.top.art.dialog({id:'editThree'}).data.iframe;
                     d.document.getElementById('dosubmit').click();
                     return false;
                 },
                 function()
                 {
-                    window.top.art.dialog({id:'edit'}).close()
+                    window.top.art.dialog({id:'editThree'}).close()
                 });
     }
-    function status(id,type){
-        var url = "admin.php?m={$controller}&a=status";
+    function statusThree(id,type){
+        var url = "admin.php?m={$controller}&a=statusThree";
         $.get(url, { id: id, type: type }, function(jsondata){
             var return_data  = eval("("+jsondata+")");
             $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data+'.gif');

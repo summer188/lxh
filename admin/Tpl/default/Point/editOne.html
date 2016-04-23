@@ -1,50 +1,41 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad_10">
-    <form action="admin.php?m={$controller}&a=update" method="post" name="myform" id="myform">
+    <form action="admin.php?m={$controller}&a=updateOne" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
             <tr>
                 <th width="80">{:L('grade')} :</th>
-                <td>{$point_info.grade}</td>
+                <td>
+                    <select name="grade_id">
+                        <volist name="grade_list" id="val">
+                            <option value="{$val.id}" <if condition="$point_info['grade_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
+                        </volist>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <th width="80">{:L('cate')} :</th>
-                <td>{$point_info.cate}</td>
-            </tr>
-            <tr>
-                <th width="80">编号 :</th>
-                <td>{$point_info.alias1}</td>
-            </tr>
-            <tr>
-                <th width="80">一级目录 :</th>
-                <td>{$point_info.name1}</td>
-            </tr>
-            <tr>
-                <th width="80">编号 :</th>
-                <td>{$point_info.alias2}</td>
-            </tr>
-            <tr>
-                <th width="80">二级目录 :</th>
-                <td>{$point_info.name2}</td>
-            </tr>
-            <tr>
-                <th width="80">编号 :</th>
-                <td>{$point_info.alias3}</td>
-            </tr>
-            <tr>
-                <th width="80">三级目录 :</th>
-                <td>{$point_info.name3}</td>
+                <td>
+                    <select name="cate_id">
+                        <volist name="cate_list" id="val">
+                            <option value="{$val.id}" <if condition="$point_info['cate_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
+                        </volist>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <th width="80">编号 :</th>
                 <td>{$point_info.alias}</td>
             </tr>
             <tr>
-                <th width="80">{:L('name')} :</th>
+                <th width="80">一级目录 :</th>
                 <td><input type="text" name="name" id="name" class="input-text" value="{$point_info.name}" /></td>
             </tr>
             <input type="hidden" name="id" value="{$point_info.id}" />
         </table>
+        <div style="color:red;margin-top:15px;">
+            <span style="color:red;">&nbsp;&nbsp;注：改变年级和学科后，其下级目录知识点的相应属性也会随之改变，请谨慎操作！</span>
+        </div>
         <input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
     </form>
     <script type="text/javascript">
@@ -65,10 +56,15 @@
                             })
                 }});
 
-            $("#name").formValidator({
-                onshow:"请填写知识点名称",onfocus:"请填写知识点名称"
+            $("#alias").formValidator({
+                onshow:"请填写编号",onfocus:"请填写编号"
             }).inputValidator({
-                min:1,onerror:"知识点名称不能少于1个字"
+                min:1,onerror:"编号不能少于1位数"
+            }).defaultPassed();
+            $("#name").formValidator({
+                onshow:"请填写一级目录名称",onfocus:"请填写一级目录名称"
+            }).inputValidator({
+                min:1,onerror:"一级目录名称不能少于1个字"
             }).defaultPassed();
 
 
