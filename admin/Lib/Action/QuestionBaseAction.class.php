@@ -1,15 +1,15 @@
 <?php
 /**
- * 知识点基础控制器
+ * 题库基础控制器
  *
  * Created by Sunmiaomiao.
  * Email: 652308259@qq.com
  * Date: 2016/4/23
- * Time: 7:57
+ * Time: 17:01
  */
-class PointBaseAction extends BaseAction{
-    //知识点模型
-    public $point_mod;
+class QuestionBaseAction extends BaseAction{
+    //题库模型
+    public $question_mod;
     //设置学段值
     public $period_id;
     //学科模型
@@ -22,22 +22,24 @@ class PointBaseAction extends BaseAction{
 
     public function __construct(){
 
-        $this->point_mod = M("point");
-
         switch(MODULE_NAME){
-            case 'AdPoint':
+            case 'Ad':
+                $this->question_mod = M('ad');
                 $this->period_id = 1;
                 $this->cate_mod = 'adboard';
                 break;
-            case 'SellerPoint':
+            case 'SellerList':
+                $this->question_mod = M('seller_list');
                 $this->period_id = 2;
                 $this->cate_mod = 'seller_cate';
                 break;
-            case 'ArticlePoint':
+            case 'Article':
+                $this->question_mod = M('article');
                 $this->period_id = 3;
                 $this->cate_mod = 'article_cate';
                 break;
             default:
+                $this->question_mod = M('ad');
                 $this->period_id = 1;
                 $this->cate_mod = 'adboard';
         }

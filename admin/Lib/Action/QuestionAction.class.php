@@ -29,22 +29,6 @@ class QuestionAction extends QuestionLoadAction{
 		if($point_id!=''){
 			$arrGet['point_id'] = $point_id;
 		}
-		$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
-		if($chapter_id!=''){
-			$arrGet['chapter_id'] = $chapter_id;
-		}
-		$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
-		if($section_id!=''){
-			$arrGet['section_id'] = $section_id;
-		}
-		$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
-		if($style_id!=''){
-			$arrGet['style_id'] = $style_id;
-		}
-		$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
-		if($type_id!=''){
-			$arrGet['type_id'] = $type_id;
-		}
 
 		$this->getQuestionList('','yun',$arrGet);
 	}

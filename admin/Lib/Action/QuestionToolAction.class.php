@@ -9,7 +9,7 @@
  * Date: 2016/4/14
  * Time: 9:22
  */
-class QuestionToolAction extends BaseAction{
+class QuestionToolAction extends QuestionBaseAction{
 
 	/**
 	 * 编辑题目
