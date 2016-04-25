@@ -18,6 +18,8 @@ class QuestionBaseAction extends BaseAction{
     public $grade_list;
     //所有学科列表
     public $cate_list;
+	//所以知识点一级目录列表
+	public $point_list;
 
 
     public function __construct(){
@@ -57,5 +59,12 @@ class QuestionBaseAction extends BaseAction{
             //把id的值作为键名，重新组合数组
             $this->cate_list = array_to_key($this->cate_list,'id');
         }
+
+		//获取所有知识点一级目录列表
+		$this->point_list = M('point')->where("period_id={$this->period_id}")->select();
+		if(!empty($this->point_list)){
+			//把id的值作为键名，重新组合数组
+			$this->cate_list = array_to_key($this->cate_list,'id');
+		}
     }
 }

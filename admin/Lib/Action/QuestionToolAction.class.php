@@ -111,16 +111,12 @@ class QuestionToolAction extends QuestionBaseAction{
 	 */
 	public function getPointAll($grade_id='',$cate_id=''){
 		if($grade_id!='' && $cate_id!=''){
-			$period_id = $this->getPeriod();
-			$where = "period_id=$period_id";
+			$where = "level=1";
+			$where .= " AND period_id=$this->period_id";
 			$where .= " AND grade_id=$grade_id";
 			$where .= " AND cate_id=$cate_id";
-			$point_list = M("point")->where($where)->field('id,name')->select();
+			$point_list = M("point")->where($where)->field('id,alias,name')->select();
 			if($point_list){
-				//超过8个字就把多余的字符换成...显示
-				foreach($point_list as $key=>&$value){
-					$value['name'] = $this->cutString($value['name'],8);
-				}
 				return $point_list;
 			}else{
 				return array();
