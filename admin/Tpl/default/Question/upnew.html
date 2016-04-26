@@ -7,6 +7,16 @@
             <tr>
                 <td>
                     批量导入题目DOC文件：
+                    <select name="grade_id">
+                        <volist name="grade_list" id="val">
+                            <option value="{$val.id}">{$val.name}</option>
+                        </volist>
+                    </select>
+                    <select name="cate_id">
+                        <volist name="cate_list" id="val">
+                            <option value="{$val.id}">{$val.name}</option>
+                        </volist>
+                    </select>
                     <input type="file" name="file">
                     <input type="submit" class="button" value="导入DOC">
                 </td>
@@ -20,6 +30,16 @@
             <tr>
                 <td>
                     批量导入题目信息XLS文件：
+                    <select name="grade_id">
+                        <volist name="grade_list" id="val">
+                            <option value="{$val.id}">{$val.name}</option>
+                        </volist>
+                    </select>
+                    <select name="cate_id">
+                        <volist name="cate_list" id="val">
+                            <option value="{$val.id}">{$val.name}</option>
+                        </volist>
+                    </select>
                     <input type="file" name="file">
                     <input type="submit" class="button" value="导入XLS">
                     <input type="button" class="button" id="exportCSV" value="导出XLS" onClick="window.location.href='do.php?action=export'">

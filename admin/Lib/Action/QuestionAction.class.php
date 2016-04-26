@@ -154,20 +154,26 @@ class QuestionAction extends QuestionLoadAction{
 			$where .= " AND cate_id=$cate_id";
 			$this->assign('cate_id', $cate_id);
 		}
-//		if (!empty($point_id) && is_array($point_id)) {
-////			$where .= " AND (";
-//			foreach($point_id as $key=>$value){
-//				$where .= " OR title_attribute LIKE %{$value}%";
-//			}
-////			$where = rtrim($where,'OR');
-////			$where .= ")";
-//			$this->assign('point_id', $point_id);
-//		}
+		if($grade_id!='' && $cate_id!=''){
+			$checked = array();
+			if (!empty($point_id) && is_array($point_id)) {
+				$where .= " AND (";
+				foreach($point_id as $key=>$value){
+					$where .= " title_attribute LIKE '%{$value}%' OR";
+					$checked[$value] = 'checked';
+				}
+				$where = rtrim($where,'OR');
+				$where .= ")";
+				$this->assign('point_id',$point_id);
+				$this->assign('checked',json_encode($checked));
+			}
+		}
+
 		import("ORG.Util.Page");
 		$count = $this->question_mod->where($where)->count();
 		$p = new Page($count,15);
 		$question_list = $this->question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,id desc')->select();
-		echo $this->question_mod->getLastSql();
+//		echo $this->question_mod->getLastSql();
 //		$collect_list = $this->getCollectAll();
 		foreach($question_list as $key=>&$value){
 			$value['grade'] = $this->grade_list[$value['grade_id']]['name'];

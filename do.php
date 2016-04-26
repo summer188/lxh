@@ -2,6 +2,7 @@
 
 include_once ("connect.php");
 
+$cate_id = $_POST['cate_id'];
 $action = $_GET['action'];
 if ($action == 'import') { //导入XLS
     include("excel/reader.php");
@@ -15,7 +16,7 @@ if ($action == 'import') { //导入XLS
 	$file_name = $save_path.date('Ymdhis') . ".xls";
 	if (copy($tmp, $file_name)) {
 		$xls = new Spreadsheet_Excel_Reader();
-		$xls->setOutputEncoding('utf-8');
+		$xls->setOutputEncoding('UTF-8');
 		$xls->read($file_name);
 		for ($i=3; $i<=$xls->sheets[0]['numRows']; $i++) {
 			$grade_id = $xls->sheets[0]['cells'][$i][1];
@@ -30,10 +31,10 @@ if ($action == 'import') { //导入XLS
 			$title_attribute = $xls->sheets[0]['cells'][$i][10];
 			$subject = $xls->sheets[0]['cells'][$i][11];
 			$update_time = date("Y-m-d h:i:s",time());
-			$data_values .= "('$grade_id','$site_logo','$net_logo','$name','$recommend','$answer','$installment','$has_invoice','$cash_back_rate','$title_attribute','$subject','1','$update_time'),";
+			$data_values .= "('$grade_id','$cate_id','$site_logo','$net_logo','$name','$recommend','$answer','$installment','$has_invoice','$cash_back_rate','$title_attribute','$subject','1','$update_time'),";
 		}
 		$data_values = substr($data_values,0,-1); //去掉最后一个逗号
-		$sql = "insert into lxh_seller_list (grade_id,site_logo,net_logo,name,recommend,answer,installment,has_invoice,cash_back_rate,title_attribute,subject,status,update_time) values $data_values";
+		$sql = "insert into lxh_seller_list (grade_id,cate_id,site_logo,net_logo,name,recommend,answer,installment,has_invoice,cash_back_rate,title_attribute,subject,status,update_time) values $data_values";
 		$query = mysql_query($sql);//批量插入数据表中
 	    if($query){
 		    echo '导入成功！';

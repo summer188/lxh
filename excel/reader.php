@@ -3,7 +3,7 @@
 
 
 //require_once 'PEAR.php';
-require_once 'oleread.inc';
+require_once 'oleread.php';
 //require_once 'OLE.php';
 
 define('SPREADSHEET_EXCEL_READER_BIFF8',             0x600);
@@ -345,7 +345,6 @@ class Spreadsheet_Excel_Reader
 
         $this->data = $this->_ole->getWorkBook();
 
-
         /*
         $res = $this->_ole->read($sFileName);
 
@@ -644,7 +643,6 @@ class Spreadsheet_Excel_Reader
             //$r = &$this->nextRecord();
             //echo "1 Code = ".base_convert($r['code'],10,16)."\n";
         }
-
         foreach ($this->boundsheets as $key=>$val){
             $this->sn = $key;
             $this->_parsesheet($val['offset']);

@@ -33,9 +33,7 @@
             </tr>
             <tr>
                 <td>
-                    <div id="point_list">
-
-                    </div>
+                    <div id="point_list"></div>
                 </td>
             </tr>
             </tbody>
@@ -132,6 +130,24 @@
             return false;
         }
     }
+    //知识点复选框样式初始化
+    function pointStyle(){
+        $("#point_list").removeClass('explain-col');
+        var submit = "<span style='margin-left:20px;'></span>" +
+        "<input type='submit' name='search' class='button' value='搜索' />&nbsp; " +
+        "<input type='button' class='button' value='重置' onclick='clean()'/>";
+        var point_list = $("#point_list").html();
+        if(point_list!=''){
+            $("#submit").html('');
+            $("#point_list").html('');
+            //搜索和重置按钮调整位置，放所有搜索条件的后面
+            point_list = '知识点：&nbsp;'+point_list;
+            point_list += "<span id='search'>"+submit+"</span>";
+            $("#point_list").html(point_list);
+            //添加样式
+            $("#point_list").addClass('explain-col');
+        }
+    }
     //获取知识点列表
     function getPointList(){
         var grade_id = $("#grade_id").val();
@@ -154,11 +170,11 @@
                 if(jsondata!=''){
                     var submit = $("#submit").html();
                     $("#submit").html('');
+                    $("#point_list").html('');
                     $("#point_list").addClass('explain-col');
                     var point_list = "知识点：&nbsp;";
                     $.each(jsondata,function(idx,obj){
-                        point_list += "<label for='point_"+obj.id+"'></label>";
-                        point_list += "<input type='checkbox' name='point_id[]' id='point_"+obj.id+"' value='"+obj.alias+"' class='button'/>";
+                        point_list += "<input type='checkbox' name='point_id[]' id='point_"+obj.id+"' value='"+obj.alias+"' "+{$checked}[obj.alias]+"/>";
                         point_list += "<label for='point_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
                     });
                     //搜索和重置按钮调整位置，放所有搜索条件的后面
