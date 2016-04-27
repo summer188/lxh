@@ -178,7 +178,7 @@ class QuestionAction extends QuestionLoadAction{
 		foreach($question_list as $key=>&$value){
 			$value['grade'] = $this->grade_list[$value['grade_id']]['name'];
 			$value['cate'] = $this->cate_list[$value['cate_id']]['name'];
-			$value['name'] = $this->cutString($value['name'],30);
+			$value['name'] = cutString($value['name'],30);
 			//取收藏记录
 //			if(!empty($collect_list[$value['id']])){
 //				$value['is_collect'] = 1;

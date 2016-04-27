@@ -15,33 +15,22 @@ class QuestionLoadAction extends QuestionToolAction{
 	 * @param String $id 编辑题目id
 	 */
 	public function upnew($id=''){
-		$grade_list = $this->getGradeList();
-		$cate_list = $this->getCateList();
-		$style_list = $this->getStyleList();
 		//编辑时有id
 		if($id!='' && intval($id)>0){
 			$id = intval($id);
-			$question_info = M("question")->where("id=$id")->find();
+			$question_info = $this->question_mod->where("id=$id")->find();
 			if($question_info){
-				$point_list = $this->getPointAll($question_info['grade_id'],$question_info['cate_id']);
-				$chapter_list = $this->getChapterAll($question_info['grade_id'],$question_info['cate_id']);
-				$section_list = $this->getSectionList($question_info['chapter_id']);
-				$type_list = $this->getTypeAll($question_info['cate_id']);
-				$title = file_get_contents($question_info['title_url']);
-				$info = file_get_contents($question_info['info_url']);
+//				$title = file_get_contents($question_info['title_url']);
+//				$info = file_get_contents($question_info['info_url']);
 				$this->assign('id',$id);
 				$this->assign('question_info',$question_info);
-				$this->assign('point_list',$point_list);
-				$this->assign('chapter_list',$chapter_list);
-				$this->assign('section_list',$section_list);
-				$this->assign('type_list',$type_list);
-				$this->assign('title',$title);
-				$this->assign('info',$info);
+
+//				$this->assign('title',$title);
+//				$this->assign('info',$info);
 			}
 		}
-		$this->assign('grade_list',$grade_list);
-		$this->assign('cate_list',$cate_list);
-		$this->assign('style_list',$style_list);
+		$this->assign('grade_list',$this->grade_list);
+		$this->assign('cate_list',$this->cate_list);
 		$this->assign('controller',MODULE_NAME);
 		$this->display('upnew');
 	}
@@ -129,6 +118,20 @@ class QuestionLoadAction extends QuestionToolAction{
 			exit();
 		}
 	}
+
+	/**
+	 * 编辑题目
+	 *
+	 */
+	public function editQuestion(){
+		if(isset($_GET['id']) && intval($_GET['id'])){
+			$id = intval($_GET['id']);
+			$this->upnew($id);
+		}else{
+			$this->error(L('please_select'));
+		}
+	}
+
 	/**
 	 * 收藏题目
 	 *
