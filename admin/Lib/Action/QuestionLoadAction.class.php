@@ -31,6 +31,7 @@ class QuestionLoadAction extends QuestionToolAction{
 		}
 		$this->assign('grade_list',$this->grade_list);
 		$this->assign('cate_list',$this->cate_list);
+		$this->assign('question_tab','lxh_'.$this->question_tab);
 		$this->assign('controller',MODULE_NAME);
 		$this->display('upnew');
 	}

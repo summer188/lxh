@@ -8,6 +8,8 @@
  * Time: 17:01
  */
 class QuestionBaseAction extends BaseAction{
+	//题库表名
+	public $question_tab;
     //题库模型
     public $question_mod;
     //设置学段值
@@ -26,21 +28,25 @@ class QuestionBaseAction extends BaseAction{
 
         switch(MODULE_NAME){
             case 'Ad':
+				$this->question_tab = 'ad';
                 $this->question_mod = M('ad');
                 $this->period_id = 1;
                 $this->cate_mod = 'adboard';
                 break;
             case 'SellerList':
+				$this->question_tab = 'seller_list';
                 $this->question_mod = M('seller_list');
                 $this->period_id = 2;
                 $this->cate_mod = 'seller_cate';
                 break;
             case 'Article':
+				$this->question_tab = 'article';
                 $this->question_mod = M('article');
                 $this->period_id = 3;
                 $this->cate_mod = 'article_cate';
                 break;
             default:
+				$this->question_tab = 'ad';
                 $this->question_mod = M('ad');
                 $this->period_id = 1;
                 $this->cate_mod = 'adboard';

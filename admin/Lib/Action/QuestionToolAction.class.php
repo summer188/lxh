@@ -1,8 +1,8 @@
 <?php
 /**
  * 题目工具公共控制器，主要功能有：
- * 题目编辑、排序、修改状态、删除；获取知识点、章、节、题目类型列表；
- * 检测并创建题目上传目录；字符串截取等
+ * 题目编辑、排序、修改状态、删除；获取知识点列表；
+ * 检测并创建题目上传目录等
  *
  * Created by Sunmiaomiao.
  * Email: 652308259@qq.com
@@ -139,7 +139,7 @@ class QuestionToolAction extends QuestionBaseAction{
 	 * @return String
 	 */
 	public function getQuestionDir($grade_id,$cate_id,$id){
-		$root = 'upload/'.MODULE_NAME.'/'.'grade_'.$grade_id.'/cate_'.$cate_id.'/';
+		$root = 'upload/'.$this->cate_list[$cate_id]['alias'].'/'.$grade_id.'/';
 		$question_dir = $root.'question_'.$id.'/';
 		return $question_dir;
 	}

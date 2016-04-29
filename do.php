@@ -3,6 +3,9 @@
 include_once ("connect.php");
 
 $cate_id = $_POST['cate_id'];
+$create_id = $_POST['create_id'];
+$school_id = $_POST['school_id'];
+$question_tab = $_POST['question_tab'];
 $action = $_GET['action'];
 if ($action == 'import') { //导入XLS
     include("excel/reader.php");
@@ -31,10 +34,10 @@ if ($action == 'import') { //导入XLS
 			$title_attribute = $xls->sheets[0]['cells'][$i][10];
 			$subject = $xls->sheets[0]['cells'][$i][11];
 			$update_time = date("Y-m-d h:i:s",time());
-			$data_values .= "('$grade_id','$cate_id','$site_logo','$net_logo','$name','$recommend','$answer','$installment','$has_invoice','$cash_back_rate','$title_attribute','$subject','1','$update_time'),";
+			$data_values .= "('$grade_id','$cate_id','$site_logo','$net_logo','$name','$recommend','$answer','$installment','$has_invoice','$cash_back_rate','$title_attribute','$subject','1','$create_id','$school_id','$update_time'),";
 		}
 		$data_values = substr($data_values,0,-1); //去掉最后一个逗号
-		$sql = "insert into lxh_seller_list (grade_id,cate_id,site_logo,net_logo,name,recommend,answer,installment,has_invoice,cash_back_rate,title_attribute,subject,status,update_time) values $data_values";
+		$sql = "insert into $question_tab (grade_id,cate_id,site_logo,net_logo,name,recommend,answer,installment,has_invoice,cash_back_rate,title_attribute,subject,status,create_id,school_id,update_time) values $data_values";
 		$query = mysql_query($sql);//批量插入数据表中
 	    if($query){
 		    echo '导入成功！';
@@ -43,7 +46,7 @@ if ($action == 'import') { //导入XLS
 	    }
 	}
 } elseif ($action=='export') { //导出XLS
-    $result = mysql_query("select * from lxh_seller_list");
+    $result = mysql_query("select * from $question_tab");
     $str = "年级\t期数\t题目序号\t题目简介\t解析格式\t答案\t选项数量\t大题难易度\t小题难易度\t知识点编号\t题目属性\t\n";
     $str = iconv('utf-8','gb2312',$str);
     while($row=mysql_fetch_array($result)){
