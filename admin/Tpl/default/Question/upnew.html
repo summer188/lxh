@@ -24,6 +24,12 @@
         </table>
     </form>
 </div>-->
+<!--<div class="data_top">
+    <form action="admin.php?m={$controller}&a=upsave" method="post" enctype="multipart/form-data">
+        <input type="file" name="video" value=""/>
+        <input type="submit" value="上传"/>
+    </form>
+</div>-->
 <div class="data_top">
     <form id="addExcel" action="do.php?action=import" method="post" enctype="multipart/form-data">
         <table width=100%>
@@ -53,7 +59,8 @@
 </div>
 <hr style="color:blue;"/>
 <div style="margin-left: 10px;margin_bottom:10px;"><span style="font-size:14px;color:blue;font-weight: bold;line-height:30px;">单个题目上传：</span></div>
-<form action="admin.php?m={$controller}&a=upsave" method="post" name="myform" id="myform" onsubmit="return check()">
+<form action="admin.php?m={$controller}&a=upsave" method="post" name="myform" id="myform" onsubmit="return check()" enctype="multipart/form-data">
+    <input type="hidden" name="display" id="display" value="{$display}" />
     <input type="hidden" name="id" id="id" value="{$id}" />
     <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
         <tr>
@@ -91,9 +98,7 @@
         <tr>
             <th>知识点编号 :</th>
             <td>
-                <textarea name="title_attribute" id="title_attribute" style="width:700px;height:100px;">
-                    {$question_info.title_attribute}
-                </textarea>
+                <input type="text" name="title_attribute" id="title_attribute" class="input-text" value="{$question_info.title_attribute}" style="width:700px;"/>
             </td>
         </tr>
         <tr>
@@ -108,7 +113,7 @@
             <th>题干 :</th>
             <td>
                 <textarea name="title" id="title" style="width:700px;height:100px;">
-                    {$question_info.title}
+                    {$title}
                 </textarea>
             </td>
         </tr>
@@ -116,16 +121,20 @@
             <th>解析文本 :</th>
             <td>
                 <textarea name="info" id="info" style="width:700px;height:100px;">
-                    {$question_info.info}
+                    {$info}
                 </textarea>
             </td>
         </tr>
         <tr>
             <th>解析视频 :</th>
             <td>
-                <textarea name="click_url" id="click_url" style="width:700px;height:100px;">
-                    {$question_info.click_url}
-                </textarea>
+                <empty name="question_info.click_url">
+                    <input type="file" name="file" value=""/>
+                <else />
+                    <embed src="{$question_info.click_url}" allowscriptaccess='always'
+                           allowfullscreen='true' wmode='opaque' width='480' height='400'>
+                    </embed>
+                </empty>
             </td>
         </tr>
         <tr>

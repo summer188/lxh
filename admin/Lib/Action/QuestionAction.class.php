@@ -15,8 +15,6 @@ class QuestionAction extends QuestionLoadAction{
 	 *
 	 */
 	public function yun(){
-//		var_dump($_GET);
-//		exit;
 		//获取搜索条件
 		$arrGet = array();
 		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
@@ -40,6 +38,7 @@ class QuestionAction extends QuestionLoadAction{
 	 *
 	 */
 	public function school(){
+//        var_dump($_GET);
 		//获取搜索条件
 		$arrGet = array();
 		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
@@ -50,25 +49,9 @@ class QuestionAction extends QuestionLoadAction{
 		if($cate_id!=''){
 			$arrGet['cate_id'] = $cate_id;
 		}
-		$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
+		$point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
 		if($point_id!=''){
 			$arrGet['point_id'] = $point_id;
-		}
-		$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
-		if($chapter_id!=''){
-			$arrGet['chapter_id'] = $chapter_id;
-		}
-		$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
-		if($section_id!=''){
-			$arrGet['section_id'] = $section_id;
-		}
-		$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
-		if($style_id!=''){
-			$arrGet['style_id'] = $style_id;
-		}
-		$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
-		if($type_id!=''){
-			$arrGet['type_id'] = $type_id;
 		}
 
 		//取得管理员的所属学校id
@@ -132,7 +115,6 @@ class QuestionAction extends QuestionLoadAction{
 	 * @param Array $arrGet 前台get来的搜索条件
 	 */
 	public function getQuestionList($condition='',$display='',$arrGet){
-
 		//获取搜索条件
 		if(!empty($arrGet)){
 			$grade_id = $arrGet['grade_id'];
@@ -143,7 +125,6 @@ class QuestionAction extends QuestionLoadAction{
 			$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
 			$point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
 		}
-
 		//搜索
 		$where = "period_id={$this->period_id}".$condition;
 		if ($grade_id!='') {
@@ -173,20 +154,19 @@ class QuestionAction extends QuestionLoadAction{
 		$count = $this->question_mod->where($where)->count();
 		$p = new Page($count,15);
 		$question_list = $this->question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,id desc')->select();
-//		echo $this->question_mod->getLastSql();
-//		$collect_list = $this->getCollectAll();
+        $collect_list = $this->getCollectAll();
 		foreach($question_list as $key=>&$value){
 			$value['grade'] = $this->grade_list[$value['grade_id']]['name'];
 			$value['cate'] = $this->cate_list[$value['cate_id']]['name'];
 			$value['name'] = cutString($value['name'],30);
 			//取收藏记录
-//			if(!empty($collect_list[$value['id']])){
-//				$value['is_collect'] = 1;
-//				$value['is_download'] = $collect_list[$value['id']]['is_download'];
-//			}else{
-//				$value['is_collect'] = 0;
-//				$value['is_download'] = 0;
-//			}
+			if(!empty($collect_list[$value['id']])){
+				$value['is_collect'] = 1;
+				$value['is_download'] = $collect_list[$value['id']]['is_download'];
+			}else{
+				$value['is_collect'] = 0;
+				$value['is_download'] = 0;
+			}
 		}
 		$page = $p->show();
 		$this->assign('page',$page);

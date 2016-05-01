@@ -249,17 +249,4 @@ function cutString($str,$num){
 	}
 	return $str;
 }
-/**
- * 检查并创建文件目录
- *
- * @param String $root	目录
- */
-function checkDir($root){
-	if(!file_exists($root)){
-		mkdir($root);
-		if(!chmod($root, 0777)){
-			$this->error(L('OPERATION_FAILURE'));
-		}
-	}
-}
 ?>

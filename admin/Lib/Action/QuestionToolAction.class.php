@@ -146,29 +146,28 @@ class QuestionToolAction extends QuestionBaseAction{
 
 	/**
 	 * 判断或创建题目目录
-	 *
+     *
+	 * @param Int $cate_id--学科id
+	 * @param Int $grade_id--年级id
+     * @param String $site_logo--期数
+     * @param String $net_logo--题目序号
+     *
+     * @return String 单个题目信息存放目录
 	 */
-	public function checkQuestionDir(){
+	public function checkQuestionDir($cate_id,$grade_id,$site_logo,$net_logo){
 		//定义题目上传根目录(相对路径)
 		$root = 'upload/';
-		$this->checkDir($root);
-		//学段（小学、初中、高中题目各自存放目录）
-		$period_root = $root.MODULE_NAME.'/';
-		$this->checkDir($period_root);
-		//年级目录
-		$grade_root_arr = $this->getGradeList();
-		//学科目录
-		$cate_root_arr = $this->getCateList();
-		if(!empty($grade_root_arr)){
-			//检测年级目录
-			$this->checkDirArr($period_root,'grade_',$grade_root_arr);
-			//检测学科目录
-			if(count($grade_root_arr) > 0){
-				foreach($grade_root_arr as $key=>$value){
-					$this->checkDirArr($period_root.'grade_'.$value['id'].'/','cate_', $cate_root_arr);
-				}
-			}
-		}
+		//学科目录,以学科别名命名
+        $cate = $this->cate_list[$cate_id];
+		$cate_root = $root.$cate['alias'].'/';
+        //年级目录
+        $grade_root = $cate_root.$grade_id.'/';
+		//期数目录
+		$site_root = $grade_root.$site_logo.'/';
+		//题目序号目录
+		$net_root = $site_root.$net_logo.'/';
+        $this->checkDirUrl($net_root);
+        return $net_root;
 	}
 
 	/**
@@ -186,10 +185,29 @@ class QuestionToolAction extends QuestionBaseAction{
 		}
 	}
 
+    /**
+     * 检查并创建多级目录
+     *
+     * @param String $rootUrl--目录
+     */
+    public function checkDirUrl($rootUrl){
+        if(!empty($rootUrl) && is_string($rootUrl)){
+            $rootArr = explode('/',$rootUrl);
+            if(count($rootArr)>0){
+                $url = '';
+                foreach($rootArr as $key=>$value){
+                    $url .= $value.'/';
+                    $this->checkDir($url);
+                }
+            }
+        }
+
+    }
+
 	/**
-	 * 检查并创建文件目录
+	 * 检查并创建单一目录
 	 *
-	 * @param String $root	目录
+	 * @param String $root--目录
 	 */
 	public function checkDir($root){
 		if(!file_exists($root)){

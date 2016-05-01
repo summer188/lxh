@@ -75,7 +75,7 @@
                             </if>
                         </td>
                         <td align="center">
-                            <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">查看</a>&nbsp;
+                            <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">编辑</a>&nbsp;
                             <a href="javascript:collectQuestion({$val.id})" style="color:#0000FF;width:20px;">收藏</a>&nbsp;
                             <a href="javascript:downloadQuestion({$val.id})" style="color:#0000FF;width:20px;">下载</a>
                         </td>
@@ -93,6 +93,7 @@
 </div>
 <script language="javascript">
     $(function(){
+        console.log({$checked});
         //从其他页面（如上传新题页面）跳转到此页面后，需要调用一下父窗口的_MP方法，才能保证样式和targetUrl是当前页面
         var controller = "{$controller}";
         var display = "{$display}";
@@ -100,12 +101,19 @@
         if(controller=='Ad'){
             menuid = 152;
         }else if(controller=='SellerList'){
-            menuid = 141;
+            if(display=='yun'){
+                menuid = 141;
+            }else if(display=='school'){
+                menuid = 142;
+            }else if(display=='my'){
+                menuid = 143;
+            }
+
         }else if(controller=='Article'){
             menuid = 103;
         }
         var src = $("#rightMain",parent.document).attr('src');
-        var targetUrl = '/admin.php?m='+controller+'&a='+display;
+        var targetUrl = "/admin.php?m="+controller+"&a="+display;
         if(src!=targetUrl){
             parent._MP(menuid,targetUrl);
         }
@@ -128,24 +136,6 @@
         if(cate_id == ""){
             alert("请先选择学科！");
             return false;
-        }
-    }
-    //知识点复选框样式初始化
-    function pointStyle(){
-        $("#point_list").removeClass('explain-col');
-        var submit = "<span style='margin-left:20px;'></span>" +
-        "<input type='submit' name='search' class='button' value='搜索' />&nbsp; " +
-        "<input type='button' class='button' value='重置' onclick='clean()'/>";
-        var point_list = $("#point_list").html();
-        if(point_list!=''){
-            $("#submit").html('');
-            $("#point_list").html('');
-            //搜索和重置按钮调整位置，放所有搜索条件的后面
-            point_list = '知识点：&nbsp;'+point_list;
-            point_list += "<span id='search'>"+submit+"</span>";
-            $("#point_list").html(point_list);
-            //添加样式
-            $("#point_list").addClass('explain-col');
         }
     }
     //获取知识点列表
@@ -214,7 +204,7 @@
     }
     //查看、编辑
     function editQuestion(id) {
-        location.href = "admin.php?m={$controller}&a=editQuestion&id="+id;
+        location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
     }
     //收藏
     function collectQuestion(id) {
@@ -228,6 +218,7 @@
     }
     //下载
     function downloadQuestion(id) {
+        return false;
         var url = "admin.php?m={$controller}&a=downloadQuestion";
         $.get(url, { id: id }, function(jsondata){
             if(jsondata.status==2){
