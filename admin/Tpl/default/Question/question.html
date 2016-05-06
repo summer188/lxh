@@ -45,6 +45,7 @@
                 <thead>
                 <tr>
                     <th width=50>ID</th>
+                    <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
                     <th>题目简介</th>
                     <th width=100>答案</th>
                     <th width=80>大题难易度</th>
@@ -57,6 +58,7 @@
                 <volist name="question_list" id="val" key="k" >
                     <tr>
                         <td align="center">{$val.id}</td>
+                        <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
                         <td align="center">{$val.name}</td>
                         <td align="center">{$val.answer}</td>
                         <td align="center">{$val.has_invoice}</td>
@@ -67,7 +69,7 @@
                                 未收藏
                             </if>
                         </td>
-                        <td align="center">
+                        <td align="center" id="download_{$val.id}">
                             <if condition="$val['is_download'] eq 1">
                                 <span style="color:#009933;">已下载</span>
                                 <else/>
@@ -75,8 +77,9 @@
                             </if>
                         </td>
                         <td align="center">
-                            <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">编辑</a>&nbsp;
                             <a href="javascript:collectQuestion({$val.id})" style="color:#0000FF;width:20px;">收藏</a>&nbsp;
+                            <a href="javascript:lookQuestion({$val.id})" style="color:#0000FF;width:20px;">预览</a>&nbsp;
+                            <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">编辑</a>&nbsp;
                             <a href="javascript:downloadQuestion({$val.id})" style="color:#0000FF;width:20px;">下载</a>
                         </td>
                     </tr>
@@ -84,8 +87,8 @@
                 </tbody>
             </table>
             <div class="btn">
-                <!--<label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
-                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('{$Think.lang.sure_delete}')" style="float:left;margin-left:10px;"/>-->
+                <label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
+                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('{$Think.lang.sure_delete}')" style="float:left;margin-left:10px;"/>
                 <div id="pages">{$page}</div>
             </div>
         </div>
@@ -93,7 +96,6 @@
 </div>
 <script language="javascript">
     $(function(){
-        console.log({$checked});
         //从其他页面（如上传新题页面）跳转到此页面后，需要调用一下父窗口的_MP方法，才能保证样式和targetUrl是当前页面
         var controller = "{$controller}";
         var display = "{$display}";
@@ -202,7 +204,11 @@
             $("#"+type+"_"+id+" ").attr('value', return_data);
         });
     }
-    //查看、编辑
+    //预览
+    function lookQuestion(id) {
+        location.href = "admin.php?m={$controller}&a=lookQuestion&display={$display}"+"&id="+id;
+    }
+    //编辑
     function editQuestion(id) {
         location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
     }
@@ -218,39 +224,15 @@
     }
     //下载
     function downloadQuestion(id) {
-        return false;
         var url = "admin.php?m={$controller}&a=downloadQuestion";
         $.get(url, { id: id }, function(jsondata){
             if(jsondata.status==2){
-                //已下载过，是否要重新下载
-                window.top.art.dialog({id:'downloadAsk'}).close();
-                window.top.art.dialog(
-                        {
-                            title:'提示',
-                            id:'downloadAsk',
-                            iframe:'?m={$controller}&a=downloadAsk&id='+id,
-                            width:'360',
-                            height:'50'
-                        },
-                        function(){
-                            var d = window.top.art.dialog({id:'downloadAsk'}).data.iframe;
-                            d.document.getElementById('dosubmit').click();
-                            return false;
-                        },
-                        function(){
-                            window.top.art.dialog({id:'downloadAsk'}).close()
-                        }
-                );
-//                if(confirm(jsondata.info)){
-//                    $.get("admin.php?m={$controller}&a=downloadDirect", { id: id }, function(data){
-//                        alert(data.info);
-//                    });
-//                }
-            }else{
-                window.top.art.dialog({content:jsondata.info,lock:true,width:'200',height:'50',time:1});
-                if(jsondata.status==1){
-                    window.location.reload();
+                if(confirm(jsondata.info)){
+                    location.href = "download.php?id="+id+"&pid={$period_id}&tab={$question_tab}";
                 }
+            }else{
+                    $('#download_'+id).html("<span style='color:#009933;'>已下载</span>");
+                location.href = "download.php?id="+id+"&pid={$period_id}&tab={$question_tab}";
             }
         });
     }

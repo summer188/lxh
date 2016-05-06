@@ -161,7 +161,7 @@ class QuestionAction extends QuestionLoadAction{
 			$value['name'] = cutString($value['name'],30);
 			//取收藏记录
 			if(!empty($collect_list[$value['id']])){
-				$value['is_collect'] = 1;
+				$value['is_collect'] = $collect_list[$value['id']]['is_collect'];
 				$value['is_download'] = $collect_list[$value['id']]['is_download'];
 			}else{
 				$value['is_collect'] = 0;
@@ -171,9 +171,11 @@ class QuestionAction extends QuestionLoadAction{
 		$page = $p->show();
 		$this->assign('page',$page);
 		$this->assign('controller',MODULE_NAME);
+		$this->assign('period_id',$this->period_id);
 		$this->assign('grade_list',$this->grade_list);
 		$this->assign('cate_list',$this->cate_list);
 		$this->assign('question_list',$question_list);
+		$this->assign('question_tab',$this->question_tab);
 		$this->assign('display',$display);
 		$this->display($display);
 	}

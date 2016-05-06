@@ -1,9 +1,11 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad_10" style="margin-top:10px;">
-    <form action="admin.php?m={$controller}&a=downloadDirect" method="post" name="myform" id="myform" >
+    <form action="download.php" method="post" name="myform" id="myform" >
         <span style="font-size: 16px;margin-left: 20px;">您已经下载过本题了，是否要重新下载？</span>
         <input type="hidden" name="id" id="id" value="{$id}" />
+        <input type="hidden" name="pid" id="pid" value="{$pid}" />
+        <input type="hidden" name="tab" id="tab" value="{$tab}" />
         <input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
     </form>
 </div>

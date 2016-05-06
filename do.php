@@ -2,6 +2,7 @@
 
 include_once ("connect.php");
 
+$grade_id = $_POST['grade_id'];
 $cate_id = $_POST['cate_id'];
 $create_id = $_POST['create_id'];
 $school_id = $_POST['school_id'];

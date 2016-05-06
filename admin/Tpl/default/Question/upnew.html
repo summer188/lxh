@@ -1,41 +1,12 @@
 <include file="Public:header" />
 <style type="text/css"> table {font-size: 12px} </style>
-<div style="margin-left: 10px;"><span style="font-size:14px;color:blue;font-weight: bold;line-height:30px;">批量上传：</span></div>
-<!--<div class="data_top">
-    <form id="addDoc" action="" method="post" enctype="multipart/form-data">
-        <table width=100%>
-            <tr>
-                <td>
-                    批量导入题目DOC文件：
-                    <select name="grade_id">
-                        <volist name="grade_list" id="val">
-                            <option value="{$val.id}">{$val.name}</option>
-                        </volist>
-                    </select>
-                    <select name="cate_id">
-                        <volist name="cate_list" id="val">
-                            <option value="{$val.id}">{$val.name}</option>
-                        </volist>
-                    </select>
-                    <input type="file" name="file">
-                    <input type="submit" class="button" value="导入DOC">
-                </td>
-            </tr>
-        </table>
-    </form>
-</div>-->
-<!--<div class="data_top">
-    <form action="admin.php?m={$controller}&a=upsave" method="post" enctype="multipart/form-data">
-        <input type="file" name="video" value=""/>
-        <input type="submit" value="上传"/>
-    </form>
-</div>-->
+<div style="margin-left: 10px;"><span style="font-size:14px;color:blue;font-weight: bold;line-height:30px;">批量上传题目信息：</span></div>
 <div class="data_top">
     <form id="addExcel" action="do.php?action=import" method="post" enctype="multipart/form-data">
         <table width=100%>
             <tr>
                 <td>
-                    批量导入题目信息XLS文件：
+                    导入excel表格：
                     <select name="grade_id">
                         <volist name="grade_list" id="val">
                             <option value="{$val.id}">{$val.name}</option>
@@ -58,7 +29,10 @@
     </form>
 </div>
 <hr style="color:blue;"/>
-<div style="margin-left: 10px;margin_bottom:10px;"><span style="font-size:14px;color:blue;font-weight: bold;line-height:30px;">单个题目上传：</span></div>
+<div style="margin-left: 10px;margin_bottom:10px;">
+    <span style="font-size:14px;color:blue;font-weight: bold;line-height:30px;">单个题目上传：</span>
+    <span style="color:red;">&nbsp;&nbsp;注：上传的文档和截图一旦提交成功，将无法修改，请谨慎操作（如有特殊需要，请删除本题后重新上传新题）！</span>
+</div>
 <form action="admin.php?m={$controller}&a=upsave" method="post" name="myform" id="myform" onsubmit="return check()" enctype="multipart/form-data">
     <input type="hidden" name="display" id="display" value="{$display}" />
     <input type="hidden" name="id" id="id" value="{$id}" />
@@ -109,23 +83,23 @@
                 </textarea>
             </td>
         </tr>
-        <tr>
+        <!--<tr>
             <th>题干 :</th>
             <td>
                 <textarea name="title" id="title" style="width:700px;height:100px;">
                     {$title}
                 </textarea>
             </td>
-        </tr>
-        <tr>
+        </tr>-->
+        <!--<tr>
             <th>解析文本 :</th>
             <td>
                 <textarea name="info" id="info" style="width:700px;height:100px;">
                     {$info}
                 </textarea>
             </td>
-        </tr>
-        <tr>
+        </tr>-->
+        <!--<tr>
             <th>解析视频 :</th>
             <td>
                 <empty name="question_info.click_url">
@@ -136,7 +110,7 @@
                     </embed>
                 </empty>
             </td>
-        </tr>
+        </tr>-->
         <tr>
             <th>答案 :</th>
             <td>
@@ -145,6 +119,27 @@
                 </textarea>
             </td>
         </tr>
+        <empty name="png_url">
+            <tr>
+                <th>word文档 :</th>
+                <td>
+                    <input  type="file" name="word" value=""/>
+                </td>
+            </tr>
+            <tr>
+                <th>png截图 :</th>
+                <td>
+                    <input  type="file" name="png" value=""/>
+                </td>
+            </tr>
+        <else />
+            <tr>
+                <th>题目 :</th>
+                <td>
+                    <img src="{$png_url}"/>
+                </td>
+            </tr>
+        </empty>
         <tr>
             <th>选项数量 :</th>
             <td><input type="text" name="installment" id="installment" class="input-text" value="{$question_info.installment}" /></td>
@@ -175,7 +170,7 @@
             <td>
                 <input type="submit" value="确定" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:290px;"/>
                 <if condition="$id gt 0">
-                    <input type="button" value="返回" onclick="goback()" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:20px;"/>
+                    <input type="button" value="返回" onclick="window.history.go(-1)" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:20px;"/>
                 <else/>
                     <input type="reset" value="重置" style="width:50px;height: 30px;background-color: #5189C4;color: white;margin-left:20px;"/>
                 </if>
@@ -185,21 +180,21 @@
 </form>
 <script type="text/javascript">
 var editorName;
-var editorTitle;
-var editorInfo;
+//var editorTitle;
+//var editorInfo;
 var editorAnswer;
 KindEditor.ready(function(K) {
     editorName = K.create('#name');
     editorName.sync();
 });
-KindEditor.ready(function(K) {
-    editorTitle = K.create('#title');
-    editorTitle.sync();
-});
-KindEditor.ready(function(K) {
-    editorInfo = K.create('#info');
-    editorInfo.sync();
-});
+//KindEditor.ready(function(K) {
+//    editorTitle = K.create('#title');
+//    editorTitle.sync();
+//});
+//KindEditor.ready(function(K) {
+//    editorInfo = K.create('#info');
+//    editorInfo.sync();
+//});
 KindEditor.ready(function(K) {
     editorAnswer = K.create('#answer');
     editorAnswer.sync();
@@ -243,19 +238,17 @@ function check(){
         alert('请填写题目简介！');
         return false;
     }
-    if(editorTitle.html()==''){
-        alert('请填写题干！');
-        return false;
-    }
+//    if(editorTitle.html()==''){
+//        alert('请填写题干！');
+//        return false;
+//    }
     if(editorAnswer.html()==''){
         alert('请填写题目答案！');
         return false;
     }
     return true;
 }
-function goback(){
-    window.history.go(-1);
-}
+
 </script>
 </div>
 </body>

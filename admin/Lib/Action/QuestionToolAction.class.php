@@ -217,4 +217,56 @@ class QuestionToolAction extends QuestionBaseAction{
 			}
 		}
 	}
+
+	/**
+	 * 删除文件夹及其下所有文件
+	 *
+	 * @param String $dir--准备删除的文件夹url
+	 * @return Boolean
+	 */
+	public function delDir($dir) {
+		//先删除目录下的文件：
+		$dh=opendir($dir);
+		while (false != ($file=readdir($dh))) {
+			if($file!="." && $file!="..") {
+				$fullpath=$dir."/".$file;
+				if(!is_dir($fullpath)) {
+					unlink($fullpath);
+				} else {
+					$this->delDir($fullpath);
+				}
+			}
+		}
+
+		closedir($dh);
+		//删除当前文件夹：
+		if(rmdir($dir)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * 检查上传的文档类型
+	 *
+	 * @param Array $file--文档信息
+	 * @param String $type--要求的文档类型'word' or 'png'
+	 * @return Boolean
+	 */
+	public function checkFileType($file,$type){
+		$style = '';
+		if($type=='word'){
+			$type = 'doc';
+			$style = 'application/msword';
+		}elseif($type=='png'){
+			$style = 'image/png';
+		}
+		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+		if($ext==$type && $file['type']==$style){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }
