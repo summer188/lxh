@@ -1,9 +1,25 @@
 <include file="Public:header" />
-<style type="text/css"> table {font-size: 12px} </style>
+<style type="text/css">
+    table {font-size: 12px}
+    .myqn{width:60px; height:30px; background-color:#5189C4; color:white;}
+    .myqnclick{width:60px; height:30px; background-color:#E2E9EA; color:#3A6EA5; font-weight:bold;}
+</style>
 <div class="pad-lr-10">
-    <form name="searchform" id="searchform" action="admin.php?m={$controller}&a={$display}" method="get" >
+    <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=my" method="get" >
         <table width="100%" cellspacing="0" class="search-form">
             <tbody>
+            <tr>
+                <td>
+                    <div class="explain-col">
+                        <input type="button" id="myUpload" value="我的上传" class="myqn"/>
+                        <input type="hidden" id="upload" name="upload" value="{$upload}"/>
+                        <input type="button" id="myDownload" value="我的下载" class="myqn" style="margin-left:10px;"/>
+                        <input type="hidden" id="download" name="download" value="{$download}"/>
+                        <input type="button" id="myCollect" value="我的收藏" class="myqn" style="margin-left:10px;"/>
+                        <input type="hidden" id="collect" name="collect" value="{$collect}"/>
+                    </div>
+                </td>
+            </tr>
             <tr>
                 <td>
                     <div class="explain-col">
@@ -22,7 +38,7 @@
                             </volist>
                         </select>
                         <input type="hidden" name="m" value="{$controller}" />
-                        <input type="hidden" name="a" value="{$display}" />
+                        <input type="hidden" name="a" value="my" />
                         <span id="submit">
                             <span style="margin-left:20px;"></span>
                             <input type="submit" name="search" class="button" value="搜索" />&nbsp;
@@ -79,7 +95,9 @@
                         <td align="center">
                             <a href="javascript:collectQuestion({$val.id})" style="color:#0000FF;width:20px;">收藏</a>&nbsp;
                             <a href="javascript:lookQuestion({$val.id})" style="color:#0000FF;width:20px;">预览</a>&nbsp;
-                            <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">编辑</a>&nbsp;
+                            <if condition="$val['create_id'] eq $admin_id">
+                                <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">编辑</a>&nbsp;
+                            </if>
                             <a href="javascript:downloadQuestion({$val.id})" style="color:#0000FF;width:20px;">下载</a>
                         </td>
                     </tr>
@@ -98,27 +116,70 @@
     $(function(){
         //从其他页面（如上传新题页面）跳转到此页面后，需要调用一下父窗口的_MP方法，才能保证样式和targetUrl是当前页面
         var controller = "{$controller}";
-        var display = "{$display}";
         var menuid = 0;
         if(controller=='Ad'){
-            menuid = 152;
+            menuid = 154;
         }else if(controller=='SellerList'){
-            if(display=='yun'){
-                menuid = 141;
-            }else if(display=='school'){
-                menuid = 142;
-            }
-
+            menuid = 143;
         }else if(controller=='Article'){
-            menuid = 103;
+            menuid = 106;
         }
         var src = $("#rightMain",parent.document).attr('src');
-        var targetUrl = "/admin.php?m="+controller+"&a="+display;
+        var targetUrl = "/admin.php?m="+controller+"&a=my";
         if(src!=targetUrl){
             parent._MP(menuid,targetUrl);
         }
+        buttonStyle();
         getPointList();
     });
+    $("#myUpload").click(function(){
+        $("#upload").val('1');
+        $("#download").val('0');
+        $("#collect").val('0');
+        buttonStyle();
+        $("#searchform").submit();
+    });
+    $("#myDownload").click(function(){
+        $("#download").val('1');
+        $("#upload").val('0');
+        $("#collect").val('0');
+        buttonStyle();
+        $("#searchform").submit();
+    });
+    $("#myCollect").click(function(){
+        $("#collect").val('1');
+        $("#upload").val('0');
+        $("#download").val('0');
+        buttonStyle();
+        $("#searchform").submit();
+    });
+    function buttonStyle(){
+        var upload = $("#upload").val();
+        var download = $("#download").val();
+        var collect = $("#collect").val();
+        if(upload=='1'){
+            $("#myUpload").removeClass("myqn");
+            $("#myUpload").addClass("myqnclick");
+        }else{
+            $("#myUpload").removeClass("myqnclick");
+            $("#myUpload").addClass("myqn");
+        }
+        if(download=='1'){
+            $("#myDownload").removeClass("myqn");
+            $("#myDownload").addClass("myqnclick");
+        }else{
+            $("#myDownload").removeClass("myqnclick");
+            $("#myDownload").addClass("myqn");
+        }
+        if(collect=='1'){
+            $("#myCollect").removeClass("myqn");
+            $("#myCollect").addClass("myqnclick");
+        }else{
+            $("#myCollect").removeClass("myqnclick");
+            $("#myCollect").addClass("myqn");
+        }
+
+    }
     //重置
     function clean(){
         $("#grade_id").val('');
@@ -204,11 +265,11 @@
     }
     //预览
     function lookQuestion(id) {
-        location.href = "admin.php?m={$controller}&a=lookQuestion&display={$display}"+"&id="+id;
+        location.href = "admin.php?m={$controller}&a=lookQuestion"+"&id="+id;
     }
     //编辑
     function editQuestion(id) {
-        location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
+        location.href = "admin.php?m={$controller}&a=editQuestion&display=my"+"&id="+id;
     }
     //收藏
     function collectQuestion(id) {
@@ -229,7 +290,7 @@
                     location.href = "download.php?id="+id+"&pid={$period_id}&tab={$question_tab}";
                 }
             }else{
-                    $('#download_'+id).html("<span style='color:#009933;'>已下载</span>");
+                $('#download_'+id).html("<span style='color:#009933;'>已下载</span>");
                 location.href = "download.php?id="+id+"&pid={$period_id}&tab={$question_tab}";
             }
         });

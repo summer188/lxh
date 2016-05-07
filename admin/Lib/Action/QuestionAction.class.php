@@ -38,7 +38,6 @@ class QuestionAction extends QuestionLoadAction{
 	 *
 	 */
 	public function school(){
-//        var_dump($_GET);
 		//获取搜索条件
 		$arrGet = array();
 		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
@@ -69,42 +68,108 @@ class QuestionAction extends QuestionLoadAction{
 	 *
 	 */
 	public function my(){
-		//获取搜索条件
-		$arrGet = array();
-		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
-		if($grade_id!=''){
-			$arrGet['grade_id'] = $grade_id;
-		}
-		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
-		if($cate_id!=''){
-			$arrGet['cate_id'] = $cate_id;
-		}
-		$point_id=isset($_GET['point_id'])?trim($_GET['point_id']):'';
-		if($point_id!=''){
-			$arrGet['point_id'] = $point_id;
-		}
-		$chapter_id=isset($_GET['chapter_id'])?trim($_GET['chapter_id']):'';
-		if($chapter_id!=''){
-			$arrGet['chapter_id'] = $chapter_id;
-		}
-		$section_id=isset($_GET['section_id'])?trim($_GET['section_id']):'';
-		if($section_id!=''){
-			$arrGet['section_id'] = $section_id;
-		}
-		$style_id=isset($_GET['style_id'])?trim($_GET['style_id']):'';
-		if($style_id!=''){
-			$arrGet['style_id'] = $style_id;
-		}
-		$type_id=isset($_GET['type_id'])?trim($_GET['type_id']):'';
-		if($type_id!=''){
-			$arrGet['type_id'] = $type_id;
-		}
+        $admin_id = $_SESSION['admin_info']['id'];
+        $collect_mod = M("{$this->getCollectMod()}");
 
-		//取得管理员id
-//		$result = M('admin_question')->where("admin_id={$_SESSION['admin_info']['id']}")->find();
-//		$question_ids = trim($result['question_ids'],',');
-//		$condition = " AND id IN ($question_ids)";
-//		$this->getQuestionList($condition,'my',$arrGet);
+        //获取搜索条件
+        $where = '';
+
+        //我的下载
+        $is_download=isset($_GET['download'])?intval($_GET['download']):0;
+        if($is_download==1){
+            //获取下载列表
+            $where_download = "admin_id=$admin_id AND period_id=$this->period_id AND is_download=1";
+            $download_list = $collect_mod->where($where_download)->select();
+            $where .= "id in(";
+            if(is_array($download_list) && count($download_list)>0){
+                foreach($download_list as $key=>$value){
+                    $where .= "{$value['question_id']},";
+                }
+            }
+            $where = rtrim($where,',');
+            $where .= ") AND ";
+            $this->assign('download',1);
+        }
+
+        //我的收藏
+        $is_collect=isset($_GET['collect'])?intval($_GET['collect']):0;
+        if($is_collect==1){
+            //获取收藏列表
+            $where_collect = "admin_id=$admin_id AND period_id=$this->period_id AND is_collect=1";
+            $collect_list = $collect_mod->where($where_collect)->select();
+            $where .= "id in(";
+            if(is_array($collect_list) && count($collect_list)>0){
+                foreach($collect_list as $key=>$value){
+                    $where .= "{$value['question_id']},";
+                }
+            }
+            $where = rtrim($where,',');
+            $where .= ") AND ";
+            $this->assign('collect',1);
+        }
+
+        $where .= "period_id={$this->period_id}";
+        $grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+        if ($grade_id!='') {
+            $where .= " AND grade_id=$grade_id";
+            $this->assign('grade_id', $grade_id);
+        }
+        $cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+        if ($cate_id!='') {
+            $where .= " AND cate_id=$cate_id";
+            $this->assign('cate_id', $cate_id);
+        }
+        $point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
+        if($grade_id!='' && $cate_id!=''){
+            $checked = array();
+            if (!empty($point_id) && is_array($point_id)) {
+                $where .= " AND (";
+                foreach($point_id as $key=>$value){
+                    $where .= " title_attribute LIKE '%{$value}%' OR";
+                    $checked[$value] = 'checked';
+                }
+                $where = rtrim($where,'OR');
+                $where .= ")";
+                $this->assign('point_id',$point_id);
+                $this->assign('checked',json_encode($checked));
+            }
+        }
+
+        //我的上传
+        $is_upload=isset($_GET['upload'])?intval($_GET['upload']):0;
+        if($is_upload==1 || (!$is_download&&!$is_collect)){
+            $where .= " AND create_id=$admin_id";
+            $this->assign('upload',1);
+        }
+        import("ORG.Util.Page");
+        $count = $this->question_mod->where($where)->count();
+        $p = new Page($count,15);
+        //搜索符合条件的题目
+        $question_list = $this->question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,id desc')->select();
+        $collect_list = $this->getCollectAll();
+        foreach($question_list as $key=>&$value){
+            $value['grade'] = $this->grade_list[$value['grade_id']]['name'];
+            $value['cate'] = $this->cate_list[$value['cate_id']]['name'];
+            $value['name'] = cutString($value['name'],30);
+            //取收藏记录
+            if(!empty($collect_list[$value['id']])){
+                $value['is_collect'] = $collect_list[$value['id']]['is_collect'];
+                $value['is_download'] = $collect_list[$value['id']]['is_download'];
+            }else{
+                $value['is_collect'] = 0;
+                $value['is_download'] = 0;
+            }
+        }
+        $page = $p->show();
+        $this->assign('page',$page);
+        $this->assign('controller',MODULE_NAME);
+        $this->assign('period_id',$this->period_id);
+        $this->assign('grade_list',$this->grade_list);
+        $this->assign('cate_list',$this->cate_list);
+        $this->assign('question_list',$question_list);
+        $this->assign('question_tab',$this->question_tab);
+        $this->assign('admin_id',$admin_id);
+        $this->display();
 	}
 
 	/**
@@ -179,9 +244,5 @@ class QuestionAction extends QuestionLoadAction{
 		$this->assign('display',$display);
 		$this->display($display);
 	}
-
-
-
-
 
 }

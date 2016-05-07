@@ -1,6 +1,6 @@
 <?php
 /**
- * 题目收藏、上传、下载公共控制器
+ * 题目上传、编辑、收藏、下载、删除公共控制器
  *
  * Created by Sunmiaomiao.
  * Email: 652308259@qq.com
@@ -259,21 +259,6 @@ class QuestionLoadAction extends QuestionToolAction{
 	}
 
 	/**
-	 * 是否下载题目--弹窗
-	 *
-	 */
-	public function downloadAsk(){
-		if (isset($_GET['id']) && is_string($_GET['id'])) {
-			$this->assign('controller',MODULE_NAME);
-			$this->assign('id',intval($_GET['id']));
-			$this->assign('pid',intval($_GET['pid']));
-			$this->assign('tab',intval($_GET['tab']));
-			$this->assign('show_header', false);
-			$this->display();
-		}
-	}
-
-	/**
 	 * 删除题目
 	 *
 	 * @return String
@@ -282,30 +267,28 @@ class QuestionLoadAction extends QuestionToolAction{
 		if(!isset($_POST['id']) || empty($_POST['id'])){
 			$this->error('请选择要删除的题目！');
 		}
-		$flag = true;
 		if (isset($_POST['id']) && is_array($_POST['id'])) {
 			$arr = $_POST['id'];
-			//删除数据表中信息
-			$ids = implode(',', $arr);
-			$res = $this->question_mod->delete($ids);
-			if($res <= 0){
-				$flag = false;
-			}
-			//删除文档和截图
+            $collect_mod = M("{$this->getCollectMod()}");
+            $admin_id = $_SESSION['admin_info']['id'];
 			foreach($arr as $key=>$value){
-				$question_info = $this->question_mod->where("id=$value")->find();
-				$cate_alias = $this->cate_list[$question_info['cate_id']]['alias'];
-				$question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/'.$question_info['site_logo'].'/'.$question_info['net_logo'].'/';
-				$result = $this->delDir($question_dir);
-				if(!$result){
-					$flag = false;
-				}
+                //删除文档和截图
+                $question_info = $this->question_mod->where("id=$value")->find();
+                $cate_alias = $this->cate_list[$question_info['cate_id']]['alias'];
+                $question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/'.$question_info['site_logo'].'/'.$question_info['net_logo'].'/';
+                $this->delFile($question_dir,$question_info['net_logo']);
+                //删除收藏和下载记录表信息
+                $where = "admin_id=$admin_id AND period_id=$this->period_id AND question_id=$value";
+                $collect_mod->where($where)->delete();
 			}
-		}
-		if($flag){
-			$this->success(L('operation_success'));
-		}else{
-			$this->error('操作失败！');
+            //删除题目表中信息
+            $ids = implode(',', $arr);
+            $result = $this->question_mod->delete($ids);
+            if($result){
+                $this->success(L('operation_success'));
+            }else{
+                $this->error('操作失败！');
+            }
 		}
 	}
 
@@ -318,6 +301,7 @@ class QuestionLoadAction extends QuestionToolAction{
 		$tag = $_SESSION['admin_info']['id'] % 10;
 		return 'admin_question'.$tag;
 	}
+
 	/**
 	 * 获取某管理员的所有收藏记录
 	 *
