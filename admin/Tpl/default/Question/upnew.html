@@ -121,6 +121,13 @@
         </tr>
         <empty name="png_url">
             <tr>
+                <th>检测上传环境：</th>
+                <td>
+                    <input  type="button" id="upword" value="一键检测"/>
+                    <input type="hidden" id="dir" value="0"/>
+                </td>
+            </tr>
+            <tr>
                 <th>word文档 :</th>
                 <td>
                     <input  type="file" name="word" value=""/>
@@ -246,9 +253,37 @@ function check(){
         alert('请填写题目答案！');
         return false;
     }
+    if($('#dir').val()=='0'){
+        alert('请先检测上传环境！');
+        return false;
+    }
     return true;
 }
-
+//由于服务器上传时，响应有延迟(创建文件夹和移动临时文件不能连续操作)，
+// 所以需要先准备好题目文档存放目录，故增加此功能
+$('#upword').click(function(){
+    var grade = $('#grade_id').val();
+    var cate = $('#cate_id').val();
+    var site = $('#site_logo').val();
+    var net = $('net_logo').val();
+    if(site==''){
+        alert('请先填写期数后再检测！');
+        return false;
+    }
+    if(net==''){
+        alert('请先填写题目序号后再检测！');
+        return false;
+    }
+    var url = "admin.php?m={$controller}&a=upword";
+    $.get(url, {grade:grade,cate:cate,site:site,net:net}, function(jsondata){
+        if(jsondata.status){
+            $('#dir').val('1');
+            window.top.art.dialog({id:'upword',content:jsondata.info,lock:true,width:'200',height:'50',time:1});
+        }else{
+            window.top.art.dialog({id:'upword',content:jsondata.info,lock:true,width:'380',height:'50',time:1});
+        }
+    });
+});
 </script>
 </div>
 </body>

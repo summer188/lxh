@@ -122,6 +122,26 @@ class QuestionLoadAction extends QuestionToolAction{
 		}
 	}
 
+    /**
+     * 检测题目目录--响应ajax请求
+     *
+     * @return Array
+     */
+    public function upword(){
+        $jsondata = array('status'=>false,'info'=>'经检测，暂时不能上传文件，请稍后再试！');
+        $grade_id=isset($_GET['grade'])?trim($_GET['grade']):'';
+        $cate_id=isset($_GET['cate'])?trim($_GET['cate']):'';
+        $site_logo=isset($_GET['site'])?trim($_GET['site']):'';
+        $net_logo=isset($_GET['net'])?trim($_GET['net']):'';
+
+        $result=$this->checkQuestionDir($cate_id,$grade_id,$site_logo,$net_logo);
+        if($result){
+            $jsondata['status'] = true;
+            $jsondata['info'] = '经检测，可以上传！';
+        }
+        $this->ajaxReturn($jsondata,'JSON');
+    }
+
 	/**
 	 * 预览题目
 	 *

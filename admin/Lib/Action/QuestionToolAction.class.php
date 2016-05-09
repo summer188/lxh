@@ -24,6 +24,29 @@ class QuestionToolAction extends QuestionBaseAction{
 		$this->ajaxReturn($point_list,'JSON');
 	}
 
+    /**
+     * 根据条件获取知识点列表
+     *
+     * @param String $grade_id 年级id
+     * @param String $cate_id 学科id
+     * @return Array
+     */
+    public function getPointAll($grade_id='',$cate_id=''){
+        if($grade_id!='' && $cate_id!=''){
+            $where = "level=1";
+            $where .= " AND period_id=$this->period_id";
+            $where .= " AND grade_id=$grade_id";
+            $where .= " AND cate_id=$cate_id";
+            $point_list = M("point")->where($where)->field('id,alias,name')->select();
+            if($point_list){
+                return $point_list;
+            }else{
+                return array();
+            }
+        }
+
+    }
+
 	/**
 	 * 判断或创建题目目录
      *
