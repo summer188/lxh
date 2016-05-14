@@ -120,13 +120,13 @@
             </td>
         </tr>
         <empty name="png_url">
-            <tr>
+            <!--<tr>
                 <th>检测上传环境：</th>
                 <td>
                     <input  type="button" id="upword" value="一键检测"/>
                     <input type="hidden" id="dir" value="0"/>
                 </td>
-            </tr>
+            </tr>-->
             <tr>
                 <th>word文档 :</th>
                 <td>
@@ -253,10 +253,10 @@ function check(){
         alert('请填写题目答案！');
         return false;
     }
-    if($('#dir').val()=='0'){
-        alert('请先检测上传环境！');
-        return false;
-    }
+//    if($('#dir').val()=='0'){
+//        alert('请先检测上传环境！');
+//        return false;
+//    }
     return true;
 }
 //由于服务器上传时，响应有延迟(创建文件夹和移动临时文件不能连续操作)，
