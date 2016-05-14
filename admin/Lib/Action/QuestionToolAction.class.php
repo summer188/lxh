@@ -100,10 +100,9 @@ class QuestionToolAction extends QuestionBaseAction{
 	public function checkDir($root){
 		if(!file_exists($root)){
 			mkdir($root);
-            chmod($root, 0777);
-//			if(!chmod($root, 0777)){
-//				$this->error(L('OPERATION_FAILURE'));
-//			}
+			if(!chmod($root, 0777)){
+				$this->error(L('OPERATION_FAILURE'));
+			}
 		}
 	}
 
