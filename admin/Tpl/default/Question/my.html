@@ -60,14 +60,14 @@
             <table width="100%" cellspacing="0">
                 <thead>
                 <tr>
-                    <th width=50>ID</th>
-                    <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
-                    <th>题目简介</th>
-                    <th width=100>答案</th>
-                    <th width=80>大题难易度</th>
-                    <th width=80>是否收藏</th>
-                    <th width=80>是否下载</th>
-                    <th width=120>操作</th>
+                    <th width=3%>ID</th>
+                    <th width=2%><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
+                    <th>题目</th>
+                    <th width=8%>答案</th>
+                    <!--<th width=7%>大题难易度</th>-->
+                    <th width=6%>是否收藏</th>
+                    <th width=6%>是否下载</th>
+                    <th width=12%>操作</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -75,9 +75,11 @@
                     <tr>
                         <td align="center">{$val.id}</td>
                         <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
-                        <td align="center">{$val.name}</td>
+                        <td align="center">
+                            <img src="{$val.src}"/>
+                        </td>
                         <td align="center">{$val.answer}</td>
-                        <td align="center">{$val.has_invoice}</td>
+                        <!--<td align="center">{$val.has_invoice}</td>-->
                         <td align="center">
                             <if condition="$val['is_collect'] eq 1">
                                 <span style="color:#009933;">已收藏</span>
@@ -265,7 +267,16 @@
     }
     //预览
     function lookQuestion(id) {
-        location.href = "admin.php?m={$controller}&a=lookQuestion"+"&id="+id;
+        window.top.art.dialog({id:'lookQuestion'}).close();
+        window.top.art.dialog({
+                    title:"题目预览",
+                    id:'lookQuestion',
+                    iframe:"?m={$controller}&a=lookQuestion&id="+id,width:'700',height:'500'
+                },
+                function()
+                {
+                    window.top.art.dialog({id:'lookQuestion'}).close()
+                });
     }
     //编辑
     function editQuestion(id) {

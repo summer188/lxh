@@ -130,7 +130,8 @@ class PublicAction extends BaseAction
 //				if($authInfo['user_name']=='admin') {
 //					$_SESSION['administrator'] = true;
 //				}
-				$this->success('登录成功！',u('Index/index'));
+//				$this->success('登录成功！',u('Index/index'));
+				$this->redirect(U('Index/index'));
 				exit;
 			}
 		}

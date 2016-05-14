@@ -150,7 +150,9 @@ class QuestionAction extends QuestionLoadAction{
         foreach($question_list as $key=>&$value){
             $value['grade'] = $this->grade_list[$value['grade_id']]['name'];
             $value['cate'] = $this->cate_list[$value['cate_id']]['name'];
-            $value['name'] = cutString($value['name'],30);
+//            $value['name'] = cutString($value['name'],30);
+			$question_dir = $this->checkQuestionDir($value['cate_id'],$value['grade_id'],$value['site_logo'],$value['net_logo']);
+			$value['src'] = $question_dir.$value['net_logo'].'.png';
             //取收藏记录
             if(!empty($collect_list[$value['id']])){
                 $value['is_collect'] = $collect_list[$value['id']]['is_collect'];
@@ -217,13 +219,15 @@ class QuestionAction extends QuestionLoadAction{
 
 		import("ORG.Util.Page");
 		$count = $this->question_mod->where($where)->count();
-		$p = new Page($count,15);
+		$p = new Page($count,10);
 		$question_list = $this->question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,id desc')->select();
         $collect_list = $this->getCollectAll();
 		foreach($question_list as $key=>&$value){
 			$value['grade'] = $this->grade_list[$value['grade_id']]['name'];
 			$value['cate'] = $this->cate_list[$value['cate_id']]['name'];
-			$value['name'] = cutString($value['name'],30);
+//			$value['name'] = cutString($value['name'],30);
+			$question_dir = $this->checkQuestionDir($value['cate_id'],$value['grade_id'],$value['site_logo'],$value['net_logo']);
+			$value['src'] = $question_dir.$value['net_logo'].'.png';
 			//取收藏记录
 			if(!empty($collect_list[$value['id']])){
 				$value['is_collect'] = $collect_list[$value['id']]['is_collect'];
