@@ -247,25 +247,17 @@
         });
     }
     //批量下载
-    function dl(o){
-//        var form =o.form;
-//        var checked=false;
-//        var w=[];
-//        for(var i=0;i<form.elements.length;i++){
-//            if(form.elements[i].type=="checkbox"&&form.elements[i].checked){
-//                w[i]=window.open('about:blank', "f_"+i);
-//                document.getElementById('form').target="f_"+i;
-//                document.getElementById('files').value=form.elements[i].value;
-//                document.getElementById('form').submit();　
-//            checked=true;
-//            }
-//        }
-//        if(!checked) alert('请选择至少一个文件');
-//        setTimeout(function(){
-//            for(var i=0;i<w.length;i++){
-//                w[i].close();
-//            }
-//        },3000);
+    function dl(){
+        var ids='';
+        $("input[name='id[]']:checked").each(function(i, n){
+            ids += $(n).val() + ',';
+        });
+        if(ids=='') {
+            window.top.art.dialog({content:lang_please_select+'菜单分类名称	',lock:true,width:'200',height:'50',time:1.5},function(){});
+            return false;
+        }else{
+            location.href = "dl.php?ids="+ids+"&pid={$period_id}&tab={$question_tab}";
+        }
 
     }
 </script>

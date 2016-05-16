@@ -9,9 +9,6 @@
  */
 include_once ("connect.php");
 
-//var_dump($_REQUEST);
-//exit;
-
 if(!empty($_REQUEST['id']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['tab'])){
 	//题目id
 	$id = intval($_REQUEST['id']);
@@ -56,8 +53,6 @@ if(!empty($_REQUEST['id']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['tab'
 			header('Content-Disposition: attachment; filename='.time().'.doc');
 			header('Content-Length: '.filesize($question_file));
 			readfile($question_file);
-//			$jsondata = array('status'=>'1');
-//			echo json_encode($jsondata);
 			exit;
 		}
 	}
