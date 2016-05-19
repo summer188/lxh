@@ -222,7 +222,7 @@ function build_first_action() {
 function build_dir_secure($dirs='') {
     // 目录安全写入
     if(defined('BUILD_DIR_SECURE') && BUILD_DIR_SECURE) {
-        defined('DIR_SECURE_FILENAME')  or define('DIR_SECURE_FILENAME',    'index.html');
+        defined('DIR_SECURE_FILENAME')  or define('DIR_SECURE_FILENAME',    'four.html');
         defined('DIR_SECURE_CONTENT')   or define('DIR_SECURE_CONTENT',     ' ');
         // 自动写入目录安全文件
         $content = DIR_SECURE_CONTENT;

@@ -106,15 +106,59 @@ class PointOneAction extends PointBaseAction{
         }
 
     }
-    //修改状态
-    function statusOne()
-    {
-        $id = intval($_REQUEST['id']);
-        $type = trim($_REQUEST['type']);
-        $sql = "update " . C('DB_PREFIX') . "point set $type=($type+1)%2 where id='$id'";
-        $this->point_mod->execute($sql);
-        $values = $this->point_mod->where('id=' . $id)->find();
-        $this->ajaxReturn($values[$type]);
-    }
+
+	//excel表格数据保存
+	public function insertExcelOne()
+	{
+		//接收前端传来的post和file
+		$grade_id = intval($_POST['grade_id']);
+		$cate_id = intval($_POST['cate_id']);
+		$file = $_FILES['file'];
+
+		//检查上传的文件类型是否正确
+		$correct_ext  = "xls";
+		$correct_type = "application/vnd.ms-excel";
+		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+		if($ext!=$correct_ext || $file['type']!=$correct_type){
+			$this->error('文件类型不正确！');
+		}
+
+		//上传文件
+		$base_url = "./upload/";
+		checkDir($base_url);
+		$period_url = $base_url.MODULE_NAME.'/';
+		checkDir($period_url);
+		$excel_url = $period_url.date('Ymdhis').".xls";
+		if(!move_uploaded_file($file['tmp_name'],$excel_url)) {
+			$this->error('表格导入失败！');
+		}
+
+		//表格内容存入数据库
+		include("excel/reader.php");
+		$xls = new Spreadsheet_Excel_Reader();
+		$xls->setOutputEncoding('utf-8');
+		$xls->read($excel_url);
+		$data_values = '';
+		for ($i=2; $i<=$xls->sheets[0]['numRows']; $i++) {
+			$create_id = $_SESSION['admin_info']['id'];
+			$create_time = date("Y-m-d h:i:s",time());
+
+			if($xls->sheets[0]['cells'][$i][1]!='' && $xls->sheets[0]['cells'][$i][2]!=''){
+				$alias1 = $xls->sheets[0]['cells'][$i][1];
+				$name1 = $xls->sheets[0]['cells'][$i][2];
+				$data_value1 = "('$alias1','$name1','1','$this->period_id','$grade_id','$cate_id','1','$create_id','$create_time'),";
+				$data_values .= $data_value1;
+			}
+		}
+		$data_values = substr($data_values,0,-1); //去掉最后一个逗号
+		$sql = "insert into lxh_point (alias,name,level,period_id,grade_id,cate_id,status,create_id,create_time) values $data_values";
+		$result = mysql_query($sql);//批量插入数据表中
+		if($result){
+			$this->success('表格导入成功！', '', 3, 'addExcel');
+		}else{
+			$this->error('表格导入失败！');
+		}
+
+	}
 
 }

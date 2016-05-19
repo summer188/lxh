@@ -17,10 +17,23 @@ class QuestionToolAction extends QuestionBaseAction{
 	 *
 	 * @return Array
 	 */
-	public function getPointList(){
-		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
-		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
-		$point_list = $this->getPointAll($grade_id,$cate_id);
+	public function getOneList(){
+		$grade_id = isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+		$cate_id = isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		$one_list = $this->getPoint($grade_id,$cate_id,1);
+		$two_list = array();
+		if(count($one_list)>0){
+			foreach($one_list as $key=>&$value){
+				$where = "alias LIKE '%{$value['alias']}%'";
+				$where .= " AND level=2";
+				$where .= " AND period_id=$this->period_id";
+				$where .= " AND grade_id=$grade_id";
+				$where .= " AND cate_id=$cate_id";
+				$point_list = M("point")->where($where)->field('id,alias,name')->select();
+				$two_list[$value['id']] = array_to_key($point_list,'id');
+			}
+		}
+		$point_list = array('one'=>$one_list,'two'=>$two_list);
 		$this->ajaxReturn($point_list,'JSON');
 	}
 
@@ -29,22 +42,30 @@ class QuestionToolAction extends QuestionBaseAction{
      *
      * @param String $grade_id 年级id
      * @param String $cate_id 学科id
+     * @param Int $level 知识点级别
+     * @param String $key 结果数组的键名
      * @return Array
      */
-    public function getPointAll($grade_id='',$cate_id=''){
-        if($grade_id!='' && $cate_id!=''){
-            $where = "level=1";
-            $where .= " AND period_id=$this->period_id";
-            $where .= " AND grade_id=$grade_id";
-            $where .= " AND cate_id=$cate_id";
-            $point_list = M("point")->where($where)->field('id,alias,name')->select();
-            if($point_list){
-                return $point_list;
-            }else{
-                return array();
-            }
-        }
-
+    public function getPoint($grade_id='',$cate_id='',$level=0, $key='id'){
+		$where = '1=1';
+		if($level>0){
+			$where .= "level=$level";
+		}
+		$where .= " AND period_id=$this->period_id";
+		if(!empty($grade_id)){
+			$where .= " AND grade_id=$grade_id";
+		}
+		if(!empty($cate_id)){
+			$where .= " AND cate_id=$cate_id";
+		}
+		$point_list = M("point")->where($where)->field('id,alias,name')->select();
+//		echo M("point")->getLastSql();
+		if($point_list){
+			$point_list = array_to_key($point_list,$key);
+			return $point_list;
+		}else{
+			return array();
+		}
     }
 
 	/**

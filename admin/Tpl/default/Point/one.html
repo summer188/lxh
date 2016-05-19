@@ -2,6 +2,7 @@
 <style type="text/css"> table {font-size: 12px} </style>
 <div class="pad-lr-10">
     <div class="data_top">
+        <a class="cat" href="javascript:addExcel()">excel表格导入</a>
         <a class="cat" href="javascript:addOne()">添加一级目录</a>
     </div>
     <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=one" method="get" >
@@ -88,6 +89,27 @@
         }
         return true;
     }
+    //知识点excel表格导入
+    function addExcel() {
+        window.top.art.dialog({id:'addExcel'}).close();
+        window.top.art.dialog({
+                    title:'excel表格导入',
+                    id:'addExcel',
+                    iframe:"?m={$controller}&a=addExcel&level=One",width:'400',height:'150'
+                },
+                function()
+                {
+                    var d = window.top.art.dialog({id:'addExcel'}).data.iframe;
+                    var form=d.document.getElementById('dosubmit').click();
+                    form.click();return false;
+
+                },
+                function()
+                {
+                    window.top.art.dialog({id:'addExcel'}).close()
+                });
+
+    }
     //添加一级目录
     function addOne() {
         var lang_add = "添加一级目录";
@@ -130,7 +152,7 @@
                 });
     }
     function statusOne(id,type){
-        var url = "admin.php?m={$controller}&a=statusOne";
+        var url = "admin.php?m={$controller}&a=status";
         $.get(url, { id: id, type: type }, function(jsondata){
             var return_data  = eval("("+jsondata+")");
             $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data+'.gif');

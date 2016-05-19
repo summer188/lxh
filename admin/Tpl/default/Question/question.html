@@ -8,14 +8,14 @@
                 <td>
                     <div class="explain-col">
                         <span>年级 :</span>
-                        <select name="grade_id" id="grade_id" onchange="getPointList()">
+                        <select name="grade_id" id="grade_id" onchange="getOneList()">
                             <option value="">请选择</option>
                             <volist name="grade_list" id="val">
                                 <option value="{$val.id}" <if condition="$grade_id eq $val['id']">selected="selected"</if>>{$val.name}</option>
                             </volist>
                         </select>
                         <span style="margin-left:30px;">学科 :</span>
-                        <select name="cate_id" id="cate_id" onchange="getPointList()">
+                        <select name="cate_id" id="cate_id" onchange="getOneList()">
                             <option value="">请选择</option>
                             <volist name="cate_list" id="val">
                                 <option value="{$val.id}" <if condition="$cate_id eq $val['id']">selected="selected"</if>>{$val.name}</option>
@@ -33,7 +33,17 @@
             </tr>
             <tr>
                 <td>
-                    <div id="point_list"></div>
+                    <div id="one_list"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="two_list"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="three_list"></div>
                 </td>
             </tr>
             </tbody>
@@ -98,85 +108,179 @@
     </form>
 </div>
 <script language="javascript">
-    $(function(){
-        //从其他页面（如上传新题页面）跳转到此页面后，需要调用一下父窗口的_MP方法，才能保证样式和targetUrl是当前页面
-        var controller = "{$controller}";
-        var display = "{$display}";
-        var menuid = 0;
-        if(controller=='Ad'){
-            menuid = 152;
-        }else if(controller=='SellerList'){
-            if(display=='yun'){
-                menuid = 141;
-            }else if(display=='school'){
-                menuid = 142;
-            }
+//    console.log({$arr});
+$(function(){
+    //从其他页面（如上传新题页面）跳转到此页面后，需要调用一下父窗口的_MP方法，才能保证样式和targetUrl是当前页面
+    var controller = "{$controller}";
+    var display = "{$display}";
+    var menuid = 0;
+    if(controller=='Ad'){
+        menuid = 152;
+    }else if(controller=='SellerList'){
+        if(display=='yun'){
+            menuid = 141;
+        }else if(display=='school'){
+            menuid = 142;
+        }
 
-        }else if(controller=='Article'){
-            menuid = 103;
-        }
-        var src = $("#rightMain",parent.document).attr('src');
-        var targetUrl = "/admin.php?m="+controller+"&a="+display;
-        if(src!=targetUrl){
-            parent._MP(menuid,targetUrl);
-        }
-        getPointList();
+    }else if(controller=='Article'){
+        menuid = 103;
+    }
+    var src = $("#rightMain",parent.document).attr('src');
+    var targetUrl = "/admin.php?m="+controller+"&a="+display;
+    if(src!=targetUrl){
+        parent._MP(menuid,targetUrl);
+    }
+    getOneList();
+    //获取二级目录列表
+    if($('#one_list').val()!=''){
+
+    }
+    $("input[name='one_id']").change(function(){
+//        var one_id = $(this).val();
+//        console.log('111');
+        alert('111');
     });
-    //重置
-    function clean(){
-        $("#grade_id").val('');
-        $("#cate_id").val('');
-        $("#searchform").submit();
-    }
+//    var two = {
+//        1:{
+//            id:1,
+//            alias:'0101001',
+//            name:'一级目录1'
+//        },
+//        2:{
+//            id:2,
+//            alias:'0101002',
+//            name:'一级目录2'
+//        },
+//        3:{
+//            id:3,
+//            alias:'0101003',
+//            name:'一级目录3'
+//        }
+//    };
+    var two = {$two};
+    var three = {$three};
+//    console.log(three['0101001']);
+    var two_list = '';
+    $.each(two,function(id,obj){
+        two_list += "<input type='radio' name='two_id' id='two_"+obj.id+"' value='"+obj.alias+"'/>";
+        two_list += "<label for='two_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+    });
+    $("#two_list").removeClass('explain-col');
+    $('#two_list').html(two_list);
+    $("#two_list").addClass('explain-col');
+    $("input[name='two_id']").change(function(){
+        var i = $(this).val();
+        var three_list = '';
+        $.each(three[i],function(id,obj){
+            three_list += "<input type='radio' name='three_id' id='three_"+obj.id+"' value='"+obj.alias+"'/>";
+            three_list += "<label for='three_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+        });
+        $("#three_list").removeClass('explain-col');
+        $('#three_list').html(three_list);
+        $("#three_list").addClass('explain-col');
+    });
+});
+//重置
+function clean(){
+    $("#grade_id").val('');
+    $("#cate_id").val('');
+    $("#searchform").submit();
+}
     //判断年级和学科有没有选择
-    function isChecked(){
-        var grade_id = $("#grade_id").val();
-        var cate_id = $("#cate_id").val();
-        if(grade_id == ""){
-            alert("请先选择年级！");
-            return false;
-        }
-        if(cate_id == ""){
-            alert("请先选择学科！");
-            return false;
-        }
-    }
-    //获取知识点列表
-    function getPointList(){
-        var grade_id = $("#grade_id").val();
-        var cate_id = $("#cate_id").val();
-        if(grade_id!='' && cate_id!=''){
-            var url = "admin.php?m={$controller}&a=getPointList";
-            $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
-                //搜索和重置按钮复原
+//    function isChecked(){
+//        var grade_id = $("#grade_id").val();
+//        var cate_id = $("#cate_id").val();
+//        if(grade_id == ""){
+//            alert("请先选择年级！");
+//            return false;
+//        }
+//        if(cate_id == ""){
+//            alert("请先选择学科！");
+//            return false;
+//        }
+//    }
+//获取一级目录列表
+function getOneList(){
+    var grade_id = $("#grade_id").val();
+    var cate_id = $("#cate_id").val();
+    if(grade_id!='' && cate_id!=''){
+        var url = "admin.php?m={$controller}&a=getOneList";
+        $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
+//            console.log(jsondata.one);
+//            return false;
+            //搜索和重置按钮复原
+            var submit = $("#submit").html();
+            if(submit==''){
+                submit = "<span style='margin-left:20px;'></span>" +
+                "<input type='submit' name='search' class='button' value='搜索' />&nbsp; " +
+                "<input type='button' class='button' value='重置' onclick='clean()'/>";
+                $("#submit").html(submit);
+            }
+            //知识点条件搜索栏置空
+            $("#one_list").html('');
+            $("#one_list").removeClass('explain-col');
+            //若选中的年级和学科下有知识点，则显示
+            if(jsondata.one!=''){
                 var submit = $("#submit").html();
-                if(submit==''){
-                    submit = "<span style='margin-left:20px;'></span>" +
-                    "<input type='submit' name='search' class='button' value='搜索' />&nbsp; " +
-                    "<input type='button' class='button' value='重置' onclick='clean()'/>";
-                    $("#submit").html(submit);
-                }
-                //知识点条件搜索栏置空
-                $("#point_list").html('');
-                $("#point_list").removeClass('explain-col');
-                //若选中的年级和学科下有知识点，则显示
-                if(jsondata!=''){
-                    var submit = $("#submit").html();
-                    $("#submit").html('');
-                    $("#point_list").html('');
-                    $("#point_list").addClass('explain-col');
-                    var point_list = "知识点：&nbsp;";
-                    $.each(jsondata,function(idx,obj){
-                        point_list += "<input type='checkbox' name='point_id[]' id='point_"+obj.id+"' value='"+obj.alias+"' "+{$checked}[obj.alias]+"/>";
-                        point_list += "<label for='point_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-                    });
-                    //搜索和重置按钮调整位置，放所有搜索条件的后面
-                    point_list += "<span id='search'>"+submit+"</span>";
-                    $("#point_list").html(point_list);
-                }
-            });
-        }
+                $("#submit").html('');
+                $("#one_list").html('');
+                $("#one_list").addClass('explain-col');
+                var one_list = "一级目录：&nbsp;";
+                $.each(jsondata.one,function(idx,obj){
+                    var check = '';
+                    var one_id = "{$one_id}";
+                    if(one_id==obj.alias){
+                        check = 'checked';
+                    }
+                    one_list += "<input type='radio' name='one_id' id='one_"+obj.id+"' value='"+obj.alias+"' "+check+"/>";
+                    one_list += "<label for='one_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+                });
+                //搜索和重置按钮调整位置，放所有搜索条件的后面
+                one_list += "<span id='search'>"+submit+"</span>";
+                $("#one_list").html(one_list);
+            }
+        });
     }
+}
+
+//获取知识点列表
+function getPointList(){
+    var grade_id = $("#grade_id").val();
+    var cate_id = $("#cate_id").val();
+    if(grade_id!='' && cate_id!=''){
+        var url = "admin.php?m={$controller}&a=getPointList";
+        $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
+//            console.log(jsondata);
+            //搜索和重置按钮复原
+            var submit = $("#submit").html();
+            if(submit==''){
+                submit = "<span style='margin-left:20px;'></span>" +
+                "<input type='submit' name='search' class='button' value='搜索' />&nbsp; " +
+                "<input type='button' class='button' value='重置' onclick='clean()'/>";
+                $("#submit").html(submit);
+            }
+            //知识点条件搜索栏置空
+            $("#point_list").html('');
+            $("#point_list").removeClass('explain-col');
+            //若选中的年级和学科下有知识点，则显示
+            if(jsondata!=''){
+                var submit = $("#submit").html();
+                $("#submit").html('');
+                $("#point_list").html('');
+                $("#point_list").addClass('explain-col');
+                var point_list = "一级目录：&nbsp;";
+                $.each(jsondata,function(idx,obj){
+                    point_list += "<input type='checkbox' name='point_id[]' id='point_"+obj.id+"' value='"+obj.alias+"' "+{$checked}[obj.alias]+"/>";
+                    point_list += "<label for='point_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+                });
+                //搜索和重置按钮调整位置，放所有搜索条件的后面
+                point_list += "<span id='search'>"+submit+"</span>";
+                $("#point_list").html(point_list);
+            }
+        });
+    }
+}
 
     function checkQuestion(){
         var ids='';

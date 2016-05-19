@@ -25,6 +25,18 @@ class QuestionAction extends QuestionLoadAction{
 		if($cate_id!=''){
 			$arrGet['cate_id'] = $cate_id;
 		}
+		$one_id=isset($_GET['one_id'])?$_GET['one_id']:'';
+		if($one_id!=''){
+			$arrGet['one_id'] = $one_id;
+		}
+		$two_id=isset($_GET['two_id'])?$_GET['two_id']:'';
+		if($two_id!=''){
+			$arrGet['two_id'] = $two_id;
+		}
+		$three_id=isset($_GET['three_id'])?$_GET['three_id']:'';
+		if($three_id!=''){
+			$arrGet['three_id'] = $three_id;
+		}
 		$point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
 		if($point_id!=''){
 			$arrGet['point_id'] = $point_id;
@@ -47,6 +59,18 @@ class QuestionAction extends QuestionLoadAction{
 		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
 		if($cate_id!=''){
 			$arrGet['cate_id'] = $cate_id;
+		}
+		$one_id=isset($_GET['one_id'])?$_GET['one_id']:'';
+		if($one_id!=''){
+			$arrGet['one_id'] = $one_id;
+		}
+		$two_id=isset($_GET['two_id'])?$_GET['two_id']:'';
+		if($two_id!=''){
+			$arrGet['two_id'] = $two_id;
+		}
+		$three_id=isset($_GET['three_id'])?$_GET['three_id']:'';
+		if($three_id!=''){
+			$arrGet['three_id'] = $three_id;
 		}
 		$point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
 		if($point_id!=''){
@@ -183,15 +207,27 @@ class QuestionAction extends QuestionLoadAction{
 	 */
 	public function getQuestionList($condition='',$display='',$arrGet){
 		//获取搜索条件
-		if(!empty($arrGet)){
-			$grade_id = $arrGet['grade_id'];
-			$cate_id = $arrGet['cate_id'];
-			$point_id = $arrGet['point_id'];
-		}else{
-			$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
-			$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
-			$point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
+		$grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
+		$cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+		$one_id=isset($_GET['one_id'])?trim($_GET['one_id']):'';
+		$two_id=isset($_GET['two_id'])?trim($_GET['two_id']):'';
+		$three_id=isset($_GET['three_id'])?trim($_GET['three_id']):'';
+		$point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
+
+		$level = 0;
+		if(!empty($one_id)){
+			$level = 1;
 		}
+		if(!empty($two_id)){
+			$level = 2;
+		}
+		if(!empty($three_id)){
+			$level = 3;
+		}
+		if(!empty($point_id) && is_array($point_id)){
+			$level = 4;
+		}
+
 		//搜索
 		$where = "period_id={$this->period_id}".$condition;
 		if ($grade_id!='') {
@@ -203,8 +239,8 @@ class QuestionAction extends QuestionLoadAction{
 			$this->assign('cate_id', $cate_id);
 		}
 		if($grade_id!='' && $cate_id!=''){
-			$checked = array();
-			if (!empty($point_id) && is_array($point_id)) {
+			if($level==4) {//知识点
+				$checked = array();
 				$where .= " AND (";
 				foreach($point_id as $key=>$value){
 					$where .= " title_attribute LIKE '%{$value}%' OR";
@@ -214,6 +250,15 @@ class QuestionAction extends QuestionLoadAction{
 				$where .= ")";
 				$this->assign('point_id',$point_id);
 				$this->assign('checked',json_encode($checked));
+			}elseif($level==3){//三级目录
+				$where .= " AND title_attribute LIKE '%{$three_id}%'";
+				$this->assign('three_id',$three_id);
+			}elseif($level==2){//二级目录
+				$where .= " AND title_attribute LIKE '%{$two_id}%'";
+				$this->assign('two_id',$two_id);
+			}elseif($level==1){//一级目录
+				$where .= " AND title_attribute LIKE '%{$one_id}%'";
+				$this->assign('one_id',$one_id);
 			}
 		}
 
@@ -237,6 +282,41 @@ class QuestionAction extends QuestionLoadAction{
 				$value['is_download'] = 0;
 			}
 		}
+
+		$one = $this->getPoint('','',1);
+		$two = $this->getPoint('','',2);
+		if(!empty($one) && !empty($two)){
+			foreach($one as $key=>$value){
+				foreach($two as $k=>$val){
+
+				}
+			}
+		}
+
+//		$two = array(
+//			'1' => array('id'=>1,'alias'=>'0101001','name'=>'二级目录1'),
+//			'2' => array('id'=>2,'alias'=>'0101002','name'=>'二级目录2'),
+//			'3' => array('id'=>3,'alias'=>'0101003','name'=>'二级目录3')
+//		);
+//		$three = array(
+//			'0101001' => array(
+//				'4' => array('id'=>4,'alias'=>'0101001001','name'=>'三级目录1-1'),
+//				'5' => array('id'=>5,'alias'=>'0101001002','name'=>'三级目录1-2'),
+//				'6' => array('id'=>6,'alias'=>'0101001003','name'=>'三级目录1-3')
+//			),
+//			'0101002' => array(
+//				'7' => array('id'=>7,'alias'=>'0101002001','name'=>'三级目录2-1'),
+//				'8' => array('id'=>8,'alias'=>'0101002002','name'=>'三级目录2-2'),
+//				'9' => array('id'=>9,'alias'=>'0101002003','name'=>'三级目录2-3')
+//			),
+//			'0101003' => array(
+//				'10' => array('id'=>10,'alias'=>'0101003001','name'=>'三级目录3-1'),
+//				'11' => array('id'=>11,'alias'=>'0101003002','name'=>'三级目录3-2'),
+//				'12' => array('id'=>12,'alias'=>'0101003003','name'=>'三级目录3-3')
+//			)
+//		);
+		$this->assign('two',json_encode($two));
+		$this->assign('three',json_encode($three));
 		$page = $p->show();
 		$this->assign('page',$page);
 		$this->assign('controller',MODULE_NAME);
