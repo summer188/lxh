@@ -37,37 +37,6 @@ class QuestionToolAction extends QuestionBaseAction{
 		$this->ajaxReturn($point_list,'JSON');
 	}
 
-    /**
-     * 根据条件获取知识点列表
-     *
-     * @param String $grade_id 年级id
-     * @param String $cate_id 学科id
-     * @param Int $level 知识点级别
-     * @param String $key 结果数组的键名
-     * @return Array
-     */
-    public function getPoint($grade_id='',$cate_id='',$level=0, $key='id'){
-		$where = '1=1';
-		if($level>0){
-			$where .= "level=$level";
-		}
-		$where .= " AND period_id=$this->period_id";
-		if(!empty($grade_id)){
-			$where .= " AND grade_id=$grade_id";
-		}
-		if(!empty($cate_id)){
-			$where .= " AND cate_id=$cate_id";
-		}
-		$point_list = M("point")->where($where)->field('id,alias,name')->select();
-//		echo M("point")->getLastSql();
-		if($point_list){
-			$point_list = array_to_key($point_list,$key);
-			return $point_list;
-		}else{
-			return array();
-		}
-    }
-
 	/**
 	 * 判断或创建题目目录
      *
@@ -94,7 +63,7 @@ class QuestionToolAction extends QuestionBaseAction{
         return $net_root;
 	}
 
-    /**
+	/**
      * 检查并创建多级目录
      *
      * @param String $rootUrl--目录
@@ -112,6 +81,113 @@ class QuestionToolAction extends QuestionBaseAction{
         }
 
     }
+
+	/**
+	 * 获取该学段下所有年级和学科的所有六级知识点目录
+	 *
+	 * @return Array
+	 */
+	public function getPointAll(){
+		$one = $this->getPoint('','',1,true);
+		$one_list = array();
+		if(!empty($one)){
+			foreach($one as $key=>$value){
+				$k = strval($value['grade_id']).strval($value['cate_id']);
+				$one_list[$k][] = $value;
+			}
+		}
+
+		$two = $this->getPoint('','',2);
+		$two_list = array();
+		if(!empty($two)){
+			foreach($two as $key=>$value){
+				$k = substr($value['alias'],0,-3);
+				$two_list[$k][] = $value;
+			}
+		}
+
+		$three = $this->getPoint('','',3);
+		$three_list = array();
+		if(!empty($three)){
+			foreach($three as $key=>$value){
+				$k = substr($value['alias'],0,-3);
+				$three_list[$k][] = $value;
+			}
+		}
+
+		$four = $this->getPoint('','',4);
+		$four_list = array();
+		if(!empty($four)){
+			foreach($four as $key=>$value){
+				$k = substr($value['alias'],0,-3);
+				$four_list[$k][] = $value;
+			}
+		}
+
+		$five = $this->getPoint('','',5);
+		$five_list = array();
+		if(!empty($five)){
+			foreach($five as $key=>$value){
+				$k = substr($value['alias'],0,-3);
+				$five_list[$k][] = $value;
+			}
+		}
+
+		$six = $this->getPoint('','',6);
+		$six_list = array();
+		if(!empty($six)){
+			foreach($six as $key=>$value){
+				$k = substr($value['alias'],0,-3);
+				$six_list[$k][] = $value;
+			}
+		}
+
+		$arr = array(
+			'one_list'=>$one_list,
+			'two_list'=>$two_list,
+			'three_list'=>$three_list,
+			'four_list'=>$four_list,
+			'five_list'=>$five_list,
+			'six_list'=>$six_list
+		);
+		return $arr;
+	}
+
+	/**
+	 * 根据条件获取知识点列表
+	 *
+	 * @param String $grade_id 年级id
+	 * @param String $cate_id 学科id
+	 * @param Int $level 知识点级别
+	 * @param Bool $gc 是否需要年级和学科字段
+	 * @param String $key 结果数组的键名
+	 * @return Array
+	 */
+	public function getPoint($grade_id='',$cate_id='',$level=0,$gc=false,$key='id'){
+		$where = '1=1';
+		if($level>0){
+			$where .= " AND level=$level";
+		}
+		$where .= " AND period_id=$this->period_id";
+		if(!empty($grade_id)){
+			$where .= " AND grade_id=$grade_id";
+		}
+		if(!empty($cate_id)){
+			$where .= " AND cate_id=$cate_id";
+		}
+		if($gc){
+			$field = 'id,alias,name,grade_id,cate_id';
+		}else{
+			$field = 'id,alias,name';
+		}
+		$point_list = $this->point_mod->where($where)->field($field)->select();
+		if($point_list){
+			$point_list = array_to_key($point_list,$key);
+			return $point_list;
+		}else{
+			return array();
+		}
+	}
 
 	/**
 	 * 检查并创建单一目录
@@ -168,4 +244,51 @@ class QuestionToolAction extends QuestionBaseAction{
         }
         rmdir($dir);
     }
+
+	/**
+	 * 导入excel
+	 *
+	 *
+	 */
+	public function insertExcel(){
+//		$grade_id = $_POST['grade_id'];
+		$cate_id = $_POST['cate_id'];
+		$create_id = $_SESSION['admin_info']['id'];
+		$school_id = $_SESSION['admin_info']['school_id'];
+
+		$save_path = "xls/";
+		$file_name = $save_path.date('Ymdhis') . ".xls";
+		if (move_uploaded_file($_FILES['file']['tmp_name'], $file_name)) {
+			include("excel/reader.php");
+			$xls = new Spreadsheet_Excel_Reader();
+			$xls->setOutputEncoding('utf-8');
+			$xls->read($file_name);
+			$data_values = '';
+			for ($i=3; $i<=$xls->sheets[0]['numRows']; $i++) {
+				$grade_id = $xls->sheets[0]['cells'][$i][1];
+				$site_logo = $xls->sheets[0]['cells'][$i][2];
+				$net_logo = $xls->sheets[0]['cells'][$i][3];
+				$name = $xls->sheets[0]['cells'][$i][4];
+				$recommend = $xls->sheets[0]['cells'][$i][5];
+				$answer = $xls->sheets[0]['cells'][$i][6];
+				$installment = $xls->sheets[0]['cells'][$i][7];
+				$has_invoice = $xls->sheets[0]['cells'][$i][8];
+				$cash_back_rate = $xls->sheets[0]['cells'][$i][9];
+				$title_attribute = $xls->sheets[0]['cells'][$i][10];
+				$subject = $xls->sheets[0]['cells'][$i][11];
+				$update_time = date("Y-m-d h:i:s",time());
+				$data_values .= "('$grade_id','$cate_id','$site_logo','$net_logo','$name','$recommend','$answer','$installment','$has_invoice','$cash_back_rate','$title_attribute','$subject','1','$create_id','$school_id','$update_time'),";
+			}
+			$data_values = substr($data_values,0,-1); //去掉最后一个逗号
+			$sql = "insert into ".C('DB_PREFIX').$this->question_tab." (grade_id,cate_id,site_logo,net_logo,name,recommend,answer,installment,has_invoice,cash_back_rate,title_attribute,subject,status,create_id,school_id,update_time) values $data_values";
+			$query = mysql_query($sql);//批量插入数据表中
+			if($query){
+				$this->success('导入成功！');
+				exit();
+			}else{
+				$this->error(L('operation_failure'));
+				exit();
+			}
+		}
+	}
 }

@@ -9,7 +9,6 @@ $school_id = $_POST['school_id'];
 $question_tab = $_POST['question_tab'];
 $action = $_GET['action'];
 if ($action == 'import') { //导入XLS
-    include("excel/reader.php");
 	$tmp = $_FILES['file']['tmp_name'];
 	if (empty ($tmp)) {
 		echo '请选择要导入的Excel文件！';
@@ -18,10 +17,13 @@ if ($action == 'import') { //导入XLS
 	
 	$save_path = "xls/";
 	$file_name = $save_path.date('Ymdhis') . ".xls";
-	if (copy($tmp, $file_name)) {
+
+	if (move_uploaded_file($tmp, $file_name)) {
+		include("excel/reader.php");
 		$xls = new Spreadsheet_Excel_Reader();
 		$xls->setOutputEncoding('UTF-8');
 		$xls->read($file_name);
+		$data_values = '';
 		for ($i=3; $i<=$xls->sheets[0]['numRows']; $i++) {
 			$grade_id = $xls->sheets[0]['cells'][$i][1];
 			$site_logo = $xls->sheets[0]['cells'][$i][2];

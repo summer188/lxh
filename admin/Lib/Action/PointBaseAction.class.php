@@ -8,6 +8,8 @@
  * Time: 7:57
  */
 class PointBaseAction extends BaseAction{
+	//知识点表名(带前缀)
+	public $point_tab;
     //知识点模型
     public $point_mod;
     //设置学段值

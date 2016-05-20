@@ -2,7 +2,8 @@
 <style type="text/css"> table {font-size: 12px} </style>
 <div style="margin-left: 10px;"><span style="font-size:14px;color:blue;font-weight: bold;line-height:30px;">批量上传题目信息：</span></div>
 <div class="data_top">
-    <form id="addExcel" action="do.php?action=import" method="post" enctype="multipart/form-data">
+    <!--<form id="addExcel" action="do.php?action=import" method="post" enctype="multipart/form-data">-->
+    <form id="addExcel" action="admin.php?m={$controller}&a=insertExcel" method="post" enctype="multipart/form-data">
         <table width=100%>
             <tr>
                 <td>
@@ -22,7 +23,7 @@
                     <input type="hidden" name="school_id" value="{$_SESSION['admin_info']['school_id']}"/>
                     <input type="hidden" name="question_tab" value="{$question_tab}"/>
                     <input type="submit" class="button" value="导入XLS">
-                    <input type="button" class="button" id="exportCSV" value="导出XLS" onClick="window.location.href='do.php?action=export'">
+                    <!--<input type="button" class="button" id="exportCSV" value="导出XLS" onClick="window.location.href='do.php?action=export'">-->
                 </td>
             </tr>
         </table>

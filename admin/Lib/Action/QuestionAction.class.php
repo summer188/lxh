@@ -283,40 +283,8 @@ class QuestionAction extends QuestionLoadAction{
 			}
 		}
 
-		$one = $this->getPoint('','',1);
-		$two = $this->getPoint('','',2);
-		if(!empty($one) && !empty($two)){
-			foreach($one as $key=>$value){
-				foreach($two as $k=>$val){
-
-				}
-			}
-		}
-
-//		$two = array(
-//			'1' => array('id'=>1,'alias'=>'0101001','name'=>'二级目录1'),
-//			'2' => array('id'=>2,'alias'=>'0101002','name'=>'二级目录2'),
-//			'3' => array('id'=>3,'alias'=>'0101003','name'=>'二级目录3')
-//		);
-//		$three = array(
-//			'0101001' => array(
-//				'4' => array('id'=>4,'alias'=>'0101001001','name'=>'三级目录1-1'),
-//				'5' => array('id'=>5,'alias'=>'0101001002','name'=>'三级目录1-2'),
-//				'6' => array('id'=>6,'alias'=>'0101001003','name'=>'三级目录1-3')
-//			),
-//			'0101002' => array(
-//				'7' => array('id'=>7,'alias'=>'0101002001','name'=>'三级目录2-1'),
-//				'8' => array('id'=>8,'alias'=>'0101002002','name'=>'三级目录2-2'),
-//				'9' => array('id'=>9,'alias'=>'0101002003','name'=>'三级目录2-3')
-//			),
-//			'0101003' => array(
-//				'10' => array('id'=>10,'alias'=>'0101003001','name'=>'三级目录3-1'),
-//				'11' => array('id'=>11,'alias'=>'0101003002','name'=>'三级目录3-2'),
-//				'12' => array('id'=>12,'alias'=>'0101003003','name'=>'三级目录3-3')
-//			)
-//		);
-		$this->assign('two',json_encode($two));
-		$this->assign('three',json_encode($three));
+		$point = $this->getPointAll();
+		$this->assign('point',json_encode($point));
 		$page = $p->show();
 		$this->assign('page',$page);
 		$this->assign('controller',MODULE_NAME);
