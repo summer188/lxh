@@ -26,19 +26,19 @@ class PointBaseAction extends BaseAction{
             case 'AdPoint':
                 $this->period_id = 1;
                 $this->cate_mod = 'adboard';
-				$this->point_tab = "ad_point";
+				$this->point_tab = C('DB_PREFIX')."ad_point";
 				$this->point_mod = M("ad_point");
                 break;
             case 'SellerPoint':
                 $this->period_id = 2;
                 $this->cate_mod = 'seller_cate';
-				$this->point_tab = "seller_point";
+				$this->point_tab = C('DB_PREFIX')."seller_point";
 				$this->point_mod = M("seller_point");
                 break;
             case 'ArticlePoint':
                 $this->period_id = 3;
                 $this->cate_mod = 'article_cate';
-				$this->point_tab = "article_point";
+				$this->point_tab = C('DB_PREFIX')."article_point";
 				$this->point_mod = M("article_point");
                 break;
             default:
@@ -78,7 +78,7 @@ class PointBaseAction extends BaseAction{
 	{
 		$id = intval($_REQUEST['id']);
 		$type = trim($_REQUEST['type']);
-		$sql = "update ".C('DB_PREFIX').$this->point_tab." set $type=($type+1)%2 where id='$id'";
+		$sql = "update ".$this->point_tab." set $type=($type+1)%2 where id='$id'";
 		$this->point_mod->execute($sql);
 		$values = $this->point_mod->where('id=' . $id)->find();
 		$this->ajaxReturn($values[$type]);

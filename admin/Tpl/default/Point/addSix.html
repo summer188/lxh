@@ -1,0 +1,56 @@
+<include file="Public:header" />
+<style type="text/css"> table {font-size: 12px} </style>
+<div class="pad_10">
+    <form action="admin.php?m={$controller}&a=insertSix" method="post" name="myform" id="myform">
+        <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
+            <tr>
+                <th width="80">编号 :</th>
+                <td><input type="text" name="alias" id="alias" class="input-text"></td>
+            </tr>
+            <tr>
+                <th width="80">{:L('name')} :</th>
+                <td><input type="text" name="name" id="name" class="input-text"></td>
+            </tr>
+            <tr>
+                <th>{:L('state')} :</th>
+                <td>
+                    <input type="radio" name="status" class="radio_style" value="1" checked="checked" > &nbsp;有效&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="status" class="radio_style" value="0"> &nbsp;禁用
+                </td>
+            </tr>
+        </table>
+        <div style="color:red;margin-top:15px;">
+            <span style="color:red;">&nbsp;&nbsp;注：本操作一旦提交成功，将无法修改编号，只能改变状态，请谨慎操作！</span>
+        </div>
+        <input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
+    </form>
+    <script type="text/javascript">
+        $(function(){
+            $.formValidator.initConfig({
+                formid:"myform",
+                autotip:true,
+                onerror:function(msg,obj){
+                    window.top.art.dialog({
+                                content:msg,
+                                lock:true,
+                                width:'200',
+                                height:'50'},
+                            function()
+                            {
+                                this.close();
+                                $(obj).focus();
+                            })
+                }});
+
+            $("#name").formValidator({
+                onshow:"请填写六级目录名称",onfocus:"请填写六级目录名称"
+            }).inputValidator({
+                min:1,onerror:"六级目录名称不能少于1个字"
+            });
+
+
+        });
+    </script>
+</div>
+</body>
+</html>

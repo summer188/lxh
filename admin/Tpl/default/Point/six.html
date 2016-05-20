@@ -3,9 +3,9 @@
 <div class="pad-lr-10">
     <div class="data_top">
         <a class="cat" href="javascript:addExcel()">excel表格导入</a>
-        <a class="cat" href="javascript:addFive()">添加知识点</a>
+        <a class="cat" href="javascript:addSix()">添加知识点</a>
     </div>
-    <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=five" method="get" >
+    <form name="searchform" id="searchform" action="admin.php?m={$controller}&a=six" method="get" >
         <table width="100%" cellspacing="0" class="search-form">
             <tbody>
             <tr>
@@ -37,7 +37,7 @@
             </tbody>
         </table>
     </form>
-    <form id="myform" name="myform" action="admin.php?m={$controller}&a=delete" method="post" onsubmit="return checkFive();">
+    <form id="myform" name="myform" action="admin.php?m={$controller}&a=delete" method="post" onsubmit="return checkSix();">
         <div class="table-list">
             <table width="100%" cellspacing="0">
                 <thead>
@@ -50,8 +50,9 @@
                     <th>二级目录</th>
                     <th>三级目录</th>
                     <th>四级目录</th>
-                    <th>编号</th>
                     <th>五级目录</th>
+                    <th>编号</th>
+                    <th>六级目录</th>
                     <th>状态</th>
                     <th>操作</th>
                 </tr>
@@ -67,12 +68,13 @@
                         <td align="center">{$val.name2}</td>
                         <td align="center">{$val.name3}</td>
                         <td align="center">{$val.name4}</td>
+                        <td align="center">{$val.name5}</td>
                         <td align="center">{$val.alias}</td>
                         <td align="center">{$val.name}</td>
                         <!--<td align="center"><input type="text" class="input-text-c input-text" onblur="sort({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>-->
                         <!--td align="center" onclick="status({$val.id},'seller_status')" id="seller_status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.seller_status}.gif" /></td-->
-                        <td align="center" onclick="statusFive({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
-                        <td align="center"><a href="javascript:editFive({$val.id})"><span style="color:blue;">编辑</span></a></td>
+                        <td align="center" onclick="statusSix({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
+                        <td align="center"><a href="javascript:editSix({$val.id})"><span style="color:blue;">编辑</span></a></td>
                     </tr>
                 </volist>
                 </tbody>
@@ -86,7 +88,7 @@
     </form>
 </div>
 <script language="javascript">
-    function checkFive(){
+    function checkSix(){
         var ids='';
         $("input[name='id[]']:checked").each(function(i, n){
             ids += $(n).val() + ',';
@@ -98,24 +100,24 @@
         return true;
     }
     //添加知识点
-    function addFive() {
+    function addSix() {
         var lang_add = "添加知识点";
-        window.top.art.dialog({id:'addFive'}).close();
+        window.top.art.dialog({id:'addSix'}).close();
         window.top.art.dialog({
                     title:lang_add,
-                    id:'addFive',
-                    iframe:"?m={$controller}&a=addFive",width:'480',height:'170'
+                    id:'addSix',
+                    iframe:"?m={$controller}&a=addSix",width:'480',height:'170'
                 },
                 function()
                 {
-                    var d = window.top.art.dialog({id:'addFive'}).data.iframe;
+                    var d = window.top.art.dialog({id:'addSix'}).data.iframe;
                     var form=d.document.getElementById('dosubmit').click();
                     form.click();return false;
 
                 },
                 function()
                 {
-                    window.top.art.dialog({id:'addFive'}).close()
+                    window.top.art.dialog({id:'addSix'}).close()
                 });
 
     }
@@ -125,7 +127,7 @@
         window.top.art.dialog({
                     title:'excel表格导入',
                     id:'addExcel',
-                    iframe:"?m={$controller}&a=addExcel&level=Five",width:'400',height:'150'
+                    iframe:"?m={$controller}&a=addExcel&level=Six",width:'400',height:'150'
                 },
                 function()
                 {
@@ -140,26 +142,26 @@
                 });
 
     }
-    function editFive(id) {
+    function editSix(id) {
         var lang_edit = '编辑知识点';
-        window.top.art.dialog({id:'editFive'}).close();
+        window.top.art.dialog({id:'editSix'}).close();
         window.top.art.dialog({
                     title:lang_edit,
-                    id:'editFive',
-                    iframe:"?m={$controller}&a=editFive&id="+id,width:'480',height:'400'
+                    id:'editSix',
+                    iframe:"?m={$controller}&a=editSix&id="+id,width:'480',height:'400'
                 },
                 function()
                 {
-                    var d = window.top.art.dialog({id:'editFive'}).data.iframe;
+                    var d = window.top.art.dialog({id:'editSix'}).data.iframe;
                     d.document.getElementById('dosubmit').click();
                     return false;
                 },
                 function()
                 {
-                    window.top.art.dialog({id:'editFive'}).close()
+                    window.top.art.dialog({id:'editSix'}).close()
                 });
     }
-    function statusFive(id,type){
+    function statusSix(id,type){
         var url = "admin.php?m={$controller}&a=status";
         $.get(url, { id: id, type: type }, function(jsondata){
             var return_data  = eval("("+jsondata+")");

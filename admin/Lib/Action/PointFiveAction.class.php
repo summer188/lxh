@@ -209,7 +209,7 @@ class PointFiveAction extends PointFourAction{
 			}
 		}
 		$data_values = substr($data_values,0,-1); //去掉最后一个逗号
-		$sql = "insert into lxh_point (alias,name,level,period_id,grade_id,cate_id,status,create_id,create_time) values $data_values";
+		$sql = "insert into ".$this->point_tab." (alias,name,level,period_id,grade_id,cate_id,status,create_id,create_time) values $data_values";
 		$result = mysql_query($sql);//批量插入数据表中
 		if($result){
 			$this->success('表格导入成功！', '', 3, 'addExcel');
