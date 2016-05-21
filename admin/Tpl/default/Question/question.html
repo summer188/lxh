@@ -46,6 +46,21 @@
                     <div id="three_list"></div>
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <div id="four_list"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="five_list"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="six_list"></div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </form>
@@ -153,19 +168,142 @@ function showPoint(){
             $("#one_list").removeClass('explain-col');
             $('#one_list').html(one_list);
             $("#one_list").addClass('explain-col');
+        }else{
+            $("#one_list").removeClass('explain-col');
+            $('#one_list').html('');
+            $("#two_list").removeClass('explain-col');
+            $('#two_list').html('');
+            $("#three_list").removeClass('explain-col');
+            $('#three_list').html('');
+            $("#four_list").removeClass('explain-col');
+            $('#four_list').html('');
+            $("#five_list").removeClass('explain-col');
+            $('#five_list').html('');
+            $("#six_list").removeClass('explain-col');
+            $('#six_list').html('');
         }
     }
     $("input[name='one_id']").change(function(){
         var i = $(this).val();
-        var two_list = '二级目录：';
-        $.each(two_point[i],function(id,obj){
-            two_list += "<input type='radio' name='two_id' id='two_"+obj.id+"' value='"+obj.alias+"'/>";
-            two_list += "<label for='two_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-        });
-        $("#two_list").removeClass('explain-col');
-        $('#two_list').html(two_list);
-        $("#two_list").addClass('explain-col');
+        $("#three_list").removeClass('explain-col');
+        $('#three_list').html('');
+        $("#four_list").removeClass('explain-col');
+        $('#four_list').html('');
+        $("#five_list").removeClass('explain-col');
+        $('#five_list').html('');
+        $("#six_list").removeClass('explain-col');
+        $('#six_list').html('');
+        if(two_point[i]!=undefined){
+            var two_list = '二级目录：';
+            $.each(two_point[i],function(id,obj){
+                two_list += "<input type='radio' name='two_id' id='two_"+obj.id+"' value='"+obj.alias+"'/>";
+                two_list += "<label for='two_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+            });
+            $("#two_list").removeClass('explain-col');
+            $('#two_list').html(two_list);
+            $("#two_list").addClass('explain-col');
+            $("input[name='two_id']").change(function(){
+                var i = $(this).val();
+                $("#four_list").removeClass('explain-col');
+                $('#four_list').html('');
+                $("#five_list").removeClass('explain-col');
+                $('#five_list').html('');
+                $("#six_list").removeClass('explain-col');
+                $('#six_list').html('');
+                if(three_point[i]!=undefined){
+                    var three_list = '三级目录：';
+                    $.each(three_point[i],function(id,obj){
+                        three_list += "<input type='radio' name='three_id' id='three_"+obj.id+"' value='"+obj.alias+"'/>";
+                        three_list += "<label for='three_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+                    });
+                    $("#three_list").removeClass('explain-col');
+                    $('#three_list').html(three_list);
+                    $("#three_list").addClass('explain-col');
+                    $("input[name='three_id']").change(function(){
+                        var i = $(this).val();
+                        $("#five_list").removeClass('explain-col');
+                        $('#five_list').html('');
+                        $("#six_list").removeClass('explain-col');
+                        $('#six_list').html('');
+                        if(four_point[i]!=undefined){
+                            var four_list = '四级目录：';
+                            $.each(four_point[i],function(id,obj){
+                                four_list += "<input type='radio' name='four_id' id='four_"+obj.id+"' value='"+obj.alias+"'/>";
+                                four_list += "<label for='four_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+                            });
+                            $("#four_list").removeClass('explain-col');
+                            $('#four_list').html(four_list);
+                            $("#four_list").addClass('explain-col');
+                            $("input[name='four_id']").change(function(){
+                                var i = $(this).val();
+                                $("#six_list").removeClass('explain-col');
+                                $('#six_list').html('');
+                                if(five_point[i]!=undefined){
+                                    var five_list = '五级目录：';
+                                    $.each(five_point[i],function(id,obj){
+                                        five_list += "<input type='radio' name='five_id' id='five_"+obj.id+"' value='"+obj.alias+"'/>";
+                                        five_list += "<label for='five_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+                                    });
+                                    $("#five_list").removeClass('explain-col');
+                                    $('#five_list').html(five_list);
+                                    $("#five_list").addClass('explain-col');
+                                    $("input[name='five_id']").change(function(){
+                                        var i = $(this).val();
+                                        if(six_point[i]!=undefined){
+                                            var six_list = '六级目录：';
+                                            $.each(six_point[i],function(id,obj){
+                                                six_list += "<input type='radio' name='six_id' id='six_"+obj.id+"' value='"+obj.alias+"'/>";
+                                                six_list += "<label for='six_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+                                            });
+                                            $("#six_list").removeClass('explain-col');
+                                            $('#six_list').html(six_list);
+                                            $("#six_list").addClass('explain-col');
+                                        }else{
+                                            $("#six_list").removeClass('explain-col');
+                                            $('#six_list').html('');
+                                        }
+                                    });
+                                }else{
+                                    $("#five_list").removeClass('explain-col');
+                                    $('#five_list').html('');
+                                    $("#six_list").removeClass('explain-col');
+                                    $('#six_list').html('');
+                                }
+                            });
+                        }else{
+                            $("#four_list").removeClass('explain-col');
+                            $('#four_list').html('');
+                            $("#five_list").removeClass('explain-col');
+                            $('#five_list').html('');
+                            $("#six_list").removeClass('explain-col');
+                            $('#six_list').html('');
+                        }
+                    });
+                }else{
+                    $("#three_list").removeClass('explain-col');
+                    $('#three_list').html('');
+                    $("#four_list").removeClass('explain-col');
+                    $('#four_list').html('');
+                    $("#five_list").removeClass('explain-col');
+                    $('#five_list').html('');
+                    $("#six_list").removeClass('explain-col');
+                    $('#six_list').html('');
+                }
+            });
+        }else{
+            $("#two_list").removeClass('explain-col');
+            $('#two_list').html('');
+            $("#three_list").removeClass('explain-col');
+            $('#three_list').html('');
+            $("#four_list").removeClass('explain-col');
+            $('#four_list').html('');
+            $("#five_list").removeClass('explain-col');
+            $('#five_list').html('');
+            $("#six_list").removeClass('explain-col');
+            $('#six_list').html('');
+        }
     });
+
 }
 //重置
 function clean(){
@@ -173,19 +311,6 @@ function clean(){
     $("#cate_id").val('');
     $("#searchform").submit();
 }
-    //判断年级和学科有没有选择
-//    function isChecked(){
-//        var grade_id = $("#grade_id").val();
-//        var cate_id = $("#cate_id").val();
-//        if(grade_id == ""){
-//            alert("请先选择年级！");
-//            return false;
-//        }
-//        if(cate_id == ""){
-//            alert("请先选择学科！");
-//            return false;
-//        }
-//    }
 //获取一级目录列表
 function getOneList(){
     var grade_id = $("#grade_id").val();
