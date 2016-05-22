@@ -23,11 +23,6 @@
                         </select>
                         <input type="hidden" name="m" value="{$controller}" />
                         <input type="hidden" name="a" value="{$display}" />
-                        <span id="submit">
-                            <span style="margin-left:20px;"></span>
-                            <input type="submit" name="search" class="button" value="搜索" />&nbsp;
-                            <input type="button" class="button" value="重置" onclick="clean()"/>
-                        </span>
                     </div>
                 </td>
             </tr>
@@ -59,6 +54,18 @@
             <tr>
                 <td>
                     <div id="six_list"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="explain-col">
+                        <span id="submit">
+                            <span style="margin-left:60px;"></span>
+                            <input type="submit" name="search" class="button" value="搜索" />
+                            <span style="margin-left:35px;"></span>
+                            <input type="button" class="button" value="重置" onclick="clean()"/>
+                        </span>
+                    </div>
                 </td>
             </tr>
             </tbody>
@@ -123,6 +130,44 @@
     </form>
 </div>
 <script language="javascript">
+    //所有知识点信息的存放数组
+    var point = new Array(
+            {$point}['one_list'],{$point}['two_list'],
+            {$point}['three_list'],{$point}['four_list'],
+            {$point}['five_list'],{$point}['six_list']
+    );
+    //与阿拉伯数字相对应的简体汉字
+    var large = new Array();
+    large[1] = '一';
+    large[2] = '二';
+    large[3] = '三';
+    large[4] = '四';
+    large[5] = '五';
+    large[6] = '六';
+    //选中的知识点编号值
+    var point_id = new Array();
+    point_id[1] = "{$one_id}";
+    point_id[2] = "{$two_id}";
+    point_id[3] = "{$three_id}";
+    point_id[4] = "{$four_id}";
+    point_id[5] = "{$five_id}";
+    point_id[6] = "{$six_id}";
+    //各级知识点的input名
+    var point_name = new Array();
+    point_name[1] = 'one_id';
+    point_name[2] = 'two_id';
+    point_name[3] = 'three_id';
+    point_name[4] = 'four_id';
+    point_name[5] = 'five_id';
+    point_name[6] = 'six_id';
+    //各级知识点div的id值
+    var list_name = new Array();
+    list_name[1] = "one_list";
+    list_name[2] = "two_list";
+    list_name[3] = "three_list";
+    list_name[4] = "four_list";
+    list_name[5] = "five_list";
+    list_name[6] = "six_list";
 $(function(){
     //从其他页面（如上传新题页面）跳转到此页面后，需要调用一下父窗口的_MP方法，才能保证样式和targetUrl是当前页面
     var controller = "{$controller}";
@@ -146,335 +191,238 @@ $(function(){
         parent._MP(menuid,targetUrl);
     }
     showPoint();
-//    getOneList();
 });
+//知识点逐级显示
 function showPoint(){
-    var one_point = {$point}['one_list'];
-    var two_point = {$point}['two_list'];
-    var three_point = {$point}['three_list'];
-    var four_point = {$point}['four_list'];
-    var five_point = {$point}['five_list'];
-    var six_point = {$point}['six_list'];
     var grade_id = $("#grade_id").val();
     var cate_id = $("#cate_id").val();
-    if(grade_id!='' && cate_id!=''){
-        var k = grade_id+cate_id;
-        if(one_point[k]!=undefined){
-            var one_list = '一级目录：';
-            $.each(one_point[k],function(id,obj){
-                one_list += "<input type='radio' name='one_id' id='one_"+obj.id+"' value='"+obj.alias+"'/>";
-                one_list += "<label for='one_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-            });
-            $("#one_list").removeClass('explain-col');
-            $('#one_list').html(one_list);
-            $("#one_list").addClass('explain-col');
-        }else{
-            $("#one_list").removeClass('explain-col');
-            $('#one_list').html('');
-            $("#two_list").removeClass('explain-col');
-            $('#two_list').html('');
-            $("#three_list").removeClass('explain-col');
-            $('#three_list').html('');
-            $("#four_list").removeClass('explain-col');
-            $('#four_list').html('');
-            $("#five_list").removeClass('explain-col');
-            $('#five_list').html('');
-            $("#six_list").removeClass('explain-col');
-            $('#six_list').html('');
-        }
+    var k = grade_id+cate_id;
+    if(k==''){
+        k = "{$grade_id}"+"{$cate_id}";
     }
+    if(k!=''){
+        changePoint(1,k);
+
+    }else{
+        removePoint(1);
+    }
+    checkPoint();
+    //六级联动
+    var k1 = '';
     $("input[name='one_id']").change(function(){
-        var i = $(this).val();
-        $("#three_list").removeClass('explain-col');
-        $('#three_list').html('');
-        $("#four_list").removeClass('explain-col');
-        $('#four_list').html('');
-        $("#five_list").removeClass('explain-col');
-        $('#five_list').html('');
-        $("#six_list").removeClass('explain-col');
-        $('#six_list').html('');
-        if(two_point[i]!=undefined){
-            var two_list = '二级目录：';
-            $.each(two_point[i],function(id,obj){
-                two_list += "<input type='radio' name='two_id' id='two_"+obj.id+"' value='"+obj.alias+"'/>";
-                two_list += "<label for='two_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-            });
-            $("#two_list").removeClass('explain-col');
-            $('#two_list').html(two_list);
-            $("#two_list").addClass('explain-col');
-            $("input[name='two_id']").change(function(){
+        k1 = $(this).val();
+        changePoint(2,k1);
+        $("input[name='two_id']").change(function(){
+            var i = $(this).val();
+            changePoint(3,i);
+            $("input[name='three_id']").change(function(){
                 var i = $(this).val();
-                $("#four_list").removeClass('explain-col');
-                $('#four_list').html('');
-                $("#five_list").removeClass('explain-col');
-                $('#five_list').html('');
-                $("#six_list").removeClass('explain-col');
-                $('#six_list').html('');
-                if(three_point[i]!=undefined){
-                    var three_list = '三级目录：';
-                    $.each(three_point[i],function(id,obj){
-                        three_list += "<input type='radio' name='three_id' id='three_"+obj.id+"' value='"+obj.alias+"'/>";
-                        three_list += "<label for='three_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-                    });
-                    $("#three_list").removeClass('explain-col');
-                    $('#three_list').html(three_list);
-                    $("#three_list").addClass('explain-col');
-                    $("input[name='three_id']").change(function(){
+                changePoint(4,i);
+                $("input[name='four_id']").change(function(){
+                    var i = $(this).val();
+                    changePoint(5,i);
+                    $("input[name='five_id']").change(function(){
                         var i = $(this).val();
-                        $("#five_list").removeClass('explain-col');
-                        $('#five_list').html('');
-                        $("#six_list").removeClass('explain-col');
-                        $('#six_list').html('');
-                        if(four_point[i]!=undefined){
-                            var four_list = '四级目录：';
-                            $.each(four_point[i],function(id,obj){
-                                four_list += "<input type='radio' name='four_id' id='four_"+obj.id+"' value='"+obj.alias+"'/>";
-                                four_list += "<label for='four_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-                            });
-                            $("#four_list").removeClass('explain-col');
-                            $('#four_list').html(four_list);
-                            $("#four_list").addClass('explain-col');
-                            $("input[name='four_id']").change(function(){
-                                var i = $(this).val();
-                                $("#six_list").removeClass('explain-col');
-                                $('#six_list').html('');
-                                if(five_point[i]!=undefined){
-                                    var five_list = '五级目录：';
-                                    $.each(five_point[i],function(id,obj){
-                                        five_list += "<input type='radio' name='five_id' id='five_"+obj.id+"' value='"+obj.alias+"'/>";
-                                        five_list += "<label for='five_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-                                    });
-                                    $("#five_list").removeClass('explain-col');
-                                    $('#five_list').html(five_list);
-                                    $("#five_list").addClass('explain-col');
-                                    $("input[name='five_id']").change(function(){
-                                        var i = $(this).val();
-                                        if(six_point[i]!=undefined){
-                                            var six_list = '六级目录：';
-                                            $.each(six_point[i],function(id,obj){
-                                                six_list += "<input type='radio' name='six_id' id='six_"+obj.id+"' value='"+obj.alias+"'/>";
-                                                six_list += "<label for='six_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-                                            });
-                                            $("#six_list").removeClass('explain-col');
-                                            $('#six_list').html(six_list);
-                                            $("#six_list").addClass('explain-col');
-                                        }else{
-                                            $("#six_list").removeClass('explain-col');
-                                            $('#six_list').html('');
-                                        }
-                                    });
-                                }else{
-                                    $("#five_list").removeClass('explain-col');
-                                    $('#five_list').html('');
-                                    $("#six_list").removeClass('explain-col');
-                                    $('#six_list').html('');
-                                }
-                            });
-                        }else{
-                            $("#four_list").removeClass('explain-col');
-                            $('#four_list').html('');
-                            $("#five_list").removeClass('explain-col');
-                            $('#five_list').html('');
-                            $("#six_list").removeClass('explain-col');
-                            $('#six_list').html('');
-                        }
+                        changePoint(6,i);
                     });
-                }else{
-                    $("#three_list").removeClass('explain-col');
-                    $('#three_list').html('');
-                    $("#four_list").removeClass('explain-col');
-                    $('#four_list').html('');
-                    $("#five_list").removeClass('explain-col');
-                    $('#five_list').html('');
-                    $("#six_list").removeClass('explain-col');
-                    $('#six_list').html('');
-                }
+                });
             });
-        }else{
-            $("#two_list").removeClass('explain-col');
-            $('#two_list').html('');
-            $("#three_list").removeClass('explain-col');
-            $('#three_list').html('');
-            $("#four_list").removeClass('explain-col');
-            $('#four_list').html('');
-            $("#five_list").removeClass('explain-col');
-            $('#five_list').html('');
-            $("#six_list").removeClass('explain-col');
-            $('#six_list').html('');
-        }
+        });
+    });
+    //五级联动
+    $("input[name='two_id']").change(function(){
+        var i = $(this).val();
+        changePoint(3,i);
+        $("input[name='three_id']").change(function(){
+            var i = $(this).val();
+            changePoint(4,i);
+            $("input[name='four_id']").change(function(){
+                var i = $(this).val();
+                changePoint(5,i);
+                $("input[name='five_id']").change(function(){
+                    var i = $(this).val();
+                    changePoint(6,i);
+                });
+            });
+        });
+    });
+    //四级联动
+    $("input[name='three_id']").change(function(){
+        var i = $(this).val();
+        changePoint(4,i);
+        $("input[name='four_id']").change(function(){
+            var i = $(this).val();
+            changePoint(5,i);
+            $("input[name='five_id']").change(function(){
+                var i = $(this).val();
+                changePoint(6,i);
+            });
+        });
+    });
+    //三级联动
+    $("input[name='four_id']").change(function(){
+        var i = $(this).val();
+        changePoint(5,i);
+        $("input[name='five_id']").change(function(){
+            var i = $(this).val();
+            changePoint(6,i);
+        });
+    });
+    //两级联动
+    $("input[name='five_id']").change(function(){
+        var i = $(this).val();
+        changePoint(6,i);
     });
 
+}
+//显示用户选择的数据
+function checkPoint(){
+    var k1 = "{$one_id}";
+    if(k1!=''){
+        changePoint(2,k1);
+    }
+    var k2 = "{$two_id}";
+    if(k1!=''){
+        changePoint(3,k2);
+    }
+    var k3 = "{$three_id}";
+    if(k1!=''){
+        changePoint(4,k3);
+    }
+    var k4 = "{$four_id}";
+    if(k1!=''){
+        changePoint(5,k4);
+    }
+    var k5 = "{$five_id}";
+    if(k1!=''){
+        changePoint(6,k5);
+    }
+}
+//取消用户选择的数据
+function forgetPoint(tag){
+    for(var i=1;i<7;i++){
+        $("input[name="+point_name[i]+"]").val('');
+    }
+}
+//显示指定级别的知识点目录
+function changePoint(tag,k){
+    removePoint(tag+1);
+    if(point[tag-1][k]!=undefined){
+        var list = large[tag]+'级目录：';
+        $.each(point[tag-1][k],function(id,obj){
+            var check = '';
+            if(obj.alias==point_id[tag]){
+                check = 'checked';
+            }
+            var idn = obj.alias;
+            list += "<input type='radio' name="+point_name[tag]+" id="+idn+" value='"+obj.alias+"'"+check+"/>";
+            list += "<label for="+idn+">"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
+        });
+        var ln = '#'+list_name[tag];
+        $(ln).removeClass('explain-col');
+        $(ln).html(list);
+        $(ln).addClass('explain-col');
+    }else{
+        removePoint(tag);
+    }
+}
+//移除指定级别的知识点目录
+function removePoint(tag){
+    for(var i=tag;i<7;i++){
+        $('#'+list_name[i]).removeClass('explain-col');
+        $('#'+list_name[i]).html('');
+    }
 }
 //重置
 function clean(){
     $("#grade_id").val('');
     $("#cate_id").val('');
+    forgetPoint();
     $("#searchform").submit();
 }
-//获取一级目录列表
-function getOneList(){
-    var grade_id = $("#grade_id").val();
-    var cate_id = $("#cate_id").val();
-    if(grade_id!='' && cate_id!=''){
-        var url = "admin.php?m={$controller}&a=getOneList";
-        $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
-//            console.log(jsondata.one);
-//            return false;
-            //搜索和重置按钮复原
-            var submit = $("#submit").html();
-            if(submit==''){
-                submit = "<span style='margin-left:20px;'></span>" +
-                "<input type='submit' name='search' class='button' value='搜索' />&nbsp; " +
-                "<input type='button' class='button' value='重置' onclick='clean()'/>";
-                $("#submit").html(submit);
-            }
-            //知识点条件搜索栏置空
-            $("#one_list").html('');
-            $("#one_list").removeClass('explain-col');
-            //若选中的年级和学科下有知识点，则显示
-            if(jsondata.one!=''){
-                var submit = $("#submit").html();
-                $("#submit").html('');
-                $("#one_list").html('');
-                $("#one_list").addClass('explain-col');
-                var one_list = "一级目录：&nbsp;";
-                $.each(jsondata.one,function(idx,obj){
-                    var check = '';
-                    var one_id = "{$one_id}";
-                    if(one_id==obj.alias){
-                        check = 'checked';
-                    }
-                    one_list += "<input type='radio' name='one_id' id='one_"+obj.id+"' value='"+obj.alias+"' "+check+"/>";
-                    one_list += "<label for='one_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-                });
-                //搜索和重置按钮调整位置，放所有搜索条件的后面
-                one_list += "<span id='search'>"+submit+"</span>";
-                $("#one_list").html(one_list);
-            }
-        });
-    }
-}
 
-//获取知识点列表
-function getPointList(){
-    var grade_id = $("#grade_id").val();
-    var cate_id = $("#cate_id").val();
-    if(grade_id!='' && cate_id!=''){
-        var url = "admin.php?m={$controller}&a=getPointList";
-        $.get(url, { grade_id: grade_id, cate_id: cate_id }, function(jsondata){
-//            console.log(jsondata);
-            //搜索和重置按钮复原
-            var submit = $("#submit").html();
-            if(submit==''){
-                submit = "<span style='margin-left:20px;'></span>" +
-                "<input type='submit' name='search' class='button' value='搜索' />&nbsp; " +
-                "<input type='button' class='button' value='重置' onclick='clean()'/>";
-                $("#submit").html(submit);
-            }
-            //知识点条件搜索栏置空
-            $("#point_list").html('');
-            $("#point_list").removeClass('explain-col');
-            //若选中的年级和学科下有知识点，则显示
-            if(jsondata!=''){
-                var submit = $("#submit").html();
-                $("#submit").html('');
-                $("#point_list").html('');
-                $("#point_list").addClass('explain-col');
-                var point_list = "一级目录：&nbsp;";
-                $.each(jsondata,function(idx,obj){
-                    point_list += "<input type='checkbox' name='point_id[]' id='point_"+obj.id+"' value='"+obj.alias+"' "+{$checked}[obj.alias]+"/>";
-                    point_list += "<label for='point_"+obj.id+"'>"+obj.name+"</label>&nbsp;&nbsp;&nbsp;&nbsp;";
-                });
-                //搜索和重置按钮调整位置，放所有搜索条件的后面
-                point_list += "<span id='search'>"+submit+"</span>";
-                $("#point_list").html(point_list);
-            }
-        });
+function checkQuestion(){
+    var ids='';
+    $("input[name='id[]']:checked").each(function(i, n){
+        ids += $(n).val() + ',';
+    });
+    if(ids=='') {
+        window.top.art.dialog({content:lang_please_select+'菜单分类名称	',lock:true,width:'200',height:'50',time:1.5},function(){});
+        return false;
     }
+    return true;
 }
-
-    function checkQuestion(){
-        var ids='';
-        $("input[name='id[]']:checked").each(function(i, n){
-            ids += $(n).val() + ',';
-        });
-        if(ids=='') {
-            window.top.art.dialog({content:lang_please_select+'菜单分类名称	',lock:true,width:'200',height:'50',time:1.5},function(){});
-            return false;
+//更改状态
+function statusQuestion(id,type){
+    var url = "admin.php?m={$controller}&a=statusQuestion";
+    $.get(url, { id: id, type: type }, function(jsondata){
+        var return_data  = eval("("+jsondata+")");
+        $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data+'.gif');
+    });
+}
+//排序方法
+function sortQuestion(id,type,num){
+    var url = "admin.php?m={$controller}&a=sortQuestion";
+    $.get(url, { id: id, type: type,num:num }, function(jsondata){
+        var return_data  = eval("("+jsondata+")");
+        $("#"+type+"_"+id+" ").attr('value', return_data);
+    });
+}
+//预览
+function lookQuestion(id) {
+    window.top.art.dialog({id:'lookQuestion'}).close();
+    window.top.art.dialog({
+                title:"题目预览",
+                id:'lookQuestion',
+                iframe:"?m={$controller}&a=lookQuestion&id="+id,width:'700',height:'500'
+            },
+            function()
+            {
+                window.top.art.dialog({id:'lookQuestion'}).close()
+            });
+}
+//编辑
+function editQuestion(id) {
+    location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
+}
+//收藏
+function collectQuestion(id) {
+    var url = "admin.php?m={$controller}&a=collectQuestion";
+    $.get(url, { id: id }, function(jsondata){
+        window.top.art.dialog({id:'collectQuestion',content:jsondata.info,lock:true,width:'200',height:'50',time:1});
+        if(jsondata.status==1){
+            window.location.reload();
         }
-        return true;
-    }
-
-    function statusQuestion(id,type){
-        var url = "admin.php?m={$controller}&a=statusQuestion";
-        $.get(url, { id: id, type: type }, function(jsondata){
-            var return_data  = eval("("+jsondata+")");
-            $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data+'.gif');
-        });
-    }
-    //排序方法
-    function sortQuestion(id,type,num){
-        var url = "admin.php?m={$controller}&a=sortQuestion";
-        $.get(url, { id: id, type: type,num:num }, function(jsondata){
-            var return_data  = eval("("+jsondata+")");
-            $("#"+type+"_"+id+" ").attr('value', return_data);
-        });
-    }
-    //预览
-    function lookQuestion(id) {
-        window.top.art.dialog({id:'lookQuestion'}).close();
-        window.top.art.dialog({
-                    title:"题目预览",
-                    id:'lookQuestion',
-                    iframe:"?m={$controller}&a=lookQuestion&id="+id,width:'700',height:'500'
-                },
-                function()
-                {
-                    window.top.art.dialog({id:'lookQuestion'}).close()
-                });
-    }
-    //编辑
-    function editQuestion(id) {
-        location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
-    }
-    //收藏
-    function collectQuestion(id) {
-        var url = "admin.php?m={$controller}&a=collectQuestion";
-        $.get(url, { id: id }, function(jsondata){
-            window.top.art.dialog({id:'collectQuestion',content:jsondata.info,lock:true,width:'200',height:'50',time:1});
-            if(jsondata.status==1){
-                window.location.reload();
-            }
-        });
-    }
-    //下载
-    function downloadQuestion(id) {
-        var url = "admin.php?m={$controller}&a=downloadQuestion";
-        $.get(url, { id: id }, function(jsondata){
-            if(jsondata.status==2){
-                if(confirm(jsondata.info)){
-                    location.href = "download.php?id="+id+"&pid={$period_id}&tab={$question_tab}";
-                }
-            }else{
-                    $('#download_'+id).html("<span style='color:#009933;'>已下载</span>");
+    });
+}
+//下载
+function downloadQuestion(id) {
+    var url = "admin.php?m={$controller}&a=downloadQuestion";
+    $.get(url, { id: id }, function(jsondata){
+        if(jsondata.status==2){
+            if(confirm(jsondata.info)){
                 location.href = "download.php?id="+id+"&pid={$period_id}&tab={$question_tab}";
             }
-        });
-    }
-    //批量下载
-    function dl(){
-        var ids='';
-        $("input[name='id[]']:checked").each(function(i, n){
-            ids += $(n).val() + ',';
-        });
-        if(ids=='') {
-            window.top.art.dialog({content:lang_please_select+'菜单分类名称	',lock:true,width:'200',height:'50',time:1.5},function(){});
-            return false;
         }else{
-            location.href = "dl.php?ids="+ids+"&pid={$period_id}&tab={$question_tab}";
+                $('#download_'+id).html("<span style='color:#009933;'>已下载</span>");
+            location.href = "download.php?id="+id+"&pid={$period_id}&tab={$question_tab}";
         }
-
+    });
+}
+//批量下载
+function dl(){
+    var ids='';
+    $("input[name='id[]']:checked").each(function(i, n){
+        ids += $(n).val() + ',';
+    });
+    if(ids=='') {
+        window.top.art.dialog({content:lang_please_select+'菜单分类名称	',lock:true,width:'200',height:'50',time:1.5},function(){});
+        return false;
+    }else{
+        location.href = "dl.php?ids="+ids+"&pid={$period_id}&tab={$question_tab}";
     }
+
+}
 </script>
 </body>
 </html>

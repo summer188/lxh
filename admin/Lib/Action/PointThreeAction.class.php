@@ -14,6 +14,7 @@ class PointThreeAction extends PointTwoAction{
         $keyword=isset($_GET['keyword'])?trim($_GET['keyword']):'';
         $grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
         $cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
+        $status=isset($_GET['status'])?trim($_GET['status']):2;
         //搜索
         $where = "period_id=$this->period_id AND level=3";
         if ($keyword!='') {
@@ -27,6 +28,9 @@ class PointThreeAction extends PointTwoAction{
         if ($cate_id!='') {
             $where .= " AND cate_id=$cate_id";
             $this->assign('cate_id', $cate_id);
+        }
+        if ($status!=2) {
+            $where .= " AND status=$status";
         }
         import("ORG.Util.Page");
         $count = $this->point_mod->where($where)->count();
@@ -49,6 +53,7 @@ class PointThreeAction extends PointTwoAction{
         }
         $page = $p->show();
         $this->assign('page',$page);
+        $this->assign('status', $status);
         $this->assign('controller',MODULE_NAME);
         $this->assign('point_list',$point_list);
         $this->assign('grade_list',$this->grade_list);

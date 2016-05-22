@@ -27,8 +27,15 @@
                                 <option value="{$val.id}" <if condition="$cate_id eq $val['id']">selected="selected"</if>>{$val.name}</option>
                             </volist>
                         </select>
+                        &nbsp;&nbsp;&nbsp;&nbsp;状态 :
+                        <select name="status" id="status">
+                            <option value="2" <if condition="$status eq 2">selected="selected"</if>>请选择</option>
+                            <option value="1" <if condition="$status eq 1">selected="selected"</if>>有效</option>
+                            <option value="0" <if condition="$status eq 0">selected="selected"</if>>无效</option>
+                        </select>
                         &nbsp;&nbsp;
                         <input type="hidden" name="m" value="{$controller}" />
+                        <input type="hidden" name="a" value="five" />
                         <input type="submit" name="search" class="button" value="搜索" />
                         <input type="button" class="button" value="重置" onclick="clean()"/>
                     </div>
@@ -171,6 +178,7 @@
         $("#keyword").val('');
         $("#grade_id").val('');
         $("#cate_id").val('');
+        $("#status").val('');
         $("#searchform").submit();
     }
 </script>

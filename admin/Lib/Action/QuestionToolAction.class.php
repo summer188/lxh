@@ -175,6 +175,7 @@ class QuestionToolAction extends QuestionBaseAction{
 		if(!empty($cate_id)){
 			$where .= " AND cate_id=$cate_id";
 		}
+        $where .= " AND status=1";
 		if($gc){
 			$field = 'id,alias,name,grade_id,cate_id';
 		}else{
