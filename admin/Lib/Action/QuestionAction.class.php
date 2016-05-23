@@ -198,6 +198,43 @@ class QuestionAction extends QuestionLoadAction{
                 $this->assign('checked',json_encode($checked));
             }
         }
+		$point_id = '';
+		$one_id=isset($_GET['one_id'])?$_GET['one_id']:'';
+		if($one_id!=''){
+			$this->assign('one_id',$one_id);
+			$point_id = $one_id;
+		}
+		$two_id=isset($_GET['two_id'])?$_GET['two_id']:'';
+		if($two_id!=''){
+			$this->assign('two_id',$two_id);
+			$point_id = $two_id;
+		}
+		$three_id=isset($_GET['three_id'])?$_GET['three_id']:'';
+		if($three_id!=''){
+			$this->assign('three_id',$three_id);
+			$point_id = $three_id;
+		}
+		$four_id=isset($_GET['four_id'])?$_GET['four_id']:'';
+		if($four_id!=''){
+			$this->assign('four_id',$four_id);
+			$point_id = $four_id;
+		}
+		$five_id=isset($_GET['five_id'])?$_GET['five_id']:'';
+		if($five_id!=''){
+			$this->assign('five_id',$five_id);
+			$point_id = $five_id;
+		}
+		$six_id=isset($_GET['six_id'])?$_GET['six_id']:'';
+		if($six_id!=''){
+			$this->assign('six_id',$six_id);
+			$point_id = $six_id;
+		}
+
+		if($grade_id!='' && $cate_id!=''){
+			if($point_id!=''){
+				$where .= " AND title_attribute LIKE '%{$point_id}%'";
+			}
+		}
 
         //我的上传
         $is_upload=isset($_GET['upload'])?intval($_GET['upload']):0;
@@ -226,8 +263,10 @@ class QuestionAction extends QuestionLoadAction{
                 $value['is_download'] = 0;
             }
         }
-        $page = $p->show();
-        $this->assign('page',$page);
+		$point = $this->getPointAll();
+		$page = $p->show();
+		$this->assign('page',$page);
+		$this->assign('point',json_encode($point));
         $this->assign('controller',MODULE_NAME);
         $this->assign('period_id',$this->period_id);
         $this->assign('grade_list',$this->grade_list);
