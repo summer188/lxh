@@ -108,7 +108,7 @@ class PointFourAction extends PointThreeAction{
             $point_info['grade'] = $this->grade_list[$point_info['grade_id']]['name'];
             //取得学科名称
             $point_info['cate'] = $this->cate_list[$point_info['cate_id']]['name'];
-            $arr = $this->getAllLevel($point_info['alias']);
+            $arr = $this->getAllLevelFour($point_info['alias']);
             $point_info['alias3'] = $arr['alias3'];
             $point_info['name3'] = $arr['name3'];
             $point_info['alias2'] = $arr['alias2'];
