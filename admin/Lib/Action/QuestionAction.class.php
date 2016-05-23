@@ -25,7 +25,6 @@ class QuestionAction extends QuestionLoadAction{
 		if($cate_id!=''){
 			$arrGet['cate_id'] = $cate_id;
 		}
-        $point_id = '';
 		$one_id=isset($_GET['one_id'])?$_GET['one_id']:'';
 		if($one_id!=''){
             $arrGet['one_id'] = $one_id;
@@ -36,7 +35,7 @@ class QuestionAction extends QuestionLoadAction{
 		if($two_id!=''){
             $arrGet['two_id'] = $two_id;
             $arrGet['level'] = 2;
-            $arrGet['two_id'] = $two_id;
+            $arrGet['point_id'] = $two_id;
 		}
 		$three_id=isset($_GET['three_id'])?$_GET['three_id']:'';
 		if($three_id!=''){
@@ -48,19 +47,19 @@ class QuestionAction extends QuestionLoadAction{
 		if($four_id!=''){
             $arrGet['four_id'] = $four_id;
             $arrGet['level'] = 4;
-            $arrGet['four_id'] = $four_id;
+            $arrGet['point_id'] = $four_id;
 		}
         $five_id=isset($_GET['five_id'])?$_GET['five_id']:'';
         if($five_id!=''){
             $arrGet['five_id'] = $five_id;
             $arrGet['level'] = 5;
-            $arrGet['five_id'] = $five_id;
+            $arrGet['point_id'] = $five_id;
         }
         $six_id=isset($_GET['six_id'])?$_GET['six_id']:'';
         if($six_id!=''){
             $arrGet['six_id'] = $six_id;
             $arrGet['level'] = 6;
-            $arrGet['six_id'] = $six_id;
+            $arrGet['point_id'] = $six_id;
         }
 
 		$this->getQuestionList('','yun',$arrGet);
@@ -84,18 +83,38 @@ class QuestionAction extends QuestionLoadAction{
 		$one_id=isset($_GET['one_id'])?$_GET['one_id']:'';
 		if($one_id!=''){
 			$arrGet['one_id'] = $one_id;
+			$arrGet['level'] = 1;
+			$arrGet['point_id'] = $one_id;
 		}
 		$two_id=isset($_GET['two_id'])?$_GET['two_id']:'';
 		if($two_id!=''){
 			$arrGet['two_id'] = $two_id;
+			$arrGet['level'] = 2;
+			$arrGet['point_id'] = $two_id;
 		}
 		$three_id=isset($_GET['three_id'])?$_GET['three_id']:'';
 		if($three_id!=''){
 			$arrGet['three_id'] = $three_id;
+			$arrGet['level'] = 3;
+			$arrGet['point_id'] = $three_id;
 		}
-		$point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
-		if($point_id!=''){
-			$arrGet['point_id'] = $point_id;
+		$four_id=isset($_GET['four_id'])?$_GET['four_id']:'';
+		if($four_id!=''){
+			$arrGet['four_id'] = $four_id;
+			$arrGet['level'] = 4;
+			$arrGet['point_id'] = $four_id;
+		}
+		$five_id=isset($_GET['five_id'])?$_GET['five_id']:'';
+		if($five_id!=''){
+			$arrGet['five_id'] = $five_id;
+			$arrGet['level'] = 5;
+			$arrGet['point_id'] = $five_id;
+		}
+		$six_id=isset($_GET['six_id'])?$_GET['six_id']:'';
+		if($six_id!=''){
+			$arrGet['six_id'] = $six_id;
+			$arrGet['level'] = 6;
+			$arrGet['point_id'] = $six_id;
 		}
 
 		//取得管理员的所属学校id
@@ -237,7 +256,6 @@ class QuestionAction extends QuestionLoadAction{
         $five_id=isset($arrGet['five_id'])?trim($arrGet['five_id']):'';
         $six_id=isset($arrGet['six_id'])?trim($arrGet['six_id']):'';
         $point_id=isset($arrGet['point_id'])?trim($arrGet['point_id']):'';
-        $level = $arrGet['level'];
 
         //搜索
         $where = "period_id={$this->period_id}".$condition;
@@ -250,7 +268,6 @@ class QuestionAction extends QuestionLoadAction{
             $this->assign('cate_id', $cate_id);
         }
         if($grade_id!='' && $cate_id!=''){
-            $k = strval($grade_id).strval($cate_id);
             if($point_id!=''){
                 $where .= " AND title_attribute LIKE '%{$point_id}%'";
                 $this->assign('three_id',$point_id);
@@ -275,8 +292,6 @@ class QuestionAction extends QuestionLoadAction{
         if(!empty($six_id)){
             $this->assign('six_id',$six_id);
         }
-
-
 
 		import("ORG.Util.Page");
 		$count = $this->question_mod->where($where)->count();

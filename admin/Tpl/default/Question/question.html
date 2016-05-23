@@ -277,30 +277,16 @@ function showPoint(){
 }
 //显示用户选择的数据
 function checkPoint(){
-    var k1 = "{$one_id}";
-    if(k1!=''){
-        changePoint(2,k1);
-    }
-    var k2 = "{$two_id}";
-    if(k1!=''){
-        changePoint(3,k2);
-    }
-    var k3 = "{$three_id}";
-    if(k1!=''){
-        changePoint(4,k3);
-    }
-    var k4 = "{$four_id}";
-    if(k1!=''){
-        changePoint(5,k4);
-    }
-    var k5 = "{$five_id}";
-    if(k1!=''){
-        changePoint(6,k5);
+    for(var i=1;i<6;i++){
+        var k = point_id[i];
+        if(k!=''){
+            changePoint(i+1,k);
+        }
     }
 }
 //取消用户选择的数据
 function forgetPoint(tag){
-    for(var i=1;i<7;i++){
+    for(var i=tag;i<7;i++){
         $("input[name="+point_name[i]+"]").val('');
     }
 }
@@ -337,7 +323,7 @@ function removePoint(tag){
 function clean(){
     $("#grade_id").val('');
     $("#cate_id").val('');
-    forgetPoint();
+    forgetPoint(1);
     $("#searchform").submit();
 }
 
