@@ -13,37 +13,40 @@ class PublicAction extends BaseAction
 	// 菜单页面
 	public function menu(){
 		//显示菜单项
-		$id	=	intval($_REQUEST['tag'])==0?6:intval($_REQUEST['tag']);
-		$menu  = array();
-		$role_id = D('admin')->where('id='.$_SESSION['admin_info']['id'])->getField('role_id');
-		$node_ids_res = D("access")->where("role_id=".$role_id)->field("node_id")->select();
-		
-		$node_ids = array();
-		foreach ($node_ids_res as $row) {
-			array_push($node_ids,$row['node_id']);
-		}
-		//读取数据库模块列表生成菜单项
-		$node    =   M("node");
-		$where = "auth_type<>2 AND status=1 AND is_show=0 AND group_id=".$id;
-		$list	=$node->where($where)->field('id,action,action_name,module,module_name,data')->order('sort DESC')->select();
-		foreach($list as $key=>$action) {
-			$data_arg = array();
-			if ($action['data']){
-				$data_arr = explode('&', $action['data']);
-				foreach ($data_arr as $data_one) {
-					$data_one_arr = explode('=', $data_one);
-					$data_arg[$data_one_arr[0]] = $data_one_arr[1];
+		$group_id	=	intval($_REQUEST['tag'])==0?6:intval($_REQUEST['tag']);
+		$check = $this->checkGroupAccess($group_id);
+		if($check){
+			$menu  = array();
+			$role_id = D('admin')->where('id='.$_SESSION['admin_info']['id'])->getField('role_id');
+			$node_ids_res = D("access")->where("role_id=".$role_id)->field("node_id")->select();
+			$node_ids = array();
+			foreach ($node_ids_res as $row) {
+				array_push($node_ids,$row['node_id']);
+			}
+
+			//获取有权限的左侧菜单列表
+			$node_list = $this->getLeftMenu($group_id);
+			foreach($node_list as $key=>$action) {
+				$data_arg = array();
+				if ($action['data']){
+					$data_arr = explode('&', $action['data']);
+					foreach ($data_arr as $data_one) {
+						$data_one_arr = explode('=', $data_one);
+						$data_arg[$data_one_arr[0]] = $data_one_arr[1];
+					}
 				}
+				$action['url'] = U($action['module'].'/'.$action['action'], $data_arg);
+				if ($action['action']) {
+					$menu[$action['module']]['navs'][] = $action;
+				}
+				$menu[$action['module']]['name']	= $action['module_name'];
+				$menu[$action['module']]['id']	= $action['id'];
 			}
-			$action['url'] = U($action['module'].'/'.$action['action'], $data_arg);
-			if ($action['action']) {
-				$menu[$action['module']]['navs'][] = $action;
-			}
-			$menu[$action['module']]['name']	= $action['module_name'];
-			$menu[$action['module']]['id']	= $action['id'];
+			$this->assign('menu',$menu);
+
 		}
-		$this->assign('menu',$menu);
 		$this->display('left');
+
 	}
 	/**	 
 	 * 后台主页

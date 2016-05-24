@@ -98,7 +98,6 @@ function status(id,type){
 
 //排序方法
 function sort(id,type,num){
-    
     $.get("{:u('Node/sort')}", { id: id, type: type,num:num }, function(jsondata){
         
 		$("#"+type+"_"+id+" ").attr('value', jsondata);

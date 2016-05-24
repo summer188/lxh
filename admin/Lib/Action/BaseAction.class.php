@@ -35,14 +35,15 @@ class BaseAction extends Action {
 		$this->role_mod=D("role");
 		//获取用户角色
 		$admin_level=$this->role_mod->field('id','name')->where('id='.$_SESSION['admin_info']['role_id'].'')->find();
+
 		
 		$this->assign('admin_level',$admin_level);
 		$this->assign('my_info', $admin_info);
 
-		// 顶部菜单
-		$model	=	M("group");
-		$top_menu	=$model->field('id,title')->where('status=1')->order('sort ASC')->select();
+		// 顶部菜单--smm start 2016-5-24 19:30
+		$top_menu = $this->getTopMenu();
 		$this->assign('top_menu',$top_menu);
+		// 顶部菜单--smm end 2016-5-24 19:30
 
 		//获取网站配置信息
 		$setting_mod = M('setting');
@@ -93,7 +94,90 @@ class BaseAction extends Action {
 		if ($rel==0) {
 			$this->error(L('_VALID_ACCESS_'));
 		}
-	}	
+	}
+
+	//判断当前登录用户是否有此顶部菜单的权限 smm 2016-5-24
+	public function checkGroupAccess($group_id){
+		$group_id = intval($group_id);
+		if($group_id>0){
+			$group_list = $this->getGroupAccess();
+			if(in_array($group_id,$group_list)){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+
+	//获取有授权的顶部菜单 smm 2016-5-24
+	public function getTopMenu(){
+		$group_list = $this->getGroupAccess();
+		$group_where = 'status=1';
+		if(!empty($group_list) && is_array($group_list)){
+			$group_where .= ' AND (';
+			foreach($group_list as $key=>$value){
+				$group_where .= " id={$value} OR";
+			}
+			$group_where = rtrim($group_where,'OR');
+			$group_where .= ' )';
+		}
+		$model = M("group");
+		$top_menu = $model->field('id,title')->where($group_where)->order('sort ASC')->select();
+		return $top_menu;
+	}
+
+	//获取有授权的左侧菜单 smm 2016-5-24
+	public function getLeftMenu($group_id){
+		$node_list = $this->getLeftAccess();
+		$where = "auth_type<>2 AND status=1 AND is_show=0 AND group_id=".$group_id;
+		if(!empty($node_list) && is_array($node_list)){
+			$where .= ' AND (';
+			foreach($node_list as $key=>$value){
+				$where .= " id={$value} OR";
+			}
+			$where = rtrim($where,'OR');
+			$where .= ' )';
+		}
+		$model = M("node");
+		$field = 'id,action,action_name,module,module_name,data';
+		$left_menu = $model->field($field)->where($where)->order('sort ASC')->select();
+		return $left_menu;
+	}
+
+	//获取左侧菜单授权 smm 2016-5-24
+	public function getLeftAccess(){
+		$role_id = $this->getRoleId();
+		$node_list = M("access")->field('node_id')->where("role_id=$role_id")->select();
+		$node_arr = array();
+		if(!empty($node_list) && is_array($node_list)){
+			foreach($node_list as $key=>$value){
+				$node_arr[] = $value['node_id'];
+			}
+		}
+		return $node_arr;
+	}
+
+	//获取顶部菜单授权 smm 2016-5-24
+	public function getGroupAccess(){
+		$role_id = $this->getRoleId();
+		$group_list = M("group_access")->field('group_id')->where("role_id=$role_id")->select();
+		$group_arr = array();
+		if(!empty($group_list) && is_array($group_list)){
+			foreach($group_list as $key=>$value){
+				$group_arr[] = $value['group_id'];
+			}
+		}
+		return $group_arr;
+	}
+
+	//获取当前登录用户的角色id smm 2016-5-24
+	public function getRoleId(){
+		$role_id = M('admin')->where('id='.$_SESSION['admin_info']['id'])->getField('role_id');
+		return $role_id;
+	}
+
 	//配置V购api基本信息	
 	public function miaoApi()
 	{

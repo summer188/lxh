@@ -98,7 +98,7 @@ class RoleAction extends BaseAction
 		$node_ids_res = D("access")->where("role_id=".$role_id)->field("node_id")->select();
 		$node_ids = array();
 		foreach ($node_ids_res as $row) {
-			array_push($node_ids,$row['node_id']);
+			$node_ids[] = $row['node_id'];
 		}
 		//取出模块授权
 		$modules = D("node")->where("status = 1 and auth_type = 0")->select();
@@ -127,17 +127,23 @@ class RoleAction extends BaseAction
 	public function authSubmit()
 	{
 		$role_id = intval($_REQUEST['id']);
-		$access=D(access);		
-		$access->where("role_id=".$role_id)->delete();
+		M('access')->where("role_id=".$role_id)->delete();
 
 		$node_ids = $_REQUEST['access_node'];
+		$data_values = '';
 		foreach ($node_ids as $node_id) {
-			$data=array();
-			$data['role_id'] = $role_id;
-			$data['node_id'] =$node_id ;			
-			$access->add($data);						
-		}	
-		$this->success(L('operation_success'));
+			$data_value1 = "('$role_id','$node_id'),";
+			$data_values .= $data_value1;
+		}
+		$data_values = substr($data_values,0,-1); //去掉最后一个逗号
+		$sql = "insert into lxh_access(role_id,node_id) values $data_values";
+		$result = mysql_query($sql);//批量插入数据表中
+		if($result){
+			$this->success('操作成功！');
+		}else{
+			$this->error('操作失败！');
+		}
+
 	}
 	//修改状态
 	function status()

@@ -18,24 +18,33 @@ class IndexAction extends BaseAction
     public function current_pos()
     {
         $group_id = intval($_REQUEST['tag']);
-        $menuid = intval($_REQUEST['menuid']);
+		$menuid = intval($_REQUEST['menuid']);
 
-        $r = M('node')->field('group_id,module_name,action_name')->where('id='.$menuid)->find();
-        if($r)
-        {
-            $group_id = $r['group_id'];
-        }
-        $group = M('group')->field('title')->where('id='.$group_id)->find();
-        if($group)
-        {
-            echo $group['title'];
-        }
-        if($r)
-        {
-            echo '->'.$r['module_name'].'->'.$r['action_name'];
-        }
-        exit;
-    }    
+		//取得授权的顶部菜单
+		$group_list = $this->getGroupAccess();
+		if(in_array($group_id,$group_list)){
+			$r = M('node')->field('group_id,module_name,action_name')->where('id='.$menuid)->find();
+			if($r)
+			{
+				$group_id = $r['group_id'];
+			}
+			$group = M('group')->field('title')->where('id='.$group_id)->find();
+			if($group)
+			{
+				echo $group['title'];
+			}
+			if($r)
+			{
+				echo '->'.$r['module_name'].'->'.$r['action_name'];
+			}
+			exit;
+		}else{
+			exit;
+		}
+
+    }
+
+
 	
 }
 ?>
