@@ -1,9 +1,9 @@
 <?php
 /**
  * 题目工具公共控制器，主要功能有：
- * 获取知识点列表；
  * 检测并创建题目上传目录；单一和多级目录的检测和创建；
- * 检测上传的word和png类型；删除题目文档等
+ * 获取知识点目录树；根据条件获取相关知识点列表
+ * 检测上传的word和png类型；删除题目文档；保存导入的excel数据等
  *
  * Created by Sunmiaomiao.
  * Email: 652308259@qq.com
@@ -11,31 +11,6 @@
  * Time: 9:22
  */
 class QuestionToolAction extends QuestionBaseAction{
-
-	/**
-	 * 获取知识点列表--响应ajax请求
-	 *
-	 * @return Array
-	 */
-	public function getOneList(){
-		$grade_id = isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
-		$cate_id = isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
-		$one_list = $this->getPoint($grade_id,$cate_id,1);
-		$two_list = array();
-		if(count($one_list)>0){
-			foreach($one_list as $key=>&$value){
-				$where = "alias LIKE '%{$value['alias']}%'";
-				$where .= " AND level=2";
-				$where .= " AND period_id=$this->period_id";
-				$where .= " AND grade_id=$grade_id";
-				$where .= " AND cate_id=$cate_id";
-				$point_list = M("point")->where($where)->field('id,alias,name')->select();
-				$two_list[$value['id']] = array_to_key($point_list,'id');
-			}
-		}
-		$point_list = array('one'=>$one_list,'two'=>$two_list);
-		$this->ajaxReturn($point_list,'JSON');
-	}
 
 	/**
 	 * 判断或创建题目目录
@@ -81,6 +56,20 @@ class QuestionToolAction extends QuestionBaseAction{
         }
 
     }
+
+	/**
+	 * 检查并创建单一目录
+	 *
+	 * @param String $root--目录
+	 */
+	public function checkDir($root){
+		if(!file_exists($root)){
+			mkdir($root);
+			if(!chmod($root, 0777)){
+				$this->error(L('OPERATION_FAILURE'));
+			}
+		}
+	}
 
 	/**
 	 * 获取该学段下所有年级和学科的所有六级知识点目录
@@ -191,20 +180,6 @@ class QuestionToolAction extends QuestionBaseAction{
 	}
 
 	/**
-	 * 检查并创建单一目录
-	 *
-	 * @param String $root--目录
-	 */
-	public function checkDir($root){
-		if(!file_exists($root)){
-			mkdir($root);
-			if(!chmod($root, 0777)){
-				$this->error(L('OPERATION_FAILURE'));
-			}
-		}
-	}
-
-	/**
 	 * 检查上传的文档类型
 	 *
 	 * @param Array $file--文档信息
@@ -247,7 +222,7 @@ class QuestionToolAction extends QuestionBaseAction{
     }
 
 	/**
-	 * 导入excel
+	 * 保存导入的excel数据
 	 *
 	 *
 	 */

@@ -165,13 +165,19 @@ class QuestionLoadAction extends QuestionToolAction{
 	 *
 	 */
 	public function editQuestion(){
-		if(isset($_GET['id']) && intval($_GET['id'])){
-            $display = $_GET['display'];
-			$id = intval($_GET['id']);
-			$this->upnew($id,$display);
+		$access = $this->checkEditAccess();
+		if($access){
+			if(isset($_GET['id']) && intval($_GET['id'])){
+				$display = $_GET['display'];
+				$id = intval($_GET['id']);
+				$this->upnew($id,$display);
+			}else{
+				$this->error(L('please_select'));
+			}
 		}else{
-			$this->error(L('please_select'));
+			$this->error('没有权限！');
 		}
+
 	}
 
 	/**
@@ -284,32 +290,38 @@ class QuestionLoadAction extends QuestionToolAction{
 	 * @return String
 	 */
 	public function deleteQuestion(){
-		if(!isset($_POST['id']) || empty($_POST['id'])){
-			$this->error('请选择要删除的题目！');
-		}
-		if (isset($_POST['id']) && is_array($_POST['id'])) {
-			$arr = $_POST['id'];
-            $collect_mod = M("{$this->getCollectMod()}");
-            $admin_id = $_SESSION['admin_info']['id'];
-			foreach($arr as $key=>$value){
-                //删除文档和截图
-                $question_info = $this->question_mod->where("id=$value")->find();
-                $cate_alias = $this->cate_list[$question_info['cate_id']]['alias'];
-                $question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/'.$question_info['site_logo'].'/'.$question_info['net_logo'].'/';
-                $this->delFile($question_dir,$question_info['net_logo']);
-                //删除收藏和下载记录表信息
-                $where = "admin_id=$admin_id AND period_id=$this->period_id AND question_id=$value";
-                $collect_mod->where($where)->delete();
+		$access = $this->checkDeleteAccess();
+		if($access){
+			if(!isset($_POST['id']) || empty($_POST['id'])){
+				$this->error('请选择要删除的题目！');
 			}
-            //删除题目表中信息
-            $ids = implode(',', $arr);
-            $result = $this->question_mod->delete($ids);
-            if($result){
-                $this->success(L('operation_success'));
-            }else{
-                $this->error('操作失败！');
-            }
+			if (isset($_POST['id']) && is_array($_POST['id'])) {
+				$arr = $_POST['id'];
+				$collect_mod = M("{$this->getCollectMod()}");
+				$admin_id = $_SESSION['admin_info']['id'];
+				foreach($arr as $key=>$value){
+					//删除文档和截图
+					$question_info = $this->question_mod->where("id=$value")->find();
+					$cate_alias = $this->cate_list[$question_info['cate_id']]['alias'];
+					$question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/'.$question_info['site_logo'].'/'.$question_info['net_logo'].'/';
+					$this->delFile($question_dir,$question_info['net_logo']);
+					//删除收藏和下载记录表信息
+					$where = "admin_id=$admin_id AND period_id=$this->period_id AND question_id=$value";
+					$collect_mod->where($where)->delete();
+				}
+				//删除题目表中信息
+				$ids = implode(',', $arr);
+				$result = $this->question_mod->delete($ids);
+				if($result){
+					$this->success(L('operation_success'));
+				}else{
+					$this->error('操作失败！');
+				}
+			}
+		}else{
+			$this->error('没有权限！');
 		}
+
 	}
 
 	/**

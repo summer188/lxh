@@ -16,8 +16,12 @@ class RoleAction extends BaseAction
 		import("ORG.Util.Page");
 		$count = $role_mod->count();
 		$p = new Page($count,30);
-
 		$role_list = $role_mod->limit($p->firstRow.','.$p->listRows)->select();
+		if(!empty($role_list)){
+			foreach($role_list as $key=>&$value){
+
+			}
+		}
 		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Role&a=add\', title:\'添加角色\', width:\'400\', height:\'220\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加组');
 		$page = $p->show();
 		$this->assign('page',$page);
@@ -127,18 +131,36 @@ class RoleAction extends BaseAction
 	public function authSubmit()
 	{
 		$role_id = intval($_REQUEST['id']);
+		M('group_access')->where("role_id=$role_id")->delete();
 		M('access')->where("role_id=".$role_id)->delete();
 
+		//左侧菜单授权
 		$node_ids = $_REQUEST['access_node'];
-		$data_values = '';
+		$group_ids = array();
+		$node_values = '';
 		foreach ($node_ids as $node_id) {
-			$data_value1 = "('$role_id','$node_id'),";
-			$data_values .= $data_value1;
+			$group = M("node")->field('group_id')->where("id=$node_id")->find();
+//			echo $node_id.'--'.$group['group_id'].'<br/>';
+			$group_ids[$group['group_id']] = $group['group_id'];
+			$data_value = "('$role_id','$node_id'),";
+			$node_values .= $data_value;
 		}
-		$data_values = substr($data_values,0,-1); //去掉最后一个逗号
-		$sql = "insert into lxh_access(role_id,node_id) values $data_values";
-		$result = mysql_query($sql);//批量插入数据表中
-		if($result){
+//		var_dump($group_ids);
+		$node_values = substr($node_values,0,-1); //去掉最后一个逗号
+		//顶部菜单授权
+		$group_values = '';
+		if(!empty($group_ids)){
+			foreach($group_ids as $group_id){
+				$data_value = "('$role_id','$group_id'),";
+				$group_values .= $data_value;
+			}
+		}
+		$group_values = substr($group_values,0,-1); //去掉最后一个逗号
+		$sql1 = "insert into lxh_group_access(role_id,group_id) values $group_values";
+		$sql2 = "insert into lxh_access(role_id,node_id) values $node_values";
+		$result1 = mysql_query($sql1);//批量插入顶部菜单授权
+		$result2 = mysql_query($sql2);//批量插入左侧菜单授权
+		if($result1 && $result2){
 			$this->success('操作成功！');
 		}else{
 			$this->error('操作失败！');

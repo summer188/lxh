@@ -78,4 +78,43 @@ class QuestionBaseAction extends BaseAction{
 			$this->cate_list = array_to_key($this->cate_list,'id');
 		}
     }
+
+	/**
+	 * 检测当前登录用户是否有编辑权限
+	 * @return Boolean
+	 */
+	public function checkEditAccess(){
+		$module = MODULE_NAME;
+		$node = M("node")->where("module='$module' AND action='editQuestion'")->find();
+		$node_id = 0;
+		if(!empty($node)){
+			$node_id = $node['id'];
+		}
+		if($node_id>0){
+			$access = $this->checkNodeAccess($node_id);
+			return $access;
+		}else{
+			return false;
+		}
+
+	}
+
+	/**
+	 * 检测当前登录用户是否有下载权限
+	 * @return Boolean
+	 */
+	public function checkDeleteAccess(){
+		$module = MODULE_NAME;
+		$node = M("node")->where("module='$module' AND action='deleteQuestion'")->find();
+		$node_id = 0;
+		if(!empty($node)){
+			$node_id = $node['id'];
+		}
+		if($node_id>0){
+			$access = $this->checkNodeAccess($node_id);
+			return $access;
+		}else{
+			return false;
+		}
+	}
 }

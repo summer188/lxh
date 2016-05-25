@@ -53,7 +53,7 @@
             <td align="center"><b>{$val.module_name}</b></td>
       		<td align="center">{$val.action}</td>
             <td align="center">{$val.action_name}</td>
-            <td align="center"><input type="text" class="input-text-c input-text" id="sort_{$val.id}" onblur="sort({$val.id},'sort',this.value)" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>
+            <td align="center"><input type="text" class="input-text-c input-text" id="sort_{$val.id}" onblur="sort({$val.id},this.value)" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>
             <td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
             <td align="center"><a href="javascript:edit({$val.id},'{$val.action_name}')">编辑</a></td>
         </tr>
@@ -97,11 +97,12 @@ function status(id,type){
 }
 
 //排序方法
-function sort(id,type,num){
-    $.get("{:u('Node/sort')}", { id: id, type: type,num:num }, function(jsondata){
-        
-		$("#"+type+"_"+id+" ").attr('value', jsondata);
-	},'json'); 
+function sort(id,num){
+    console.log(num);
+    $.get("{:u('Node/sort')}", { id: id, num:num }, function(jsondata){
+//		$("#sort_"+id).attr('value', jsondata);
+		$("#sort_"+id).val(jsondata);
+	},'json');
 }
 
 </script>

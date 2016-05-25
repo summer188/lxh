@@ -98,10 +98,27 @@ class BaseAction extends Action {
 
 	//判断当前登录用户是否有此顶部菜单的权限 smm 2016-5-24
 	public function checkGroupAccess($group_id){
+		$role_id = $this->getRoleId();
 		$group_id = intval($group_id);
 		if($group_id>0){
-			$group_list = $this->getGroupAccess();
-			if(in_array($group_id,$group_list)){
+			$group = M("group_access")->where("role_id=$role_id AND group_id=$group_id")->find();
+			if(!empty($group)){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+
+	//判断当前登录用户是否有此菜单或操作的权限 smm 2016-5-24
+	public function checkNodeAccess($node_id){
+		$role_id = $this->getRoleId();
+		$node_id = intval($node_id);
+		if($node_id>0){
+			$node = M("access")->where("role_id=$role_id AND node_id=$node_id")->find();
+			if(!empty($node)){
 				return true;
 			}else{
 				return false;

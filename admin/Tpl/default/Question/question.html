@@ -113,7 +113,9 @@
                         <td align="center">
                             <a href="javascript:collectQuestion({$val.id})" style="color:#0000FF;width:20px;">收藏</a>&nbsp;
                             <a href="javascript:lookQuestion({$val.id})" style="color:#0000FF;width:20px;">预览</a>&nbsp;
-                            <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">编辑</a>&nbsp;
+                            <if condition="$edit_access">
+                                <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">编辑</a>&nbsp;
+                            </if>
                             <a href="javascript:downloadQuestion({$val.id})" style="color:#0000FF;width:20px;">下载</a>
                         </td>
                     </tr>
@@ -122,7 +124,9 @@
             </table>
             <div class="btn">
                 <label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
-                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('{$Think.lang.sure_delete}')" style="float:left;margin-left:10px;"/>
+                <if condition="$delete_access">
+                    <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('{$Think.lang.sure_delete}')" style="float:left;margin-left:10px;"/>
+                </if>
                 <input type="button" class="button" value="{$Think.lang.download}" onclick="dl(this);" style="float:left;margin-left:10px;"/>
                 <div id="pages">{$page}</div>
             </div>
@@ -369,7 +373,12 @@ function lookQuestion(id) {
 }
 //编辑
 function editQuestion(id) {
-    location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
+    if({$edit_access}){
+        location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
+    }else{
+        alert("抱歉，您目前还没有相关权限！");
+    }
+
 }
 //收藏
 function collectQuestion(id) {

@@ -25,7 +25,9 @@ $(document).ready(function(){
 		});
 	});
 });
-
+function goback(){
+    location.href = "/admin.php?m=Role&a=index";
+}
 </script>
 
 <div style="padding: 10px;">
@@ -57,6 +59,7 @@ $(document).ready(function(){
         <input type="hidden" name="id" value="{$id}" />
         <div class="btn">
             <input type="submit" value="{$Think.lang.submit}" name="dosubmit" class="button" id="dosubmit"/>
+            <input type="button" class="button" value="返回" onclick="goback()"/>
         </div>
     </form>
 </div>

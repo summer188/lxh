@@ -1,0 +1,64 @@
+<include file="Public:header" />
+<style type="text/css"> table {font-size: 12px} </style> 
+<div class="pad_10">
+<form action="admin.php?m={$controller}&a=update" method="post" name="myform" id="myform">
+<table width="100%" cellpadding="2" cellspacing="1" class="table_form">
+	<tr> 
+      <th width="80">学科名称 :</th>
+      <td><input type="text" name="name" id="name" class="input-text" value="{$info.name}" /></td>
+    </tr>
+    <tr>
+        <th width="80">别名 :</th>
+        <td><input type="text" name="alias" id="alias" class="input-text" value="{$info.alias}" /></td>
+    </tr>
+    <tr>
+      <th>排序  :</th>
+      <td><input type="text" name="sort" id="sort" class="input-text" value="{$info.sort}" /></td>
+    </tr>
+    <tr>
+      <th>状态 :</th>
+      <td>
+      	<input type="radio" name="status" class="radio_style" value="1" <if condition="$info.status eq 1">checked="checked"</if>
+
+  > &nbsp;有效&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="status" class="radio_style" value="0" <if condition="$info.status eq 0">checked="checked"</if>> &nbsp;禁用
+      </td>
+    </tr>
+	<input type="hidden" name="id" value="{$info.id}" />
+</table>
+<input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
+</form>
+<script type="text/javascript">
+	$(function(){
+		$.formValidator.initConfig({
+			formid:"myform",
+			autotip:true,
+			onerror:function(msg,obj){
+				window.top.art.dialog({
+					content:msg,
+					lock:true,
+					width:'200',
+					height:'50'},
+					 function()
+					 {
+					 	this.close();
+						$(obj).focus();
+					 })
+		}});		
+		
+		$("#name").formValidator({
+			onshow:"不能为空",onfocus:"不能为空"
+		}).inputValidator({
+			min:1,onerror:"请填写分类名称"
+		}).defaultPassed();
+        $("#alias").formValidator({
+            onshow:"不能为空",onfocus:"不能为空"
+        }).inputValidator({
+            min:1,onerror:"请填写学科别名"
+        }).defaultPassed();
+	
+	})
+</script>
+</div>
+</body>
+</html>

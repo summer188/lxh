@@ -274,6 +274,8 @@ class QuestionAction extends QuestionLoadAction{
         $this->assign('question_list',$question_list);
         $this->assign('question_tab',$this->question_tab);
         $this->assign('admin_id',$admin_id);
+		$this->assign('edit_access',$this->checkEditAccess());
+		$this->assign('delete_access',$this->checkDeleteAccess());
         $this->display();
 	}
 
@@ -362,6 +364,8 @@ class QuestionAction extends QuestionLoadAction{
 		$this->assign('cate_list',$this->cate_list);
 		$this->assign('question_list',$question_list);
 		$this->assign('question_tab',$this->question_tab);
+		$this->assign('edit_access',$this->checkEditAccess());
+		$this->assign('delete_access',$this->checkDeleteAccess());
 		$this->assign('display',$display);
 		$this->display($display);
 	}

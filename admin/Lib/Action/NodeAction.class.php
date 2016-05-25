@@ -25,7 +25,7 @@ class NodeAction extends BaseAction
 		import("ORG.Util.Page");
 		$count = $node_mod->where($where)->count();
 		$p = new Page($count,15);
-		$node_list = $node_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('module asc,sort ASC')->select();		
+		$node_list = $node_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('module asc,sort ASC')->select();
 		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Node&a=add\', title:\'添加菜单\', width:\'500\', height:\'490\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加菜单');
 		$page = $p->show();		
 		$group_mod = D('group');
@@ -128,6 +128,24 @@ class NodeAction extends BaseAction
 		$res = $node_mod->where('id=' . $id)->setField($type, array('exp', "(" . $type . "+1)%2"));
 		$values = $node_mod->where('id=' . $id)->getField($type);
 		$this->ajaxReturn($values[$type]);
+	}
+
+	public function sort(){
+		$mod = M("node");
+		$id  = intval($_REQUEST['id']);
+		$num = intval(trim($_REQUEST['num']));
+		$values = $mod->where('id='.$id)->find();
+		if(!is_numeric($num)){
+			$this->ajaxReturn($values['sort']);
+			exit;
+		}
+		$sql  = "update ".C('DB_PREFIX').MODULE_NAME." set sort=$num where id='$id'";
+		$res  = $mod->execute($sql);
+		if($res){
+			$this->ajaxReturn($num);
+		}else{
+			$this->ajaxReturn($values['sort']);
+		}
 	}
 }
 ?>

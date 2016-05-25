@@ -2,22 +2,47 @@
 
 class AdminAction extends BaseAction
 {
-	public $school_list;
+	public $school_list = array();
+	public $school_id = 0;
 	public function __construct(){
-		$this->school_list = M('school')->select();
-		$this->school_list = array_to_key($this->school_list,'id');
+		$admin_id = $_SESSION['admin_info']['id'];
+		$admin = M('admin')->field('school_id')->where("id=$admin_id")->find();
+		if(!empty($admin) && $admin['school_id']>0){
+			$this->school_id = $admin['school_id'];
+		}
+		if($this->school_id == 0){
+			$this->school_list = M('school')->field('id,name')->where('status=1')->select();
+			$this->school_list = array_to_key($this->school_list,'id');
+		}
+		if(!empty($this->school_list)){
+			$this->school_list[0] = array('id'=>0,'name'=>'所有学校');
+			ksort($this->school_list);
+		}
 	}
 	function index()
 	{
-		$admin_mod = D('admin');
+		$admin_mod = M('admin');
+		$where = '';
+		if($this->school_id > 0){
+			$where = "school_id={$this->school_id}";
+		}
+
 		import("ORG.Util.Page");
 		$prex = C('DB_PREFIX');
-		$count = $admin_mod->count();
+		$count = $admin_mod->where($where)->count();
 		$p = new Page($count,30);
-		$admin_list = $admin_mod->field($prex.'admin.*,'.$prex.'role.name as role_name')->join('LEFT JOIN '.$prex.'role ON '.$prex.'admin.role_id = '.$prex.'role.id ')->limit($p->firstRow.','.$p->listRows)->order($prex.'admin.add_time DESC')->select();
+		$admin_list = $admin_mod->field($prex.'admin.*,'.$prex.'role.name as role_name')->join('LEFT JOIN '.$prex.'role ON '.$prex.'admin.role_id = '.$prex.'role.id ')->limit($p->firstRow.','.$p->listRows)->where($where)->order($prex.'admin.add_time DESC')->select();
 		$key = 1;
 		foreach($admin_list as $k=>$val){
 			$admin_list[$k]['key'] = ++$p->firstRow;
+			if(!empty($this->school_list)){
+				$admin_list[$k]['user_school'] = $this->school_list[$val['school_id']]['name'];
+			}else{
+				$school = M('school')->field('name')->where("id=$this->school_id")->find();
+				if(!empty($school)){
+					$admin_list[$k]['user_school'] = $school['name'];
+				}
+			}
 		}
 		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Admin&a=add\', title:\'添加管理员\', width:\'480\', height:\'250\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加管理员');
 		$page = $p->show();
@@ -47,7 +72,10 @@ class AdminAction extends BaseAction
 			$data = $admin_mod->create();
             //smm修改于2016-3-26
             //管理员加入学校分类
-            $data['user_school'] = $_POST['user_school'];
+			$data['school_id'] = $_POST['school_id'];
+			if(!empty($_POST['user_school']) && $_POST['school_id']==0){
+				$data['school_id'] = $_POST['user_school'];
+			}
 			$data['add_time'] = time();
 			$data['last_time'] = time();
 			$result = $admin_mod->add($data);
@@ -61,6 +89,7 @@ class AdminAction extends BaseAction
 		    $role_mod = D('role');
 		    $role_list = $role_mod->where('status=1')->select();
 		    $this->assign('role_list',$role_list);
+			$this->assign('school_id',$this->school_id);
 			$this->assign('school_list',$this->school_list);
 		    $this->assign('show_header', false);
 			$this->display();
@@ -88,13 +117,21 @@ class AdminAction extends BaseAction
             }
 
             unset($_POST['repassword']);
+			//smm修改于2016-3-26
+			//管理员加入学校分类
+			$school_id = $_POST['school_id'];
+			if(!empty($_POST['user_school']) && $_POST['school_id']==0){
+				$school_id = $_POST['user_school'];
+			}
+			unset($_POST['school_id']);
+			unset($_POST['user_school']);
             $data = $admin_mod->create();
 			if (false === $data) {
 				$this->error($admin_mod->getError());
 			}
-            //smm修改于2016-3-26
-            //管理员加入学校分类
-            $data['user_school'] = $_POST['user_school'];
+
+			$data['school_id'] = $school_id;
+			$data['last_time'] = time();
 			$result = $admin_mod->save($data);
 			if(false !== $result){
 				$this->success(L('operation_success'), '', '', 'edit');
@@ -102,6 +139,7 @@ class AdminAction extends BaseAction
 				$this->error(L('operation_failure'));
 			}
 		}else{
+			$id = 0;
 			if( isset($_GET['id']) ){
 				$id = isset($_GET['id']) && intval($_GET['id']) ? intval($_GET['id']) : $this->error('参数错误');
 			}
@@ -113,6 +151,7 @@ class AdminAction extends BaseAction
 			$admin_info = $admin_mod->where('id='.$id)->find();
 			$this->assign('admin_info', $admin_info);
 			$this->assign('show_header', false);
+			$this->assign('school_id',$this->school_id);
 			$this->assign('school_list',$this->school_list);
 			$this->display();
 		}
@@ -168,8 +207,10 @@ class AdminAction extends BaseAction
 		$type 	= trim($_REQUEST['type']);
 		$sql 	= "update ".C('DB_PREFIX')."admin set $type=($type+1)%2 where id='$id'";
 		$res 	= $admin_mod->execute($sql);
-		$values = $admin_mod->where('id='.$id)->find();
-		$this->ajaxReturn($values[$type]);
+		if($res){
+			$values = $admin_mod->where('id='.$id)->find();
+			$this->ajaxReturn($values[$type]);
+		}
 	}
 
 	//以下均为smm添加于2016-4-8

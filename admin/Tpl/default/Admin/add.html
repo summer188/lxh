@@ -25,16 +25,18 @@
         </select>
       </td>
     </tr>
-	<tr>
-      <th>{:L('user_school')} :</th>
-      <td>
-          <select name="school_id">
-              <volist name="school_list" id="val">
-                  <option value="{$val.id}">{$val.name}</option>
-              </volist>
-          </select>
-      </td>
-    </tr>
+    <notempty name="school_list">
+        <tr>
+          <th>{:L('user_school')} :</th>
+          <td>
+              <select name="user_school">
+                  <volist name="school_list" id="val">
+                      <option value="{$val.id}">{$val.name}</option>
+                  </volist>
+              </select>
+          </td>
+        </tr>
+    </notempty>
 	<!--<tr>
       <th>{:L('user_subject')} :</th>
       <td>
@@ -49,7 +51,8 @@
       </td>
     </tr>
 </table>
-<input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
+<input type="hidden" name="school_id" value="{$school_id}"/>
+<input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" "/>
 </form>
 <script type="text/javascript">
 	$(function(){

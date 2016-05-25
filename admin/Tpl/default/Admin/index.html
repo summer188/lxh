@@ -29,7 +29,7 @@
             <td align="center"><input type="checkbox" value="{$val.id}" name="id[]" <if condition="$val['id'] eq '1'">disabled="disabled"</if>></td>            
             <td align="center">{$val.user_name}</td>
             <td align="center">{$val.role_name}</td>
-			<td align="center">{$school_list[$val['school_id']]['name']}</td>
+			<td align="center">{$val.user_school}</td>
 			<!--<td align="center">{$val.user_subject}</td>-->
      		<!--<td align="center">{$val.add_time|date='Y-m-d H:i:s',###}</td>-->
             <!--<td align="center">{$val.last_time|date='Y-m-d H:i:s',###}</td>-->
@@ -55,7 +55,7 @@ function add() {
     window.top.art.dialog({
                 title:lang_add,
                 id:'add',
-                iframe:"?m=Admin&a=add",width:'480',height:'170'
+                iframe:"?m=Admin&a=add",width:'480',height:'270'
             },
             function()
             {
