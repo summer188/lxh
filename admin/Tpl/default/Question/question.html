@@ -373,12 +373,7 @@ function lookQuestion(id) {
 }
 //编辑
 function editQuestion(id) {
-    if({$edit_access}){
-        location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
-    }else{
-        alert("抱歉，您目前还没有相关权限！");
-    }
-
+    location.href = "admin.php?m={$controller}&a=editQuestion&display={$display}"+"&id="+id;
 }
 //收藏
 function collectQuestion(id) {

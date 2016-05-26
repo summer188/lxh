@@ -175,7 +175,7 @@ class QuestionLoadAction extends QuestionToolAction{
 				$this->error(L('please_select'));
 			}
 		}else{
-			$this->error('没有权限！');
+			$this->error('抱歉，您目前还没有相关权限！');
 		}
 
 	}
@@ -226,6 +226,42 @@ class QuestionLoadAction extends QuestionToolAction{
 
 		if($flag){
 			$this->success('收藏成功！');
+		}else{
+			$this->error('操作失败！');
+		}
+	}
+
+	/**
+	 * 取消收藏
+	 *
+	 * @return Array
+	 */
+	public function removeCollect(){
+		$flag = true;
+		if (isset($_GET['id']) && is_string($_GET['id'])) {
+			$id = intval($_GET['id']);
+			if($id > 0){
+				$collect_mod = M("{$this->getCollectMod()}");
+				$admin_id = $_SESSION['admin_info']['id'];
+				//先查看下是否有记录
+				$where = "admin_id=$admin_id AND period_id={$this->period_id} AND question_id=$id";
+				$record = $collect_mod->where($where)->find();
+				if(!empty($record)){//若有记录
+					if($record['is_collect']==1){//若已经收藏，则直接取消收藏
+						$data['is_collect'] = 0;
+						$result = $collect_mod->where($where)->save($data);
+						if(!$result){
+							$flag = false;
+						}
+					}
+				}
+			}
+		}else{
+			$flag = false;
+		}
+
+		if($flag){
+			$this->success('操作成功！');
 		}else{
 			$this->error('操作失败！');
 		}

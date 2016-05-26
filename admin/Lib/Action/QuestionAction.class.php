@@ -138,8 +138,11 @@ class QuestionAction extends QuestionLoadAction{
         //获取搜索条件
         $where = '';
 
+		$is_collect=isset($_GET['collect'])?intval($_GET['collect']):0;
+		$is_download=isset($_GET['download'])?intval($_GET['download']):0;
+		$is_upload=isset($_GET['upload'])?intval($_GET['upload']):0;
+
         //我的下载
-        $is_download=isset($_GET['download'])?intval($_GET['download']):0;
         if($is_download==1){
             //获取下载列表
             $where_download = "admin_id=$admin_id AND period_id=$this->period_id AND is_download=1";
@@ -156,8 +159,7 @@ class QuestionAction extends QuestionLoadAction{
         }
 
         //我的收藏
-        $is_collect=isset($_GET['collect'])?intval($_GET['collect']):0;
-        if($is_collect==1){
+        if($is_collect==1 || (!$is_download&&!$is_upload)){
             //获取收藏列表
             $where_collect = "admin_id=$admin_id AND period_id=$this->period_id AND is_collect=1";
             $collect_list = $collect_mod->where($where_collect)->select();
@@ -182,21 +184,6 @@ class QuestionAction extends QuestionLoadAction{
         if ($cate_id!='') {
             $where .= " AND cate_id=$cate_id";
             $this->assign('cate_id', $cate_id);
-        }
-        $point_id=isset($_GET['point_id'])?$_GET['point_id']:'';
-        if($grade_id!='' && $cate_id!=''){
-            $checked = array();
-            if (!empty($point_id) && is_array($point_id)) {
-                $where .= " AND (";
-                foreach($point_id as $key=>$value){
-                    $where .= " title_attribute LIKE '%{$value}%' OR";
-                    $checked[$value] = 'checked';
-                }
-                $where = rtrim($where,'OR');
-                $where .= ")";
-                $this->assign('point_id',$point_id);
-                $this->assign('checked',json_encode($checked));
-            }
         }
 		$point_id = '';
 		$one_id=isset($_GET['one_id'])?$_GET['one_id']:'';
@@ -237,8 +224,7 @@ class QuestionAction extends QuestionLoadAction{
 		}
 
         //我的上传
-        $is_upload=isset($_GET['upload'])?intval($_GET['upload']):0;
-        if($is_upload==1 || (!$is_download&&!$is_collect)){
+        if($is_upload==1){
             $where .= " AND create_id=$admin_id";
             $this->assign('upload',1);
         }

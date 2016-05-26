@@ -11,12 +11,14 @@
             <tr>
                 <td>
                     <div class="explain-col">
-                        <input type="button" id="myUpload" value="我的上传" class="myqn"/>
-                        <input type="hidden" id="upload" name="upload" value="{$upload}"/>
-                        <input type="button" id="myDownload" value="我的下载" class="myqn" style="margin-left:10px;"/>
-                        <input type="hidden" id="download" name="download" value="{$download}"/>
                         <input type="button" id="myCollect" value="我的收藏" class="myqn" style="margin-left:10px;"/>
                         <input type="hidden" id="collect" name="collect" value="{$collect}"/>
+                        <input type="button" id="myDownload" value="我的下载" class="myqn" style="margin-left:10px;"/>
+                        <input type="hidden" id="download" name="download" value="{$download}"/>
+                        <if condition="$edit_access">
+                            <input type="button" id="myUpload" value="我的上传" class="myqn" style="margin-left:10px;"/>
+                            <input type="hidden" id="upload" name="upload" value="{$upload}"/>
+                        </if>
                     </div>
                 </td>
             </tr>
@@ -127,9 +129,9 @@
                             </if>
                         </td>
                         <td align="center">
-                            <a href="javascript:collectQuestion({$val.id})" style="color:#0000FF;width:20px;">收藏</a>&nbsp;
+                            <a href="javascript:removeCollect({$val.id})" style="color:#0000FF;width:20px;">取消收藏</a>&nbsp;
                             <a href="javascript:lookQuestion({$val.id})" style="color:#0000FF;width:20px;">预览</a>&nbsp;
-                            <if condition="$val['create_id'] eq $admin_id">
+                            <if condition="$edit_access">
                                 <a href="javascript:editQuestion({$val.id})" style="color:#0000FF;width:20px;">编辑</a>&nbsp;
                             </if>
                             <a href="javascript:downloadQuestion({$val.id})" style="color:#0000FF;width:20px;">下载</a>
@@ -204,10 +206,10 @@ $(function(){
     buttonStyle();
     showPoint();
 });
-$("#myUpload").click(function(){
-    $("#upload").val('1');
+$("#myCollect").click(function(){
+    $("#collect").val('1');
+    $("#upload").val('0');
     $("#download").val('0');
-    $("#collect").val('0');
     buttonStyle();
     $("#searchform").submit();
 });
@@ -218,23 +220,24 @@ $("#myDownload").click(function(){
     buttonStyle();
     $("#searchform").submit();
 });
-$("#myCollect").click(function(){
-    $("#collect").val('1');
-    $("#upload").val('0');
+$("#myUpload").click(function(){
+    $("#upload").val('1');
     $("#download").val('0');
+    $("#collect").val('0');
     buttonStyle();
     $("#searchform").submit();
 });
 function buttonStyle(){
-    var upload = $("#upload").val();
-    var download = $("#download").val();
     var collect = $("#collect").val();
-    if(upload=='1'){
-        $("#myUpload").removeClass("myqn");
-        $("#myUpload").addClass("myqnclick");
+    var download = $("#download").val();
+    var upload = $("#upload").val();
+
+    if(collect=='1'){
+        $("#myCollect").removeClass("myqn");
+        $("#myCollect").addClass("myqnclick");
     }else{
-        $("#myUpload").removeClass("myqnclick");
-        $("#myUpload").addClass("myqn");
+        $("#myCollect").removeClass("myqnclick");
+        $("#myCollect").addClass("myqn");
     }
     if(download=='1'){
         $("#myDownload").removeClass("myqn");
@@ -243,12 +246,12 @@ function buttonStyle(){
         $("#myDownload").removeClass("myqnclick");
         $("#myDownload").addClass("myqn");
     }
-    if(collect=='1'){
-        $("#myCollect").removeClass("myqn");
-        $("#myCollect").addClass("myqnclick");
+    if(upload=='1'){
+        $("#myUpload").removeClass("myqn");
+        $("#myUpload").addClass("myqnclick");
     }else{
-        $("#myCollect").removeClass("myqnclick");
-        $("#myCollect").addClass("myqn");
+        $("#myUpload").removeClass("myqnclick");
+        $("#myUpload").addClass("myqn");
     }
 
 }
@@ -431,11 +434,11 @@ function lookQuestion(id) {
 function editQuestion(id) {
     location.href = "admin.php?m={$controller}&a=editQuestion&display=my"+"&id="+id;
 }
-//收藏
-function collectQuestion(id) {
-    var url = "admin.php?m={$controller}&a=collectQuestion";
+//取消收藏
+function removeCollect(id) {
+    var url = "admin.php?m={$controller}&a=removeCollect";
     $.get(url, { id: id }, function(jsondata){
-        window.top.art.dialog({id:'collectQuestion',content:jsondata.info,lock:true,width:'200',height:'50',time:1});
+        window.top.art.dialog({id:'removeCollect',content:jsondata.info,lock:true,width:'200',height:'50',time:1});
         if(jsondata.status==1){
             window.location.reload();
         }
