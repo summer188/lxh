@@ -31,14 +31,24 @@ class BaseAction extends Action {
 		$this->checkAuthority();
 		//需要登陆
 		$admin_info =$_SESSION['admin_info'];
-        
+
 		$this->role_mod=D("role");
 		//获取用户角色
 		$admin_level=$this->role_mod->field('id','name')->where('id='.$_SESSION['admin_info']['role_id'].'')->find();
 
+		//获取用户学校
+		$school_id = $admin_info['school_id'];
+		$school = '';
+		if($school_id > 0){
+			$info = M('school')->where("id=$school_id")->find();
+			if(!empty($info)){
+				$school = $info['name'];
+			}
+		}
 		
 		$this->assign('admin_level',$admin_level);
 		$this->assign('my_info', $admin_info);
+		$this->assign('school',$school);
 
 		// 顶部菜单--smm start 2016-5-24 19:30
 		$top_menu = $this->getTopMenu();
