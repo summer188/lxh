@@ -227,7 +227,7 @@ class QuestionToolAction extends QuestionBaseAction{
 	 *
 	 */
 	public function insertExcel(){
-//		$grade_id = $_POST['grade_id'];
+		$grade_id = $_POST['grade_id'];
 		$cate_id = $_POST['cate_id'];
 		$create_id = $_SESSION['admin_info']['id'];
 		$school_id = $_SESSION['admin_info']['school_id'];
@@ -241,7 +241,7 @@ class QuestionToolAction extends QuestionBaseAction{
 			$xls->read($file_name);
 			$data_values = '';
 			for ($i=3; $i<=$xls->sheets[0]['numRows']; $i++) {
-				$grade_id = $xls->sheets[0]['cells'][$i][1];
+				$grade = $xls->sheets[0]['cells'][$i][1];
 				$site_logo = $xls->sheets[0]['cells'][$i][2];
 				$net_logo = $xls->sheets[0]['cells'][$i][3];
 				$name = $xls->sheets[0]['cells'][$i][4];
@@ -257,7 +257,10 @@ class QuestionToolAction extends QuestionBaseAction{
 			}
 			$data_values = substr($data_values,0,-1); //去掉最后一个逗号
 			$sql = "insert into ".C('DB_PREFIX').$this->question_tab." (grade_id,cate_id,site_logo,net_logo,name,recommend,answer,installment,has_invoice,cash_back_rate,title_attribute,subject,status,create_id,school_id,update_time) values $data_values";
+//			echo $sql;
+//			exit;
 			$query = mysql_query($sql);//批量插入数据表中
+			unlink($file_name);
 			if($query){
 				$this->success('导入成功！');
 				exit();
