@@ -403,13 +403,15 @@ function downloadQuestion(id) {
 function dl(){
     var ids='';
     $("input[name='id[]']:checked").each(function(i, n){
-        ids += $(n).val() + ',';
+        var id = $(n).val();
+        $('#download_'+id).html("<span style='color:#009933;'>已下载</span>");
+        ids += id + ',';
     });
     if(ids=='') {
         window.top.art.dialog({content:lang_please_select+'菜单分类名称	',lock:true,width:'200',height:'50',time:1.5},function(){});
         return false;
     }else{
-        location.href = "dl.php?ids="+ids+"&pid={$period_id}&tab={$question_tab}";
+        location.href = "dl.php?ids="+ids+"&pid={$period_id}&admin_id={$admin_id}";
     }
 
 }

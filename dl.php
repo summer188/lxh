@@ -7,26 +7,33 @@
  */
 include_once ("connect.php");
 
-if(!empty($_REQUEST['ids']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['tab'])){
+if(!empty($_REQUEST['ids']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['admin_id'])){
 	//题目ids
 	$ids = $_REQUEST['ids'];
-	$ids = explode(',',$ids);
+	$admin_id = $_REQUEST['admin_id'];
+	$tag = $admin_id % 10;
+	//收藏下载记录表
+	$user_tab = 'lxh_admin_question'.$tag;
 	//学段id
 	$pid = intval($_REQUEST['pid']);
 	//题目表
-	$tab = 'lxh_'.$_REQUEST['tab'];
+	$ids = explode(',',$ids);
 	//根据学段id取学科表
 	switch($pid){
 		case 1:
+			$tab = 'lxh_ad';
 			$cate_tab = 'lxh_adboard';
 			break;
 		case 2:
+			$tab = 'lxh_seller_list';
 			$cate_tab = 'lxh_seller_cate';
 			break;
 		case 3:
+			$tab = 'lxh_article';
 			$cate_tab = 'lxh_article_cate';
 			break;
 		default:
+			$tab = '';
 			$cate_tab = '';
 			break;
 	}
@@ -40,6 +47,23 @@ if(!empty($_REQUEST['ids']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['tab
 	}else{
 		if(is_array($ids) && count($ids)>0){
 			foreach($ids as $key=>$value){
+				//先查看下是否有下载记录
+				$where = "admin_id=$admin_id AND period_id=$pid AND question_id=$value";
+				$record_sql = "SELECT * FROM $user_tab WHERE $where";
+				$res = mysql_query($record_sql);
+				$record = array();
+				while($arr=mysql_fetch_array($res)){
+						$record[] = $arr;
+				}
+				$dl_sql = "";
+				if(empty($record)){//若没有记录，需要先添加记录
+					$dl_sql = "INSERT INTO $user_tab (admin_id,period_id,question_id,is_download) VALUES($admin_id,$pid,$value,1)";
+				}else{//若已有记录，就需要先判断其下载状态
+					if($record['is_download'] == 0){//未下载
+						$dl_sql = "UPDATE $user_tab SET is_download=1 where id={$record['id']}";
+					}
+				}
+				mysql_query($dl_sql);
 				//取题目信息
 				$sql = "SELECT * FROM $tab where id=$value AND period_id=$pid";
 				$result = mysql_query($sql);
@@ -75,7 +99,6 @@ if(!empty($_REQUEST['ids']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['tab
 	error_reporting(0);
 	readfile($zurl);
 	flush();
-	ob_flush();
 	deldir('temp/');
 	exit;
 }
