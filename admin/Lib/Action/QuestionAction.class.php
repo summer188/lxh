@@ -230,7 +230,7 @@ class QuestionAction extends QuestionLoadAction{
         }
         import("ORG.Util.Page");
         $count = $this->question_mod->where($where)->count();
-        $p = new Page($count,15);
+        $p = new Page($count,5);
         //搜索符合条件的题目
         $question_list = $this->question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,id desc')->select();
         $collect_list = $this->getCollectAll();
@@ -322,7 +322,7 @@ class QuestionAction extends QuestionLoadAction{
 
 		import("ORG.Util.Page");
 		$count = $this->question_mod->where($where)->count();
-		$p = new Page($count,10);
+		$p = new Page($count,5);
 		$question_list = $this->question_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc,id desc')->select();
         $collect_list = $this->getCollectAll();
 		foreach($question_list as $key=>&$value){
