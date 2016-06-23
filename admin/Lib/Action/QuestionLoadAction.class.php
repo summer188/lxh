@@ -25,6 +25,9 @@ class QuestionLoadAction extends QuestionToolAction{
                 $cate_alias = $this->cate_list[$question_info['cate_id']]['alias'];
                 $question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/'.$question_info['site_logo'].'/'.$question_info['net_logo'].'/';
                 $png_url = $question_dir.$question_info['net_logo'].'.png';
+				if(!file_exists($png_url)){
+					$png_url = $question_dir.$question_info['net_logo'].'.jpg';
+				}
 
 				$this->assign('id',$id);
 				$this->assign('question_info',$question_info);
@@ -63,8 +66,7 @@ class QuestionLoadAction extends QuestionToolAction{
 			$site_logo = $_POST['site_logo'];
 			$net_logo = $_POST['net_logo'];
 			$question_dir = $this->checkQuestionDir($cate_id,$grade_id,$site_logo,$net_logo);
-			$word_url = $question_dir.$net_logo.'.doc';
-			$png_url = $question_dir.$net_logo.'.png';
+
 			//将题目word文档和png图片临时路径移动到指定目录
 			if(!empty($_FILES['word']) && !empty($_FILES['png'])){
 				$word = $_FILES['word'];
@@ -79,6 +81,10 @@ class QuestionLoadAction extends QuestionToolAction{
 					$this->error('png图片类型不正确，请检查后重新上传！');
 					exit();
 				}
+				$word_ext = pathinfo($word['name'], PATHINFO_EXTENSION);
+				$png_ext = pathinfo($png['name'], PATHINFO_EXTENSION);
+				$word_url = $question_dir.$net_logo.'.'.$word_ext;
+				$png_url = $question_dir.$net_logo.'.'.$png_ext;
 
 				if(!move_uploaded_file($word['tmp_name'],$word_url)){
 					$flag = false;

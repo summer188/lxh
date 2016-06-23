@@ -48,12 +48,18 @@ if(!empty($_REQUEST['id']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['tab'
 			//取题目路径
 			$question_dir = 'upload/'.$alias.'/'.$question['grade_id'].'/'.$question['site_logo'].'/'.$question['net_logo'].'/';
 			$question_file = $question_dir.$question['net_logo'].'.doc';
+			$filename = time().'.doc';
+			if(!file_exists($question_file)){
+				$question_file = $question_dir.$question['net_logo'].'.docx';
+				$filename = time().'.docx';
+			}
 			//下载题目
-			header('Content-type: application/x-doc');
-			header('Content-Disposition: attachment; filename='.time().'.doc');
+			header('Content-type: application/force-download');
+			header('Content-Disposition: attachment; filename='.$filename);
 			header('Content-Length: '.filesize($question_file));
 			readfile($question_file);
 			exit;
+
 		}
 	}
 }

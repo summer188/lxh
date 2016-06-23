@@ -239,7 +239,13 @@ class QuestionAction extends QuestionLoadAction{
             $value['cate'] = $this->cate_list[$value['cate_id']]['name'];
 //            $value['name'] = cutString($value['name'],30);
 			$question_dir = $this->checkQuestionDir($value['cate_id'],$value['grade_id'],$value['site_logo'],$value['net_logo']);
-			$value['src'] = $question_dir.$value['net_logo'].'.png';
+			$png = $question_dir.$value['net_logo'].'.png';
+			if(file_exists($png)){
+				$value['src'] = $question_dir.$value['net_logo'].'.png';
+			}else{
+				$value['src'] = $question_dir.$value['net_logo'].'.jpg';
+			}
+
             //取收藏记录
             if(!empty($collect_list[$value['id']])){
                 $value['is_collect'] = $collect_list[$value['id']]['is_collect'];
@@ -329,7 +335,12 @@ class QuestionAction extends QuestionLoadAction{
 			$value['grade'] = $this->grade_list[$value['grade_id']]['name'];
 			$value['cate'] = $this->cate_list[$value['cate_id']]['name'];
 			$question_dir = $this->checkQuestionDir($value['cate_id'],$value['grade_id'],$value['site_logo'],$value['net_logo']);
-			$value['src'] = $question_dir.$value['net_logo'].'.png';
+			$png = $question_dir.$value['net_logo'].'.png';
+			if(file_exists($png)){
+				$value['src'] = $question_dir.$value['net_logo'].'.png';
+			}else{
+				$value['src'] = $question_dir.$value['net_logo'].'.jpg';
+			}
 			//取收藏记录
 			if(!empty($collect_list[$value['id']])){
 				$value['is_collect'] = $collect_list[$value['id']]['is_collect'];

@@ -188,13 +188,22 @@ class QuestionToolAction extends QuestionBaseAction{
 	 */
 	public function checkFileType($file,$type){
 		$style = '';
+		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
 		if($type=='word'){
 			$type = 'doc';
 			$style = 'application/msword';
+			if($ext=='docx'){
+				$type = 'docx';
+				$style = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+			}
 		}elseif($type=='png'){
 			$style = 'image/png';
+			if($ext=='jpg'){
+				$type = 'jpg';
+				$style = 'image/jpeg';
+			}
 		}
-		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+
 		if($ext==$type && $file['type']==$style){
 			return true;
 		}else{

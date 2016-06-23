@@ -82,6 +82,10 @@ if(!empty($_REQUEST['ids']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['adm
 						$question_dir = 'upload/'.$alias.'/'.$question['grade_id'].'/'.$question['site_logo'].'/'.$question['net_logo'].'/';
 						$question_file = $question_dir.$question['net_logo'].'.doc';
 						$new_file = 'temp/'.$value.'.doc';
+						if(!file_exists($question_file)){
+							$question_file = $question_dir.$question['net_logo'].'.docx';
+							$new_file = 'temp/'.$value.'.docx';
+						}
 						copy($question_file,$new_file);
 						$zip->addFile($new_file);
 					}
