@@ -22,7 +22,7 @@ class RoleAction extends BaseAction
 
 			}
 		}
-		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Role&a=add\', title:\'添加角色\', width:\'400\', height:\'220\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加组');
+		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Role&a=add\', title:\'添加角色\', width:\'400\', height:\'500\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加组');
 		$page = $p->show();
 		$this->assign('page',$page);
 		$this->assign('big_menu',$big_menu);

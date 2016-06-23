@@ -4,13 +4,18 @@
 <form action="{:u('Role/add')}" method="post" name="myform" id="myform">
 <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
 	<tr> 
-      <th width="60">{:L('name')} :</th>
+      <th width="70">{:L('name')} :</th>
       <td><input type="text" name="name" id="name" class="input-text" value="" size="25"></td>
     </tr>
 
     <tr> 
       <th>{:L('remark')} :</th>
       <td><textarea name="remark" cols="40" rows="3"></textarea></td>
+    </tr>
+
+    <tr>
+        <th width="70">有效期限 :</th>
+        <td><input id="validity" type="text" /></td>
     </tr>
     
     <tr>
@@ -23,10 +28,22 @@
 </form>
 <script type="text/javascript">
 	$(function(){
-		$.formValidator.initConfig({formid:"myform",autotip:true,onerror:function(msg,obj){window.top.art.dialog({content:msg,lock:true,width:'250',height:'50'}, function(){this.close();$(obj).focus();})}});
-		
-		$("#name").formValidator({onshow:"不能为空",onfocus:"不能为空"}).inputValidator({min:1,onerror:"请填写角色名"});
-	})
+//		$.formValidator.initConfig({
+//            formid:"myform",
+//            autotip:true,
+//            onerror:function(msg,obj){
+//                window.top.art.dialog(
+//                    {content:msg,lock:true,width:'250',height:'50'},
+//                    function(){this.close();$(obj).focus();}
+//                )
+//            }
+//        });
+//
+//		$("#name").formValidator({onshow:"不能为空",onfocus:"不能为空"}).inputValidator({min:1,onerror:"请填写角色名"});
+
+        $("#validity").datetimepicker();
+
+	});
 </script>
 </div>
 </body>
