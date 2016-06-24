@@ -30,11 +30,14 @@
 
 <div class="logintop">
 	<span>欢迎进入千校联盟云题库系统</span>
+	<!--<div style="float:right;margin-top:12px;margin-right:5px;">
+		<a onclick="clearCache()" href="">清除缓存</a>
+	</div>-->
 </div>
 
 <div class="loginbody">
 
-	<span class="systemlogo"></span>
+	<a href="" onclick="clearCache()"><span class="systemlogo"></span></a>
 
 	<div class="loginbox loginbox1">
 		<form action="/admin.php?m=Public&a=login" method="post" id="myform">
@@ -92,5 +95,18 @@
 		}else{
 			$("#loginFlag").val("no");
 		}
+	}
+
+	//清除缓存
+	function clearCache(){
+		$.ajax({
+			url: "clearCache.php",
+			dataType: 'json',
+			success: function(data){
+				if(data.sta==1){
+					window.location.reload();
+				}
+			}
+		});
 	}
 </script>

@@ -129,6 +129,22 @@ class PublicAction extends BaseAction
 					$this->error('密码错误！');
 				}
 
+				//获取账号有效期限（转化为秒为单位）
+				$role_id = intval($admin_info['role_id']);
+				$role_info = M('role')->where("id={$role_id}")->find();
+				$validity = intval($role_info['validity']);
+				//注：0的期限为永久，不需验证
+				if($validity>0){
+					$section = $validity*3600*24;
+					$create_day = date("Y-m-d",$admin_info['add_time']);
+					$start = strtotime($create_day."00:00:00");
+					$end = $start+$section;
+					if(time()>=$end){
+						$this->error('账号已过期，请联系管理员续费！');
+					}
+				}
+
+
 				$_SESSION['admin_info'] =$admin_info;
 //				if($authInfo['user_name']=='admin') {
 //					$_SESSION['administrator'] = true;

@@ -12,7 +12,12 @@
     <tr> 
       	<th>{:L('remark')} :</th>
       	<td><textarea name="remark" cols="40" rows="3">{$role_info.remark}</textarea></td>
-    </tr>    
+    </tr>
+    <tr>
+        <th>期限 :</th>
+        <td><input name="validity" id="validity" type="text" value="{$role_info.validity}"/>天
+            <span style="color:blue;">&nbsp;&nbsp;(默认0为永久)</span></td>
+    </tr>
     <tr>
       	<th>{:L('status')} :</th>
       	<td>

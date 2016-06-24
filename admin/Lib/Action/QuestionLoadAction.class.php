@@ -159,6 +159,9 @@ class QuestionLoadAction extends QuestionToolAction{
 			$question_dir = $this->checkQuestionDir($question_info['cate_id'],$question_info['grade_id'],$question_info['site_logo'],$question_info['net_logo']);
 			$question_file = $question_dir.$question_info['net_logo'];
 			$src = $question_file.'.png';
+			if(!file_exists($src)){
+				$src = $question_file.'.jpg';
+			}
 			$this->assign('src',$src);
 			$this->display('look');
 		}else{

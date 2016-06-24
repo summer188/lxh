@@ -220,13 +220,21 @@ class QuestionToolAction extends QuestionBaseAction{
      */
     public function delFile($dir,$net_logo){
         $word_url = $dir.$net_logo.'.doc';
+        $word_url2 = $dir.$net_logo.'.docx';
         $png_url = $dir.$net_logo.'.png';
+        $png_url2 = $dir.$net_logo.'.jpg';
         if(file_exists($word_url)){
             unlink($word_url);
         }
+		if(file_exists($word_url2)){
+			unlink($word_url2);
+		}
         if(file_exists($png_url)){
             unlink($png_url);
         }
+		if(file_exists($png_url2)){
+			unlink($png_url2);
+		}
         rmdir($dir);
     }
 

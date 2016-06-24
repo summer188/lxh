@@ -22,7 +22,7 @@ class RoleAction extends BaseAction
 
 			}
 		}
-		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Role&a=add\', title:\'添加角色\', width:\'400\', height:\'500\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加组');
+		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Role&a=add\', title:\'添加角色\', width:\'400\', height:\'220\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加组');
 		$page = $p->show();
 		$this->assign('page',$page);
 		$this->assign('big_menu',$big_menu);
@@ -41,8 +41,9 @@ class RoleAction extends BaseAction
 			if($result){
 				$this->error('角色已经存在');
 			}
-			$role_mod->create();
-			$result = $role_mod->add();
+			$data = $role_mod->create();
+			$data['create_time'] = time();
+			$result = $role_mod->add($data);
 			if($result){
 				$this->success(L('operation_success'), '', '', 'add');
 			}else{
@@ -104,6 +105,7 @@ class RoleAction extends BaseAction
 		foreach ($node_ids_res as $row) {
 			$node_ids[] = $row['node_id'];
 		}
+
 		//取出模块授权
 		$modules = D("node")->where("status = 1 and auth_type = 0")->select();
 		foreach ($modules as $k=>$v) {
