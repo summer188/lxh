@@ -44,6 +44,13 @@
       </td>
     </tr>-->
     <tr>
+        <th>有效期限 :</th>
+        <td>
+            <input type="text" name="start" id="start">--
+            <input type="text" name="end" id="end">
+        </td>
+    </tr>
+    <tr>
       <th>{:L('status')} :</th>
       <td>
       	<input type="radio" name="status" class="radio_style" value="1" checked="checked" > &nbsp;有效&nbsp;&nbsp;&nbsp;
@@ -56,6 +63,10 @@
 </form>
 <script type="text/javascript">
 	$(function(){
+
+        $('#start').datetimepicker();
+        $('#end').datetimepicker();
+
 		$.formValidator.initConfig({formid:"myform",autotip:true,onerror:function(msg,obj){window.top.art.dialog({content:msg,lock:true,width:'200',height:'50'}, function(){this.close();$(obj).focus();})}});
 		
 		$("#user_name").formValidator({onshow:"填写帐号昵称",onfocus:"填写帐号昵称"}).inputValidator({min:1,onerror:"请填写帐号昵称"}).ajaxValidator({type : "get",url : "",data :"m=Admin&a=ajaxCheckUsername",datatype : "html",async:'false',success : function(data){	if( data == "1" ){return true;}else{return false;}},buttons: $("#dosubmit"),onerror : "帐号已经被占用",onwait : "正在检测..."});
