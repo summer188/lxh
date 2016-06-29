@@ -33,7 +33,7 @@ class AdminAction extends BaseAction
 		$p = new Page($count,30);
 		$admin_list = $admin_mod->field($prex.'admin.*,'.$prex.'role.name as role_name')->join('LEFT JOIN '.$prex.'role ON '.$prex.'admin.role_id = '.$prex.'role.id ')->limit($p->firstRow.','.$p->listRows)->where($where)->order($prex.'admin.add_time DESC')->select();
 		$key = 1;
-		foreach($admin_list as $k=>$val){
+		foreach($admin_list as $k=>&$val){
 			$admin_list[$k]['key'] = ++$p->firstRow;
 			if(!empty($this->school_list)){
 				$admin_list[$k]['user_school'] = $this->school_list[$val['school_id']]['name'];
@@ -43,6 +43,16 @@ class AdminAction extends BaseAction
 					$admin_list[$k]['user_school'] = $school['name'];
 				}
 			}
+            if($val['start']>0){
+                $val['start'] = date("Y-m-d H:00",$val['start']);
+            }else{
+                $val['start'] = '--';
+            }
+            if($val['end']>0){
+                $val['end'] = date("Y-m-d H:00",$val['end']);
+            }else{
+                $val['end'] = '--';
+            }
 		}
 		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Admin&a=add\', title:\'添加管理员\', width:\'480\', height:\'250\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加管理员');
 		$page = $p->show();
@@ -69,6 +79,12 @@ class AdminAction extends BaseAction
 			}
 			unset($_POST['repassword']);
 			$_POST['password'] = md5($_POST['password']);
+            if(!empty($_POST['start'])){
+                $_POST['start'] = strtotime($_POST['start']);
+            }
+            if(!empty($_POST['end'])){
+                $_POST['end'] = strtotime($_POST['end']);
+            }
 			$data = $admin_mod->create();
             //smm修改于2016-3-26
             //管理员加入学校分类
@@ -125,6 +141,12 @@ class AdminAction extends BaseAction
 			}
 			unset($_POST['school_id']);
 			unset($_POST['user_school']);
+            if(!empty($_POST['start'])){
+                $_POST['start'] = strtotime($_POST['start']);
+            }
+            if(!empty($_POST['end'])){
+                $_POST['end'] = strtotime($_POST['end']);
+            }
             $data = $admin_mod->create();
 			if (false === $data) {
 				$this->error($admin_mod->getError());
@@ -149,6 +171,16 @@ class AdminAction extends BaseAction
 
 		    $admin_mod = D('admin');
 			$admin_info = $admin_mod->where('id='.$id)->find();
+            if($admin_info['start']>0){
+                $admin_info['start'] = date("Y-m-d H:00",$admin_info['start']);
+            }else{
+                $admin_info['start'] = '';
+            }
+            if($admin_info['end']>0){
+                $admin_info['end'] = date("Y-m-d H:00",$admin_info['end']);
+            }else{
+                $admin_info['end'] = '';
+            }
 			$this->assign('admin_info', $admin_info);
 			$this->assign('show_header', false);
 			$this->assign('school_id',$this->school_id);

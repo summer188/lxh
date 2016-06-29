@@ -64,8 +64,42 @@
 <script type="text/javascript">
 	$(function(){
 
-        $('#start').datetimepicker();
-        $('#end').datetimepicker();
+        $.datetimepicker.setLocale('de');
+
+        $('#start').datetimepicker({
+            i18n:{
+                de:{
+                    months:[
+                        '一月','二月','三月','四月',
+                        '五月','六月','七月','八月',
+                        '九月','十月','十一月','十二月'
+                    ],
+                    dayOfWeekShort:[
+                        "日", "一", "二", "三",
+                        "四", "五", "六"
+                    ]
+                }
+            },
+            timepicker:true,
+            format:'Y-m-d H:00'
+        });
+        $('#end').datetimepicker({
+            i18n:{
+                de:{
+                    months:[
+                        '一月','二月','三月','四月',
+                        '五月','六月','七月','八月',
+                        '九月','十月','十一月','十二月'
+                    ],
+                    dayOfWeekShort:[
+                        "日", "一", "二", "三",
+                        "四", "五", "六"
+                    ]
+                }
+            },
+            timepicker:true,
+            format:'Y-m-d H:00'
+        });
 
 		$.formValidator.initConfig({formid:"myform",autotip:true,onerror:function(msg,obj){window.top.art.dialog({content:msg,lock:true,width:'200',height:'50'}, function(){this.close();$(obj).focus();})}});
 		

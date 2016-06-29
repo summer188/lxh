@@ -10,16 +10,17 @@
     <table width="100%" cellspacing="0">
         <thead>
             <tr>
-                <th width=60>{:L('id')}</th>
-                <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
-                <th width=100>{:L('user_name')}</th>
-                <th>{:L('role_id')}</th>
-				<th>{:L('user_school')}</th>
+                <th width=5%>{:L('id')}</th>
+                <th width=3%><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
+                <th>{:L('user_name')}</th>
+                <th width=15%>{:L('role_id')}</th>
+				<th width=15%>{:L('user_school')}</th>
 				<!--<th>{:L('user_subject')}</th>-->
       			<!--<th>{:L('add_time')} :</th>-->
                 <!--<th>{:L('last_time')}</th>-->
-                <th width=60>{:L('status')}</th>
-                <th width=60>{:L('operational')}</th>
+                <th width=22%>有效期限</th>
+                <th width=10%>{:L('status')}</th>
+                <th width=10%>{:L('operational')}</th>
             </tr>
         </thead>
     	<tbody>
@@ -33,6 +34,13 @@
 			<!--<td align="center">{$val.user_subject}</td>-->
      		<!--<td align="center">{$val.add_time|date='Y-m-d H:i:s',###}</td>-->
             <!--<td align="center">{$val.last_time|date='Y-m-d H:i:s',###}</td>-->
+            <td align="left">
+                <div style="width:230px;">
+                    <div style="width:103px;float:left;text-align: right;">{$val.start}</div>
+                    <div style="width:120px;float:left;">&nbsp;至&nbsp;{$val.end}</div>
+                    <div style="clear:both;"></div>
+                </div>
+            </td>
             <td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
             <td align="center"><a href="javascript:edit({$val.id},'{$val.user_name}')">编辑</a></td>
         </tr>
@@ -55,7 +63,7 @@ function add() {
     window.top.art.dialog({
                 title:lang_add,
                 id:'add',
-                iframe:"?m=Admin&a=add",width:'480',height:'270'
+                iframe:"?m=Admin&a=add",width:'500',height:'480'
             },
             function()
             {
@@ -73,7 +81,7 @@ function add() {
 function edit(id, name) {
 	var lang_edit = "{$Think.lang.edit}";
 	window.top.art.dialog({id:'edit'}).close();
-	window.top.art.dialog({title:lang_edit+'--'+name,id:'edit',iframe:'?m=Admin&a=edit&id='+id,width:'480',height:'250'}, function(){var d = window.top.art.dialog({id:'edit'}).data.iframe;d.document.getElementById('dosubmit').click();return false;}, function(){window.top.art.dialog({id:'edit'}).close()});
+	window.top.art.dialog({title:lang_edit+'--'+name,id:'edit',iframe:'?m=Admin&a=edit&id='+id,width:'500',height:'480'}, function(){var d = window.top.art.dialog({id:'edit'}).data.iframe;d.document.getElementById('dosubmit').click();return false;}, function(){window.top.art.dialog({id:'edit'}).close()});
 }
 function status(id,type){
     $.get("{:u('Admin/status')}", { id: id, type: type }, function(jsondata){

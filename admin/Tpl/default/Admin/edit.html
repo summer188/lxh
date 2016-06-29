@@ -41,6 +41,13 @@
 	<!--<th>{:L('user_subject')} :</th>-->
 		<!--<td><input type="text" name="user_subject" id="user_subject" class="input-text"></td>-->
     <!--</tr>-->
+    <tr>
+        <th>有效期限 :</th>
+        <td>
+            <input type="text" name="start" id="start" value="{$admin_info.start}">--
+            <input type="text" name="end" id="end" value="{$admin_info.end}">
+        </td>
+    </tr>
 	<tr>
 		<th>{:L('status')} :</th>
 		<td>
@@ -84,7 +91,42 @@ $(function(){
     $("#user_school").formValidator({onshow:"所属学校",onfocus:"所属学校",oncorrect:"填写正确",defaultvalue:admin_school})
             .inputValidator({min:1,onerror:"请填写所属学校"}).defaultPassed();
 
+    $.datetimepicker.setLocale('de');
 
+    $('#start').datetimepicker({
+        i18n:{
+            de:{
+                months:[
+                    '一月','二月','三月','四月',
+                    '五月','六月','七月','八月',
+                    '九月','十月','十一月','十二月'
+                ],
+                dayOfWeekShort:[
+                    "日", "一", "二", "三",
+                    "四", "五", "六"
+                ]
+            }
+        },
+        timepicker:true,
+        format:'Y-m-d H:00'
+    });
+    $('#end').datetimepicker({
+        i18n:{
+            de:{
+                months:[
+                    '一月','二月','三月','四月',
+                    '五月','六月','七月','八月',
+                    '九月','十月','十一月','十二月'
+                ],
+                dayOfWeekShort:[
+                    "日", "一", "二", "三",
+                    "四", "五", "六"
+                ]
+            }
+        },
+        timepicker:true,
+        format:'Y-m-d H:00'
+    });
 })
 </script>
 </div>
