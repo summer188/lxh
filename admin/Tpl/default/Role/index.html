@@ -10,7 +10,7 @@
                 <th width="20"><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>                
                 <th width="200">{:L('name')}</th>
                 <th>{:L('remark')}</th>
-                <th width="60">期限(天)</th>
+                <!--<th width="60">期限(天)</th>-->
       			<th width="60">{:L('status')}</th>
                 <th width="120">{:L('operational')}</th>
             </tr>
@@ -22,7 +22,7 @@
             <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>            
             <td align="center">{$val.name}</td>
             <td align="center">{$val.remark}</td>
-            <td align="center">{$val.validity}</td>
+            <!--<td align="center">{$val.validity}</td>-->
             <td align="center" onclick="status({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif"</td>
             <td align="center"><a href="{:u('Role/auth', array('id'=>$val['id']))}">管理权限</a> | <a href="javascript:edit({$val.id},'{$val.name}')">{$Think.lang.edit}</a></td>
         </tr>
