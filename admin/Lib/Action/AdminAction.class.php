@@ -44,12 +44,12 @@ class AdminAction extends BaseAction
 				}
 			}
             if($val['start']>0){
-                $val['start'] = date("Y-m-d H:00",$val['start']);
+                $val['start'] = date("Y-m-d H:i",$val['start']);
             }else{
                 $val['start'] = '--';
             }
             if($val['end']>0){
-                $val['end'] = date("Y-m-d H:00",$val['end']);
+                $val['end'] = date("Y-m-d H:i",$val['end']);
             }else{
                 $val['end'] = '--';
             }
@@ -172,12 +172,12 @@ class AdminAction extends BaseAction
 		    $admin_mod = D('admin');
 			$admin_info = $admin_mod->where('id='.$id)->find();
             if($admin_info['start']>0){
-                $admin_info['start'] = date("Y-m-d H:00",$admin_info['start']);
+                $admin_info['start'] = date("Y-m-d H:i",$admin_info['start']);
             }else{
                 $admin_info['start'] = '';
             }
             if($admin_info['end']>0){
-                $admin_info['end'] = date("Y-m-d H:00",$admin_info['end']);
+                $admin_info['end'] = date("Y-m-d H:i",$admin_info['end']);
             }else{
                 $admin_info['end'] = '';
             }
