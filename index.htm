@@ -20,12 +20,49 @@
 <div class="main">
 <div class="main-content"><a href="/" class="logo"><img src="web/354e0a30-logo.png" alt="乐学嗨"></a>
 <div class="header-subtitle"><img src="web/7c4f9cd4-slogon.png" alt="小学及初高中娱乐学习神器"></div>
+<div id='sysqdiv' class="pop sysqdiv">
+    <div style="margin-left: 250px;width:30px;">
+        <a href='javascript:void(0);' id='closesysqdiv'>关闭</a>
+    </div>
+    <form id="sysqform" action="" method="post">
+        <div class="popinfo">
+            学段：
+            <select name="period" id="speriod">
+                <option value="0">请选择</option>
+                <option value="1">小学</option>
+                <option value="2">初中</option>
+                <option value="3">高中</option>
+            </select>
+        </div>
+        <div class="popinfo">
+            姓名：
+            <input type="text" name="name" id="sname"/>
+        </div>
+        <div class="popinfo">
+            手机：
+            <input type="text" name="mobile" id="smobile">
+        </div>
+        <div class="popinfo">
+            QQ号：
+            <input type="text" name="qq" id="sqq">
+        </div>
+        <div class="popinfo">
+            邮箱：
+            <input type="text" name="email" id="semail">
+        </div>
+        <div class="popsubmit">
+            <input type="reset" value="重置"/>
+            <a id="ssubmit" href="javascript:void(0);">提交</a>
+        </div>
+    </form>
+</div>
+<div id="sysqbg" class="sysqbg" style="display:none;"></div>
 <img src="web/ef56a0f4-mobile-download.png" alt="客户端下载">
 <div class="slides-wrap"><div class="slides-shadow"><div class="slides"><img src="web/7d5173d2-slide-1.png"><img src="web/5dce0ab8-slide-2.png"><img src="web/5bd37929-slide-3.png"><!--img src="web/55c5d917-slide-4.png"-->
 </div>
 </div></div>
 <div class="mobile-wrap">
-<a href="" onclick="logDownload(&quot;iphone&quot;)" rel="iPhone 客户端" class="mobile iphone false"></a>
+<a id='sysq' href="javascript:void(0);" onclick="logDownload(&quot;iphone&quot;)" rel="iPhone 客户端" class="mobile iphone false"></a>
 <a href="" onclick="logDownload(&quot;ipad&quot;)" rel="iPad 客户端" class="mobile ipad false"></a>
 <a href="" onclick="logDownload(&quot;android&quot;)" rel="Android 客户端" class="mobile android false"></a>
 <a class="barcode"><img src="web/bba31b03-barcode.png" alt="二维码下载"></a></div><div id="userCount" class="loading">已有 53918378 名学生使用</div></div></div><div class="footer"><div class="footer-content"><p class="text-right"><a target="_blank" nofollow href="">关注我们</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">联系我们</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">校园招聘</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">媒体报道</a><span class="split">&nbsp;|&nbsp;</span><a target="true" nofollow href="http://www.miibeian.gov.cn/">京ICP备12345678号</a><span class="split">&nbsp;|&nbsp;</span><span>京公网安备11010502025105</span></p><p class="text-right"><span>客服电话：4008 818 859 (周一至周日 10:00-18:00)</span></p></div></div></div>
@@ -33,3 +70,104 @@
 <script src="web/d33e0c2f-Bonjour.js"></script>
 </body>
 </html>
+<style type="text/css">
+    /*弹框公用 start*/
+    .pop {
+        background-color: #fff;
+        border: 1px solid #f90;
+        text-align: left;
+        line-height: 40px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index:99;
+        margin-top:0px;
+
+        position:fixed!important;/*FF IE7*/
+        position:absolute;/*IE6*/
+
+        _top:       expression(eval(document.compatMode &&
+            document.compatMode=='CSS1Compat') ?
+            documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2);/*IE5 IE5.5*/
+    }
+    .popinfo {
+        margin-left:20px;
+    }
+
+    .popsubmit {
+        text-align:center;
+    }
+    /*弹框公用 end*/
+
+    /*试用申请弹框 start*/
+    .sysqdiv {
+        width: 300px;
+        height: 300px;
+        left:50%;/*FF IE7*/
+        top: 50%;/*FF IE7*/
+        margin-left:-430px!important;/*FF IE7 该值为本身宽的一半 */
+        margin-top:-220px!important;/*FF IE7 该值为本身高的一半*/
+    }
+    /*试用申请弹框 end*/
+
+    /*弹框遮罩层 start*/
+    .sysqbg {
+        background-color: #ccc;
+        width: 100%;
+        height: 100%;
+        left:0;
+        top:0;/*FF IE7*/
+        filter:alpha(opacity=50);/*IE*/
+        opacity:0.5;/*FF*/
+        z-index:1;
+
+        position:fixed!important;/*FF IE7*/
+        position:absolute;/*IE6*/
+
+        _top:       expression(eval(document.compatMode &&
+            document.compatMode=='CSS1Compat') ?
+            documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/
+            document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2);/*IE5 IE5.5*/
+
+    }
+    /*弹框遮罩层 end*/
+</style>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#sysqdiv').css('display','none');
+    });
+    //显示试用申请弹框
+    $("#sysq").click(function(){
+        $("#sysqdiv").css('display','block');
+        $("#sysqbg").css('display','block');
+    });
+    //关闭试用申请弹框
+    $("#closesysqdiv").click(function(){
+        $("#sysqdiv").css('display','none');
+        $("#sysqbg").css('display','none');
+    });
+    //试用申请表单提交
+    $('#ssubmit').click(function(){
+        var period = $('#speriod').val();
+        var name = $('#sname').val();
+        var mobile = $('#smobile').val();
+        var qq = $('#sqq').val();
+        var email = $('#semail').val();
+        var data = { period:period,name:name,mobile:mobile,qq:qq,email:email };
+        console.log(data);
+
+        $.ajax({
+            url: "./intention.php",//请求地址
+            type: "POST",//请求方式
+            data: data,//请求参数
+            dataType: "json",
+            success: function (response) {
+                // 此处放成功后执行的代码
+            },
+            fail: function (status) {
+                // 此处放失败后执行的代码
+            }
+        });
+
+    });
+</script>
