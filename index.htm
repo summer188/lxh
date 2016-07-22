@@ -66,7 +66,7 @@
 <a href="" onclick="logDownload(&quot;ipad&quot;)" rel="iPad 客户端" class="mobile ipad false"></a>
 <a href="" onclick="logDownload(&quot;android&quot;)" rel="Android 客户端" class="mobile android false"></a>
 <a class="barcode"><img src="web/bba31b03-barcode.png" alt="二维码下载"></a></div><div id="userCount" class="loading">已有 53918378 名学生使用</div></div></div><div class="footer"><div class="footer-content"><p class="text-right"><a target="_blank" nofollow href="">关注我们</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">联系我们</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">校园招聘</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">媒体报道</a><span class="split">&nbsp;|&nbsp;</span><a target="true" nofollow href="http://www.miibeian.gov.cn/">京ICP备12345678号</a><span class="split">&nbsp;|&nbsp;</span><span>京公网安备11010502025105</span></p><p class="text-right"><span>客服电话：4008 818 859 (周一至周日 10:00-18:00)</span></p></div></div></div>
-<script src="web/48e30a2d-jquery.min.js"></script>
+<script src="statics/js/jquery/jquery-1.4.2.min.js"></script>
 <script src="web/d33e0c2f-Bonjour.js"></script>
 </body>
 </html>
@@ -153,19 +153,22 @@
         var mobile = $('#smobile').val();
         var qq = $('#sqq').val();
         var email = $('#semail').val();
-        var data = { period:period,name:name,mobile:mobile,qq:qq,email:email };
-        console.log(data);
+        var data = { name:name,mobile:mobile,qq:qq,email:email,period:period };
 
         $.ajax({
-            url: "./intention.php",//请求地址
-            type: "POST",//请求方式
+            url: "intention.php",//请求地址
+            dataType: "JSON",
             data: data,//请求参数
-            dataType: "json",
+            type: "POST",//请求方式
             success: function (response) {
-                // 此处放成功后执行的代码
+                if(response.sta){
+                    alert('恭喜您申请成功！我们会在1个工作日内和您联系，在此期间请保持联系畅通，祝您心情愉快！');
+                }else{
+                    alert(response.msg);
+                }
             },
-            fail: function (status) {
-                // 此处放失败后执行的代码
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
             }
         });
 
