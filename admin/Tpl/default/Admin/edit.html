@@ -91,43 +91,11 @@ $(function(){
     $("#user_school").formValidator({onshow:"所属学校",onfocus:"所属学校",oncorrect:"填写正确",defaultvalue:admin_school})
             .inputValidator({min:1,onerror:"请填写所属学校"}).defaultPassed();
 
-    $.datetimepicker.setLocale('de');
+    var moment = rome.moment;
+    rome(start);
+    rome(end);
 
-    $('#start').datetimepicker({
-        i18n:{
-            de:{
-                months:[
-                    '一月','二月','三月','四月',
-                    '五月','六月','七月','八月',
-                    '九月','十月','十一月','十二月'
-                ],
-                dayOfWeekShort:[
-                    "日", "一", "二", "三",
-                    "四", "五", "六"
-                ]
-            }
-        },
-        timepicker:true,
-        format:'Y-m-d H:00'
-    });
-    $('#end').datetimepicker({
-        i18n:{
-            de:{
-                months:[
-                    '一月','二月','三月','四月',
-                    '五月','六月','七月','八月',
-                    '九月','十月','十一月','十二月'
-                ],
-                dayOfWeekShort:[
-                    "日", "一", "二", "三",
-                    "四", "五", "六"
-                ]
-            }
-        },
-        timepicker:true,
-        format:'Y-m-d H:00'
-    });
-})
+});
 </script>
 </div>
 </body>
