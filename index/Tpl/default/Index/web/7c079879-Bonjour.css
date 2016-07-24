@@ -102,7 +102,7 @@ a {
 .mobile.iphone {
   background: url(./9136f7fc-iphone-N.png) no-repeat;
 }
-.mobile.iphone:hover {
+/*.mobile.iphone:hover {
   background: url(./87010a8f-iphone-H.png) no-repeat;
 }
 .mobile.iphone:active {
@@ -110,11 +110,11 @@ a {
 }
 .mobile.iphone.disabled {
   background: url(./4f5fefc7-iphone-D.png) no-repeat;
-}
+}*/
 .mobile.ipad {
   background: url(./ff1bac96-ipad-N.png) no-repeat;
 }
-.mobile.ipad:hover {
+/*.mobile.ipad:hover {
   background: url(./cb294662-ipad-H.png) no-repeat;
 }
 .mobile.ipad:active {
@@ -122,11 +122,11 @@ a {
 }
 .mobile.ipad.disabled {
   background: url(./ae994de5-ipad-D.png) no-repeat;
-}
+}*/
 .mobile.android {
   background: url(./56ee7aa3-android-N.png) no-repeat;
 }
-.mobile.android:hover {
+/*.mobile.android:hover {
   background: url(./74d93e9f-android-H.png) no-repeat;
 }
 .mobile.android:active {
@@ -134,7 +134,7 @@ a {
 }
 .mobile.android.disabled {
   background: url(./3d3e0ff3-android-D.png) no-repeat;
-}
+}*/
 .header-subtitle {
   margin-bottom: 172px;
 }

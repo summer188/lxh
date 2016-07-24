@@ -56,15 +56,87 @@
         </div>
     </form>
 </div>
+<div id='cpgmdiv' class="pop cpgmdiv">
+    <div style="margin-left: 250px;width:30px;">
+        <a href='javascript:void(0);' id='closecpgmdiv'>关闭</a>
+    </div>
+    <form id="cpgmform" action="" method="post">
+        <div class="popinfo">
+            学段：
+            <select name="period" id="cperiod">
+                <option value="0">请选择</option>
+                <option value="1">小学</option>
+                <option value="2">初中</option>
+                <option value="3">高中</option>
+            </select>
+        </div>
+        <div class="popinfo">
+            姓名：
+            <input type="text" name="name" id="cname"/>
+        </div>
+        <div class="popinfo">
+            手机：
+            <input type="text" name="mobile" id="cmobile">
+        </div>
+        <div class="popinfo">
+            QQ号：
+            <input type="text" name="qq" id="cqq">
+        </div>
+        <div class="popinfo">
+            邮箱：
+            <input type="text" name="email" id="cemail">
+        </div>
+        <div class="popsubmit">
+            <input type="reset" value="重置"/>
+            <a id="csubmit" href="javascript:void(0);">提交</a>
+        </div>
+    </form>
+</div>
+<div id='dlfxdiv' class="pop dlfxdiv">
+    <div style="margin-left: 250px;width:30px;">
+        <a href='javascript:void(0);' id='closedlfxdiv'>关闭</a>
+    </div>
+    <form id="dlfxform" action="" method="post">
+        <div class="popinfo">
+            学段：
+            <select name="period" id="dperiod">
+                <option value="0">请选择</option>
+                <option value="1">小学</option>
+                <option value="2">初中</option>
+                <option value="3">高中</option>
+            </select>
+        </div>
+        <div class="popinfo">
+            姓名：
+            <input type="text" name="name" id="dname"/>
+        </div>
+        <div class="popinfo">
+            手机：
+            <input type="text" name="mobile" id="dmobile">
+        </div>
+        <div class="popinfo">
+            QQ号：
+            <input type="text" name="qq" id="dqq">
+        </div>
+        <div class="popinfo">
+            邮箱：
+            <input type="text" name="email" id="demail">
+        </div>
+        <div class="popsubmit">
+            <input type="reset" value="重置"/>
+            <a id="dsubmit" href="javascript:void(0);">提交</a>
+        </div>
+    </form>
+</div>
 <div id="sysqbg" class="sysqbg" style="display:none;"></div>
 <img src="web/ef56a0f4-mobile-download.png" alt="客户端下载">
 <div class="slides-wrap"><div class="slides-shadow"><div class="slides"><img src="web/7d5173d2-slide-1.png"><img src="web/5dce0ab8-slide-2.png"><img src="web/5bd37929-slide-3.png"><!--img src="web/55c5d917-slide-4.png"-->
 </div>
 </div></div>
 <div class="mobile-wrap">
-<a id='sysq' href="javascript:void(0);" onclick="logDownload(&quot;iphone&quot;)" rel="iPhone 客户端" class="mobile iphone false"></a>
-<a href="" onclick="logDownload(&quot;ipad&quot;)" rel="iPad 客户端" class="mobile ipad false"></a>
-<a href="" onclick="logDownload(&quot;android&quot;)" rel="Android 客户端" class="mobile android false"></a>
+<a id='sysq' href="javascript:void(0);" class="mobile iphone false"></a>
+<a id="cpgm" href="javascript:void(0);" class="mobile ipad false"></a>
+<a id="dlfx" href="javascript:void(0);" class="mobile android false"></a>
 <a class="barcode"><img src="web/bba31b03-barcode.png" alt="二维码下载"></a></div><div id="userCount" class="loading">已有 53918378 名学生使用</div></div></div><div class="footer"><div class="footer-content"><p class="text-right"><a target="_blank" nofollow href="">关注我们</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">联系我们</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">校园招聘</a><span class="split">&nbsp;|&nbsp;</span><a target="_blank" nofollow href="">媒体报道</a><span class="split">&nbsp;|&nbsp;</span><a target="true" nofollow href="http://www.miibeian.gov.cn/">京ICP备12345678号</a><span class="split">&nbsp;|&nbsp;</span><span>京公网安备11010502025105</span></p><p class="text-right"><span>客服电话：4008 818 859 (周一至周日 10:00-18:00)</span></p></div></div></div>
 <script src="statics/js/jquery/jquery-1.4.2.min.js"></script>
 <script src="web/d33e0c2f-Bonjour.js"></script>
@@ -106,9 +178,31 @@
         left:50%;/*FF IE7*/
         top: 50%;/*FF IE7*/
         margin-left:-430px!important;/*FF IE7 该值为本身宽的一半 */
-        margin-top:-220px!important;/*FF IE7 该值为本身高的一半*/
+        margin-top:-250px!important;/*FF IE7 该值为本身高的一半*/
     }
     /*试用申请弹框 end*/
+
+    /*产品购买弹框 start*/
+    .cpgmdiv {
+        width: 300px;
+        height: 300px;
+        left:50%;/*FF IE7*/
+        top: 50%;/*FF IE7*/
+        margin-left:-260px!important;/*FF IE7 该值为本身宽的一半 */
+        margin-top:-250px!important;/*FF IE7 该值为本身高的一半*/
+    }
+    /*产品购买弹框 end*/
+
+    /*代理分销弹框 start*/
+    .dlfxdiv {
+        width: 300px;
+        height: 300px;
+        left:50%;/*FF IE7*/
+        top: 50%;/*FF IE7*/
+        margin-left:-110px!important;/*FF IE7 该值为本身宽的一半 */
+        margin-top:-250px!important;/*FF IE7 该值为本身高的一半*/
+    }
+    /*代理分销弹框 end*/
 
     /*弹框遮罩层 start*/
     .sysqbg {
@@ -135,6 +229,8 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $('#sysqdiv').css('display','none');
+        $('#cpgmdiv').css('display','none');
+        $('#dlfxdiv').css('display','none');
     });
     //显示试用申请弹框
     $("#sysq").click(function(){
@@ -153,18 +249,93 @@
         var mobile = $('#smobile').val();
         var qq = $('#sqq').val();
         var email = $('#semail').val();
-        var data = { name:name,mobile:mobile,qq:qq,email:email,period:period };
+        var data = { tag:1,name:name,mobile:mobile,qq:qq,email:email,period:period };
 
         $.ajax({
             url: "intention.php",//请求地址
-            dataType: "JSON",
             data: data,//请求参数
             type: "POST",//请求方式
             success: function (response) {
-                if(response.sta){
+                var d = eval("("+response+")");
+                if(d.sta){
                     alert('恭喜您申请成功！我们会在1个工作日内和您联系，在此期间请保持联系畅通，祝您心情愉快！');
+                    location.reload();
                 }else{
-                    alert(response.msg);
+                    alert(d.msg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    });
+    //显示产品购买弹框
+    $("#cpgm").click(function(){
+        $("#cpgmdiv").css('display','block');
+        $("#sysqbg").css('display','block');
+    });
+    //关闭产品购买弹框
+    $("#closecpgmdiv").click(function(){
+        $("#cpgmdiv").css('display','none');
+        $("#sysqbg").css('display','none');
+    });
+    //产品购买表单提交
+    $('#csubmit').click(function(){
+        var period = $('#cperiod').val();
+        var name = $('#cname').val();
+        var mobile = $('#cmobile').val();
+        var qq = $('#cqq').val();
+        var email = $('#cemail').val();
+        var data = { tag:2,name:name,mobile:mobile,qq:qq,email:email,period:period };
+
+        $.ajax({
+            url: "intention.php",//请求地址
+            data: data,//请求参数
+            type: "POST",//请求方式
+            success: function (response) {
+                var d = eval("("+response+")");
+                if(d.sta){
+                    alert('恭喜您申请成功！我们会在1个工作日内和您联系，在此期间请保持联系畅通，祝您心情愉快！');
+                    location.reload();
+                }else{
+                    alert(d.msg);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(errorThrown);
+            }
+        });
+    });
+    //显示代理分销弹框
+    $("#dlfx").click(function(){
+        $("#dlfxdiv").css('display','block');
+        $("#sysqbg").css('display','block');
+    });
+    //关闭代理分销弹框
+    $("#closedlfxdiv").click(function(){
+        $("#dlfxdiv").css('display','none');
+        $("#sysqbg").css('display','none');
+    });
+    //代理分销表单提交
+    $('#dsubmit').click(function(){
+        var period = $('#dperiod').val();
+        var name = $('#dname').val();
+        var mobile = $('#dmobile').val();
+        var qq = $('#dqq').val();
+        var email = $('#demail').val();
+        var data = { tag:3,name:name,mobile:mobile,qq:qq,email:email,period:period };
+
+        $.ajax({
+            url: "intention.php",//请求地址
+            data: data,//请求参数
+            type: "POST",//请求方式
+            success: function (response) {
+                var d = eval("("+response+")");
+                if(d.sta){
+                    alert('恭喜您申请成功！我们会在1个工作日内和您联系，在此期间请保持联系畅通，祝您心情愉快！');
+                    location.reload();
+                }else{
+                    alert(d.msg);
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
