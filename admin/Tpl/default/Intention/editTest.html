@@ -1,0 +1,35 @@
+<include file="Public:header" />
+<style type="text/css"> table {font-size: 12px} </style>
+<div class="pad_10">
+    <form action="admin.php?m=Intention&a=updateTest" method="post" name="myform" id="myform">
+        <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
+            <tr>
+                <th width="80">姓名 :</th>
+                <td>{$info.name}</td>
+            </tr>
+            <tr>
+                <th width="80">手机号 :</th>
+                <td>{$info.mobile}</td>
+            </tr>
+            <tr>
+                <th width="80">QQ :</th>
+                <td>{$info.qq}</td>
+            </tr>
+            <tr>
+                <th width="80">邮箱 :</th>
+                <td>{$info.email}</td>
+            </tr>
+            <tr>
+                <th width="80">备注 :</th>
+                <td>
+                    <textarea style='width:350px;height:100px;' name="info" id="info">{$info.info}</textarea>
+                </td>
+            </tr>
+            <input type="hidden" name="id" value="{$info.id}" />
+        </table>
+        <input type="submit" name="dosubmit" id="dosubmit" class="dialog" value=" ">
+    </form>
+
+</div>
+</body>
+</html>
