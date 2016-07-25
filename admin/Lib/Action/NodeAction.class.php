@@ -16,7 +16,7 @@ class NodeAction extends BaseAction
 		$keyword = isset($_GET['keyword']) && trim($_GET['keyword']) ? trim($_GET['keyword']) : '';
 		$where = '1=1';
 		if($group_id!=''){
-			$where.=" AND group_id=$group_id";			
+			$where.=" AND group_id=$group_id";
 		}
 		if($keyword!=''){
 			$where.=" AND module like '%$keyword%' or module_name like '%$keyword%' or action_name like '%$keyword%'";

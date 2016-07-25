@@ -21,28 +21,52 @@ class AdminAction extends BaseAction
 	}
 	function index()
 	{
+        //获取搜索条件
+        $name=isset($_GET['name'])?trim($_GET['name']):'';
+        $start=isset($_GET['start'])?trim($_GET['start']):'';
+        $end=isset($_GET['end'])?trim($_GET['end']):'';
 		$admin_mod = M('admin');
 		$where = '';
 		if($this->school_id > 0){
 			$where = "school_id={$this->school_id}";
 		}
+        if ($name!='') {
+            $where .= " AND name LIKE '%".$name."%'";
+            $this->assign('name', $name);
+        }
+        if ($start!='') {
+            $stime = strtotime($start);
+            $where .= " AND start>=$stime";
+            $this->assign('start', $start);
+        }
+        if ($end!='') {
+            $etime = strtotime($end);
+            $where .= " AND end<=$etime";
+            $this->assign('end', $end);
+        }
+
+        $role_mod = D('role');
+        $role_list = $role_mod->where('status=1')->select();
+        $role_list = array_to_key($role_list,'id');
+
+        $big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Admin&a=add\', title:\'添加管理员\', width:\'480\', height:\'250\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加管理员');
 
 		import("ORG.Util.Page");
-		$prex = C('DB_PREFIX');
 		$count = $admin_mod->where($where)->count();
-		$p = new Page($count,30);
-		$admin_list = $admin_mod->field($prex.'admin.*,'.$prex.'role.name as role_name')->join('LEFT JOIN '.$prex.'role ON '.$prex.'admin.role_id = '.$prex.'role.id ')->limit($p->firstRow.','.$p->listRows)->where($where)->order($prex.'admin.add_time DESC')->select();
-		$key = 1;
+		$p = new Page($count,15);
+		$admin_list = $admin_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('id DESC')->select();
 		foreach($admin_list as $k=>&$val){
-			$admin_list[$k]['key'] = ++$p->firstRow;
+//			$admin_list[$k]['key'] = ++$p->firstRow;
+            $val['role_name'] = $role_list[$val['role_id']]['name'];
 			if(!empty($this->school_list)){
 				$admin_list[$k]['user_school'] = $this->school_list[$val['school_id']]['name'];
-			}else{
-				$school = M('school')->field('name')->where("id=$this->school_id")->find();
-				if(!empty($school)){
-					$admin_list[$k]['user_school'] = $school['name'];
-				}
 			}
+//            else{
+//				$school = M('school')->field('name')->where("id=$this->school_id")->find();
+//				if(!empty($school)){
+//					$admin_list[$k]['user_school'] = $school['name'];
+//				}
+//			}
             if($val['start']>0){
                 $val['start'] = date("Y-m-d H:i",$val['start']);
             }else{
@@ -54,8 +78,8 @@ class AdminAction extends BaseAction
                 $val['end'] = '--';
             }
 		}
-		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=Admin&a=add\', title:\'添加管理员\', width:\'480\', height:\'250\', lock:true}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', '添加管理员');
 		$page = $p->show();
+        var_dump($page);
 		$this->assign('page',$page);
 		$this->assign('big_menu',$big_menu);
 		$this->assign('admin_list',$admin_list);
