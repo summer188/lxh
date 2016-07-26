@@ -13,10 +13,10 @@
                     <div class="explain-col">
                         &nbsp;用户名 :
                         <input name="name" id="name" type="text" class="input-text" size="15" value="{$name}" />
-                        &nbsp;&nbsp;&nbsp;&nbsp;生效时间：
-                        <input type="text" name="start" id="start">
-                        &nbsp;&nbsp;&nbsp;&nbsp;失效时间：
-                        <input type="text" name="end" id="end">
+                        &nbsp;&nbsp;&nbsp;&nbsp;有效期限：
+                        <input type="text" name="start" id="start" value="{$start}">
+                        至&nbsp;
+                        <input type="text" name="end" id="end" value="{$end}">
                         <input type="hidden" name="m" value="Admin" />
                         <input type="hidden" name="a" value="index" />
                         <input type="submit" name="search" class="button" value="搜索" />
@@ -84,45 +84,46 @@ $(function(){
     var moment = rome.moment;
     rome(start);
     rome(end);
-    function add() {
-        var lang_add = "添加管理员";
-        window.top.art.dialog({id:'add'}).close();
-        window.top.art.dialog({
-                    title:lang_add,
-                    id:'add',
-                    iframe:"?m=Admin&a=add",width:'500',height:'480'
-                },
-                function()
-                {
-                    var d = window.top.art.dialog({id:'add'}).data.iframe;
-                    var form=d.document.getElementById('dosubmit').click();
-                    form.click();return false;
-
-                },
-                function()
-                {
-                    window.top.art.dialog({id:'add'}).close()
-                });
-
-    }
-    function edit(id, name) {
-        var lang_edit = "{$Think.lang.edit}";
-        window.top.art.dialog({id:'edit'}).close();
-        window.top.art.dialog({title:lang_edit+'--'+name,id:'edit',iframe:'?m=Admin&a=edit&id='+id,width:'500',height:'480'}, function(){var d = window.top.art.dialog({id:'edit'}).data.iframe;d.document.getElementById('dosubmit').click();return false;}, function(){window.top.art.dialog({id:'edit'}).close()});
-    }
-    function status(id,type){
-        $.get("{:u('Admin/status')}", { id: id, type: type }, function(jsondata){
-            var return_data  = eval("("+jsondata+")");
-            $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data.data+'.gif');
-        });
-    }
-    //重置
-    function clean(){
-        $("#name").val('');
-        $("#start").val('');
-        $("#end").val('');
-    }
 });
+function add() {
+    var lang_add = "添加管理员";
+    window.top.art.dialog({id:'add'}).close();
+    window.top.art.dialog({
+                title:lang_add,
+                id:'add',
+                iframe:"?m=Admin&a=add",width:'500',height:'480'
+            },
+            function()
+            {
+                var d = window.top.art.dialog({id:'add'}).data.iframe;
+                var form=d.document.getElementById('dosubmit').click();
+                form.click();return false;
+
+            },
+            function()
+            {
+                window.top.art.dialog({id:'add'}).close()
+            });
+
+}
+function edit(id, name) {
+    var lang_edit = "{$Think.lang.edit}";
+    window.top.art.dialog({id:'edit'}).close();
+    window.top.art.dialog({title:lang_edit+'--'+name,id:'edit',iframe:'?m=Admin&a=edit&id='+id,width:'500',height:'480'}, function(){var d = window.top.art.dialog({id:'edit'}).data.iframe;d.document.getElementById('dosubmit').click();return false;}, function(){window.top.art.dialog({id:'edit'}).close()});
+}
+function status(id,type){
+    $.get("{:u('Admin/status')}", { id: id, type: type }, function(jsondata){
+        var return_data  = eval("("+jsondata+")");
+        $("#"+type+"_"+id+" img").attr('src', '__ROOT__/statics/images/status_'+return_data.data+'.gif');
+    });
+}
+//重置
+function clean(){
+    $("#name").val('');
+    $("#start").val('');
+    $("#end").val('');
+    $("#searchform").submit();
+}
 </script>
 </body>
 </html>

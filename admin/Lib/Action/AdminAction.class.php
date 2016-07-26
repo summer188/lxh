@@ -26,24 +26,36 @@ class AdminAction extends BaseAction
         $start=isset($_GET['start'])?trim($_GET['start']):'';
         $end=isset($_GET['end'])?trim($_GET['end']):'';
 		$admin_mod = M('admin');
-		$where = '';
+		$where = '1=1';
+		$stime = 0;
+		$etime = 0;
 		if($this->school_id > 0){
 			$where = "school_id={$this->school_id}";
 		}
         if ($name!='') {
-            $where .= " AND name LIKE '%".$name."%'";
+            $where .= " AND user_name LIKE '%".$name."%'";
             $this->assign('name', $name);
         }
-        if ($start!='') {
+        if ($start!='' && $end!='') {
             $stime = strtotime($start);
-            $where .= " AND start>=$stime";
+            $where .= " AND start<=$stime";
             $this->assign('start', $start);
-        }
-        if ($end!='') {
-            $etime = strtotime($end);
-            $where .= " AND end<=$etime";
-            $this->assign('end', $end);
-        }
+			$etime = strtotime($end);
+			if($etime<$stime){
+				$this->error('失效时间不能早于生效时间！');
+			}
+			$where .= " AND end>=$etime";
+			$this->assign('end', $end);
+        }elseif ($start!='' && $end=='') {
+			$stime = strtotime($start);
+			$where .= " AND start<=$stime";
+			$this->assign('start', $start);
+			$where .= " AND (end>=$stime OR end=0)";
+        }elseif ($start=='' && $end!='') {
+			$etime = strtotime($end);
+			$where .= " AND end>=$etime";
+			$this->assign('end', $end);
+		}
 
         $role_mod = D('role');
         $role_list = $role_mod->where('status=1')->select();
@@ -56,17 +68,15 @@ class AdminAction extends BaseAction
 		$p = new Page($count,15);
 		$admin_list = $admin_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('id DESC')->select();
 		foreach($admin_list as $k=>&$val){
-//			$admin_list[$k]['key'] = ++$p->firstRow;
             $val['role_name'] = $role_list[$val['role_id']]['name'];
 			if(!empty($this->school_list)){
 				$admin_list[$k]['user_school'] = $this->school_list[$val['school_id']]['name'];
+			}else{
+				$school = M('school')->field('name')->where("id=$this->school_id")->find();
+				if(!empty($school)){
+					$admin_list[$k]['user_school'] = $school['name'];
+				}
 			}
-//            else{
-//				$school = M('school')->field('name')->where("id=$this->school_id")->find();
-//				if(!empty($school)){
-//					$admin_list[$k]['user_school'] = $school['name'];
-//				}
-//			}
             if($val['start']>0){
                 $val['start'] = date("Y-m-d H:i",$val['start']);
             }else{
@@ -79,7 +89,6 @@ class AdminAction extends BaseAction
             }
 		}
 		$page = $p->show();
-        var_dump($page);
 		$this->assign('page',$page);
 		$this->assign('big_menu',$big_menu);
 		$this->assign('admin_list',$admin_list);
