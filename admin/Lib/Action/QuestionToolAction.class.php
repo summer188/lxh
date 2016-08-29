@@ -183,7 +183,7 @@ class QuestionToolAction extends QuestionBaseAction{
 	 * 检查上传的文档类型
 	 *
 	 * @param Array $file--文档信息
-	 * @param String $type--要求的文档类型'word' or 'png'
+	 * @param String $type--要求的文档类型'word','png' or 'pdf'
 	 * @return Boolean
 	 */
 	public function checkFileType($file,$type){
@@ -202,7 +202,9 @@ class QuestionToolAction extends QuestionBaseAction{
 				$type = 'jpg';
 				$style = 'image/jpeg';
 			}
-		}
+		}elseif($type=='pdf'){
+            $style = 'application/pdf';
+        }
 
 		if($ext==$type && $file['type']==$style){
 			return true;
@@ -223,6 +225,7 @@ class QuestionToolAction extends QuestionBaseAction{
         $word_url2 = $dir.$net_logo.'.docx';
         $png_url = $dir.$net_logo.'.png';
         $png_url2 = $dir.$net_logo.'.jpg';
+        $pdf_url = $dir.$net_logo.'.pdf';
         if(file_exists($word_url)){
             unlink($word_url);
         }
@@ -235,6 +238,9 @@ class QuestionToolAction extends QuestionBaseAction{
 		if(file_exists($png_url2)){
 			unlink($png_url2);
 		}
+        if(file_exists($pdf_url)){
+            unlink($pdf_url);
+        }
         rmdir($dir);
     }
 

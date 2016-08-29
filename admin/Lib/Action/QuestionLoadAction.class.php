@@ -1,6 +1,6 @@
 <?php
 /**
- * 题目上传、编辑、收藏、下载、删除公共控制器
+ * 题目上传、编辑、预览、收藏、下载、删除公共控制器
  *
  * Created by Sunmiaomiao.
  * Email: 652308259@qq.com
@@ -71,6 +71,7 @@ class QuestionLoadAction extends QuestionToolAction{
 			if(!empty($_FILES['word']) && !empty($_FILES['png'])){
 				$word = $_FILES['word'];
 				$png = $_FILES['png'];
+				$pdf = $_FILES['pdf'];
 				$check_word = $this->checkFileType($word,'word');
 				if(!$check_word){
 					$this->error('word文档类型不正确，请检查后重新上传！');
@@ -81,10 +82,17 @@ class QuestionLoadAction extends QuestionToolAction{
 					$this->error('png图片类型不正确，请检查后重新上传！');
 					exit();
 				}
+                $check_pdf = $this->checkFileType($pdf,'pdf');
+                if(!$check_pdf){
+                    $this->error('pdf文档类型不正确，请检查后重新上传！');
+                    exit();
+                }
 				$word_ext = pathinfo($word['name'], PATHINFO_EXTENSION);
 				$png_ext = pathinfo($png['name'], PATHINFO_EXTENSION);
+				$pdf_ext = pathinfo($pdf['name'], PATHINFO_EXTENSION);
 				$word_url = $question_dir.$net_logo.'.'.$word_ext;
 				$png_url = $question_dir.$net_logo.'.'.$png_ext;
+				$pdf_url = $question_dir.$net_logo.'.'.$pdf_ext;
 
 				if(!move_uploaded_file($word['tmp_name'],$word_url)){
 					$flag = false;
@@ -92,6 +100,9 @@ class QuestionLoadAction extends QuestionToolAction{
 				if(!move_uploaded_file($png['tmp_name'],$png_url)){
 					$flag = false;
 				}
+                if(!move_uploaded_file($pdf['tmp_name'],$pdf_url)){
+                    $flag = false;
+                }
 			}
 		}
 
@@ -158,10 +169,7 @@ class QuestionLoadAction extends QuestionToolAction{
 			$question_info = $this->question_mod->where("id=$id")->find();
 			$question_dir = $this->checkQuestionDir($question_info['cate_id'],$question_info['grade_id'],$question_info['site_logo'],$question_info['net_logo']);
 			$question_file = $question_dir.$question_info['net_logo'];
-			$src = $question_file.'.png';
-			if(!file_exists($src)){
-				$src = $question_file.'.jpg';
-			}
+			$src = $question_file.'.pdf';
 			$this->assign('src',$src);
 			$this->display('look');
 		}else{
