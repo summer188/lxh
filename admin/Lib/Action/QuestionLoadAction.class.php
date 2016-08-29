@@ -79,7 +79,7 @@ class QuestionLoadAction extends QuestionToolAction{
 				}
 				$check_png = $this->checkFileType($png,'png');
 				if(!$check_png){
-					$this->error('png图片类型不正确，请检查后重新上传！');
+					$this->error('png或jpg图片类型不正确，请检查后重新上传！');
 					exit();
 				}
                 $check_pdf = $this->checkFileType($pdf,'pdf');
