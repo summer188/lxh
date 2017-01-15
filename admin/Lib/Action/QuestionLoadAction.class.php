@@ -170,8 +170,11 @@ class QuestionLoadAction extends QuestionToolAction{
 			$question_dir = $this->checkQuestionDir($question_info['cate_id'],$question_info['grade_id'],$question_info['site_logo'],$question_info['net_logo']);
 			$question_file = $question_dir.$question_info['net_logo'];
 			$src = $question_file.'.pdf';
+			$this->assign('id',$id);
 			$this->assign('src',$src);
-			$this->display('look');
+            $this->assign('show_header', false);
+            $this->assign('controller',MODULE_NAME);
+			$this->display('lookQuestion');
 		}else{
 			$this->error(L('please_select'));
 		}
@@ -325,17 +328,86 @@ class QuestionLoadAction extends QuestionToolAction{
 						$jsondata['status'] = 2;
 					}
 				}
-				if($flag){
-					$this->ajaxReturn($jsondata,'JSON');
-				}else{
-					$this->error(L('operation_failure'),'',3,false,true);
-				}
+                if(isset($_GET['act']) && $_GET['act']=='look'){
+                    if($flag){
+                        $this->success(L('operation_success'), '', '', 'lookQuestion');
+                    }else{
+                        $this->error(L('operation_failure'));
+                    }
+                }else{
+                    if($flag){
+                        $this->ajaxReturn($jsondata,'JSON');
+                    }else{
+                        $this->error(L('operation_failure'),'',3,false,true);
+                    }
+                }
+
 
 			}
 		}else{
 			$this->error('错误操作！','',3,false,true);
 		}
 	}
+
+    /**
+     * 预览》下载题目
+     *
+     * @return Array
+     */
+    public function lookDownload(){
+        $flag = true;
+        if (isset($_POST['id'])) {
+            $id = intval($_POST['id']);
+            if($id > 0){
+                $collect_mod = M("{$this->getCollectMod()}");
+                $admin_id = $_SESSION['admin_info']['id'];
+                //先查看下是否有记录
+                $where = "admin_id=$admin_id AND period_id={$this->period_id} AND question_id=$id";
+                $record = $collect_mod->where($where)->find();
+                if($record==null){//若没有记录，需要先添加记录
+                    $data = array(
+                        'admin_id' => $admin_id,
+                        'period_id' => $this->period_id,
+                        'question_id' => $id,
+                        'is_download' => 1
+                    );
+                    $result = $collect_mod->add($data);
+                    if(!$result){
+                        $flag = false;
+                    }
+                }else{//若已有记录，就需要先判断其下载状态
+                    if($record['is_download'] == 0){//未下载
+                        $record['is_download'] = 1;
+                        $result = $collect_mod->data($record)->where($where)->save($record);
+                        if(!$result){
+                            $flag = false;
+                        }
+                    }
+                }
+                if($flag){
+                    //取题目路径
+                    $info = $this->question_mod->where('id='.$id)->select();
+                    if(!empty($info)){
+                        $quetion_info = $info[0];
+                        $question_dir = $this->checkQuestionDir($quetion_info['cate_id'],$quetion_info['grade_id'],$quetion_info['site_logo'],$quetion_info['net_logo']);
+                        $question_file = $question_dir.$quetion_info['net_logo'].'.doc';
+                        $filename = time().'.doc';
+                        if(!file_exists($question_file)){
+                            $question_file = $question_dir.$quetion_info['net_logo'].'.docx';
+                            $filename = time().'.docx';
+                        }
+                        //下载题目
+                        header('Content-type: application/force-download');
+                        header('Content-Disposition: attachment; filename='.$filename);
+                        header('Content-Length: '.filesize($question_file));
+                        readfile($question_file);
+                    }
+                }else{
+                    $this->error(L('operation_failure'));
+                }
+            }
+        }
+    }
 
 	/**
 	 * 删除题目

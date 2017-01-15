@@ -364,12 +364,22 @@ function lookQuestion(id) {
     window.top.art.dialog({
                 title:"题目预览",
                 id:'lookQuestion',
-                iframe:"?m={$controller}&a=lookQuestion&id="+id,width:'700',height:'500'
+                iframe:"?m={$controller}&a=lookQuestion&id="+id,
+                width:'700',
+                height:'500',
+                yesText:'下载'
             },
             function()
             {
-                window.top.art.dialog({id:'lookQuestion'}).close()
-            });
+                var d = window.top.art.dialog({id:'lookQuestion'}).data.iframe;
+                d.document.getElementById('dosubmit').click();
+                return false;
+            },
+            function()
+            {
+                window.top.art.dialog({id:'lookQuestion'}).close();
+            }
+    );
 }
 //编辑
 function editQuestion(id) {
