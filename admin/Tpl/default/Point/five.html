@@ -50,7 +50,7 @@
                 <thead>
                 <tr>
                     <th width=50>ID</th>
-                    <!--<th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>-->
+                    <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
                     <th>年级</th>
                     <th>学科</th>
                     <th>一级目录</th>
@@ -67,7 +67,7 @@
                 <volist name="point_list" id="val" key="k" >
                     <tr>
                         <td align="center">{$val.id}</td>
-                        <!--<td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>-->
+                        <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
                         <td align="center">{$val.grade}</td>
                         <td align="center">{$val.cate}</td>
                         <td align="center">{$val.name1}</td>
@@ -85,8 +85,8 @@
                 </tbody>
             </table>
             <div class="btn">
-                <!--<label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
-                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('{$Think.lang.sure_delete}')" style="float:left;margin-left:10px;"/>-->
+                <label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
+                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('确认删除该目录，及其所有子目录吗？（请注意，删除后无法恢复！）')" style="float:left;margin-left:10px;"/>
                 <div id="pages">{$page}</div>
             </div>
         </div>
