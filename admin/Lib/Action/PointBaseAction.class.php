@@ -103,14 +103,18 @@ class PointBaseAction extends BaseAction{
 		$this->ajaxReturn($values[$type]);
 	}
 
-	//删除--尚未启用
+	//删除一级目录及其所有子目录
 	public function delete(){
 		$flag = true;
 		if (isset($_POST['id']) && is_array($_POST['id'])) {
 			$id_array=$_POST['id'];
 			for ($i=0;$i<count($id_array);$i++){
-				$result = $this->point_mod->where("id='{$id_array[$i]}'")->delete();
-				if(!$result){
+                $point1 = $this->point_mod->where("id='{$id_array[$i]}'")->find();
+                $alias1 = $point1['alias'];
+                //删除一级目录及其所有子目录
+                $sql = "DELETE FROM `{$this->point_tab}` WHERE LOCATE('$alias1',`alias`)=1";
+				$result = $this->point_mod->execute($sql);
+				if($result <= 0){
 					$flag = false;
 				}
 			}

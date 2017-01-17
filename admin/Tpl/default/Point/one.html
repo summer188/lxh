@@ -44,13 +44,13 @@
             </tbody>
         </table>
     </form>
-    <form id="myform" name="myform" action="admin.php?m={$controller}&a=deleteOne" method="post" onsubmit="return checkOne();">
+    <form id="myform" name="myform" action="admin.php?m={$controller}&a=delete" method="post" onsubmit="return checkOne();">
         <div class="table-list">
             <table width="100%" cellspacing="0">
                 <thead>
                 <tr>
                     <th width=50>ID</th>
-                    <!--<th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>-->
+                    <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
                     <th>年级</th>
                     <th>学科</th>
                     <th>编号</th>
@@ -63,21 +63,24 @@
                 <volist name="point_list" id="val" key="k" >
                     <tr>
                         <td align="center">{$val.id}</td>
-                        <!--<td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>-->
+                        <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
                         <td align="center">{$val.grade}</td>
                         <td align="center">{$val.cate}</td>
                         <td align="center">{$val.alias}</td>
                         <td align="center">{$val.name}</td>
-                        <!--<td align="center"><input type="text" class="input-text-c input-text" onblur="sort({$val.id},'sort',this.value)" id="sort_{$val.id}" value="{$val.sort}" size="4" name="listorders[{$val.id}]"></td>-->
                         <td align="center" onclick="statusOne({$val.id},'status')" id="status_{$val.id}"><img src="__ROOT__/statics/images/status_{$val.status}.gif" /></td>
-                        <td align="center"><a href="javascript:editOne({$val.id})"><span style="color:blue;">编辑</span></a></td>
+                        <td align="center">
+                            <a href="javascript:editOne({$val.id})"><span style="color:blue;">编辑</span></a>
+                            <!--&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="javascript:deleteOne({$val.id})"><span style="color:blue;">删除</span></a>-->
+                        </td>
                     </tr>
                 </volist>
                 </tbody>
             </table>
             <div class="btn">
-                <!--<label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
-                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('{$Think.lang.sure_delete}')" style="float:left;margin-left:10px;"/>-->
+                <label for="check_box" style="float:left;">{$Think.lang.select_all}/{$Think.lang.cancel}</label>
+                <input type="submit" class="button" name="dosubmit" value="{$Think.lang.delete}" onclick="return confirm('确认删除该目录，及其所有子目录吗？（请注意，删除后无法恢复！）')" style="float:left;margin-left:10px;"/>
                 <div id="pages">{$page}</div>
             </div>
         </div>
