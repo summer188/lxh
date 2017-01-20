@@ -63,9 +63,6 @@
 </form>
 <script type="text/javascript">
 	$(function(){
-        var moment = rome.moment;
-        rome(start);
-        rome(end);
 
 		$.formValidator.initConfig({formid:"myform",autotip:true,onerror:function(msg,obj){window.top.art.dialog({content:msg,lock:true,width:'200',height:'50'}, function(){this.close();$(obj).focus();})}});
 		
@@ -75,6 +72,9 @@
 		
 		$("#repassword").formValidator({onshow:"确认密码",onfocus:"确认密码",oncorrect:"填写正确"}).compareValidator({desid:"password",operateor:"=",onerror:"两次输入密码不一致"});
 
+        var moment = rome.moment;
+        rome(start);
+        rome(end);
 	})
 </script>
 </div>
