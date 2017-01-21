@@ -79,7 +79,7 @@ if(!empty($_REQUEST['ids']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['adm
 					}
 					if(!empty($alias)){
 						//取题目路径
-						$question_dir = 'upload/'.$alias.'/'.$question['grade_id'].'/'.$question['site_logo'].'/'.$question['net_logo'].'/';
+						$question_dir = 'upload/'.$alias.'/'.$question['grade_id'].'/';
 						$question_file = $question_dir.$question['net_logo'].'.doc';
 						$new_file = 'temp/'.$value.'.doc';
 						if(!file_exists($question_file)){

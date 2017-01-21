@@ -238,7 +238,7 @@ class QuestionAction extends QuestionLoadAction{
             $value['grade'] = $this->grade_list[$value['grade_id']]['name'];
             $value['cate'] = $this->cate_list[$value['cate_id']]['name'];
 //            $value['name'] = cutString($value['name'],30);
-			$question_dir = $this->checkQuestionDir($value['cate_id'],$value['grade_id'],$value['site_logo'],$value['net_logo']);
+			$question_dir = $this->checkQuestionDir($value['cate_id'],$value['grade_id']);
 			$png = $question_dir.$value['net_logo'].'.png';
 			if(file_exists($png)){
 				$value['src'] = $question_dir.$value['net_logo'].'.png';
@@ -334,7 +334,7 @@ class QuestionAction extends QuestionLoadAction{
 		foreach($question_list as $key=>&$value){
 			$value['grade'] = $this->grade_list[$value['grade_id']]['name'];
 			$value['cate'] = $this->cate_list[$value['cate_id']]['name'];
-			$question_dir = $this->checkQuestionDir($value['cate_id'],$value['grade_id'],$value['site_logo'],$value['net_logo']);
+			$question_dir = $this->checkQuestionDir($value['cate_id'],$value['grade_id']);
 			$png = $question_dir.$value['net_logo'].'.png';
 			if(file_exists($png)){
 				$value['src'] = $question_dir.$value['net_logo'].'.png';

@@ -46,7 +46,7 @@ if(!empty($_REQUEST['id']) && !empty($_REQUEST['pid']) && !empty($_REQUEST['tab'
 		}
 		if(!empty($alias)){
 			//取题目路径
-			$question_dir = 'upload/'.$alias.'/'.$question['grade_id'].'/'.$question['site_logo'].'/'.$question['net_logo'].'/';
+			$question_dir = 'upload/'.$alias.'/'.$question['grade_id'].'/';
 			$question_file = $question_dir.$question['net_logo'].'.doc';
 			$filename = time().'.doc';
 			if(!file_exists($question_file)){

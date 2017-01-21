@@ -23,7 +23,7 @@ class QuestionLoadAction extends QuestionToolAction{
 			if($question_info){
                 //取png图片
                 $cate_alias = $this->cate_list[$question_info['cate_id']]['alias'];
-                $question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/'.$question_info['site_logo'].'/'.$question_info['net_logo'].'/';
+                $question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/';
                 $png_url = $question_dir.$question_info['net_logo'].'.png';
 				if(!file_exists($png_url)){
 					$png_url = $question_dir.$question_info['net_logo'].'.jpg';
@@ -63,9 +63,8 @@ class QuestionLoadAction extends QuestionToolAction{
 			//检测上传题目存放目录是否存在，不存在就创建
 			$cate_id = intval($_POST['cate_id']);
 			$grade_id = intval($_POST['grade_id']);
-			$site_logo = $_POST['site_logo'];
 			$net_logo = $_POST['net_logo'];
-			$question_dir = $this->checkQuestionDir($cate_id,$grade_id,$site_logo,$net_logo);
+			$question_dir = $this->checkQuestionDir($cate_id,$grade_id);
 
 			//将题目word文档和png图片临时路径移动到指定目录
 			if(!empty($_FILES['word']) && !empty($_FILES['png'])){
@@ -148,10 +147,8 @@ class QuestionLoadAction extends QuestionToolAction{
         $jsondata = array('status'=>false,'info'=>'经检测，暂时不能上传文件，请稍后再试！');
         $grade_id=isset($_GET['grade'])?trim($_GET['grade']):'';
         $cate_id=isset($_GET['cate'])?trim($_GET['cate']):'';
-        $site_logo=isset($_GET['site'])?trim($_GET['site']):'';
-        $net_logo=isset($_GET['net'])?trim($_GET['net']):'';
 
-        $result=$this->checkQuestionDir($cate_id,$grade_id,$site_logo,$net_logo);
+        $result=$this->checkQuestionDir($cate_id,$grade_id);
         if($result){
             $jsondata['status'] = true;
             $jsondata['info'] = '经检测，可以上传！';
@@ -167,7 +164,7 @@ class QuestionLoadAction extends QuestionToolAction{
 		if(isset($_GET['id']) && intval($_GET['id'])){
 			$id = intval($_GET['id']);
 			$question_info = $this->question_mod->where("id=$id")->find();
-			$question_dir = $this->checkQuestionDir($question_info['cate_id'],$question_info['grade_id'],$question_info['site_logo'],$question_info['net_logo']);
+			$question_dir = $this->checkQuestionDir($question_info['cate_id'],$question_info['grade_id']);
 			$question_file = $question_dir.$question_info['net_logo'];
 			$src = $question_file.'.pdf';
 			$this->assign('id',$id);
@@ -389,7 +386,7 @@ class QuestionLoadAction extends QuestionToolAction{
                     $info = $this->question_mod->where('id='.$id)->select();
                     if(!empty($info)){
                         $quetion_info = $info[0];
-                        $question_dir = $this->checkQuestionDir($quetion_info['cate_id'],$quetion_info['grade_id'],$quetion_info['site_logo'],$quetion_info['net_logo']);
+                        $question_dir = $this->checkQuestionDir($quetion_info['cate_id'],$quetion_info['grade_id']);
                         $question_file = $question_dir.$quetion_info['net_logo'].'.doc';
                         $filename = time().'.doc';
                         if(!file_exists($question_file)){
@@ -428,7 +425,7 @@ class QuestionLoadAction extends QuestionToolAction{
 					//删除文档和截图
 					$question_info = $this->question_mod->where("id=$value")->find();
 					$cate_alias = $this->cate_list[$question_info['cate_id']]['alias'];
-					$question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/'.$question_info['site_logo'].'/'.$question_info['net_logo'].'/';
+					$question_dir = 'upload/'.$cate_alias.'/'.$question_info['grade_id'].'/';
 					$this->delFile($question_dir,$question_info['net_logo']);
 					//删除收藏和下载记录表信息
 					$where = "admin_id=$admin_id AND period_id=$this->period_id AND question_id=$value";

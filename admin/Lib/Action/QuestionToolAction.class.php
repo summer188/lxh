@@ -17,12 +17,10 @@ class QuestionToolAction extends QuestionBaseAction{
      *
 	 * @param Int $cate_id--学科id
 	 * @param Int $grade_id--年级id
-     * @param String $site_logo--期数
-     * @param String $net_logo--题目序号
      *
      * @return String 单个题目信息存放目录
 	 */
-	public function checkQuestionDir($cate_id,$grade_id,$site_logo,$net_logo){
+	public function checkQuestionDir($cate_id,$grade_id){
 		//定义题目上传根目录(相对路径)
 		$root = 'upload/';
 		//学科目录,以学科别名命名
@@ -30,12 +28,8 @@ class QuestionToolAction extends QuestionBaseAction{
 		$cate_root = $root.$cate['alias'].'/';
         //年级目录
         $grade_root = $cate_root.$grade_id.'/';
-		//期数目录
-		$site_root = $grade_root.$site_logo.'/';
-		//题目序号目录
-		$net_root = $site_root.$net_logo.'/';
-        $this->checkDirUrl($net_root);
-        return $net_root;
+        $this->checkDirUrl($grade_root);
+        return $grade_root;
 	}
 
 	/**
@@ -276,8 +270,6 @@ class QuestionToolAction extends QuestionBaseAction{
 			}
 			$data_values = substr($data_values,0,-1); //去掉最后一个逗号
 			$sql = "insert into ".C('DB_PREFIX').$this->question_tab." (grade_id,cate_id,site_logo,net_logo,name,recommend,answer,installment,has_invoice,cash_back_rate,title_attribute,subject,status,create_id,school_id,update_time) values $data_values";
-//			echo $sql;
-//			exit;
 			$query = mysql_query($sql);//批量插入数据表中
 			unlink($file_name);
 			if($query){
