@@ -12,7 +12,6 @@ class PointOneAction extends PointBaseAction{
     public function one(){
         //获取搜索条件
         $keyword=isset($_GET['keyword'])?trim($_GET['keyword']):'';
-        $grade_id=isset($_GET['grade_id'])?trim($_GET['grade_id']):'';
         $cate_id=isset($_GET['cate_id'])?trim($_GET['cate_id']):'';
         $status=isset($_GET['status'])?trim($_GET['status']):2;
         //搜索
@@ -20,10 +19,6 @@ class PointOneAction extends PointBaseAction{
         if ($keyword!='') {
             $where .= " AND name LIKE '%".$keyword."%'";
             $this->assign('keyword', $keyword);
-        }
-        if ($grade_id!='') {
-            $where .= " AND grade_id=$grade_id";
-            $this->assign('grade_id', $grade_id);
         }
         if ($cate_id!='') {
             $where .= " AND cate_id=$cate_id";
@@ -35,9 +30,8 @@ class PointOneAction extends PointBaseAction{
         import("ORG.Util.Page");
         $count = $this->point_mod->where($where)->count();
         $p = new Page($count,15);
-        $point_list = $this->point_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('grade_id asc,cate_id asc')->select();
+        $point_list = $this->point_mod->where($where)->limit($p->firstRow.','.$p->listRows)->order('cate_id asc')->select();
         foreach($point_list as $key=>&$value){
-            $value['grade'] = $this->grade_list[$value['grade_id']]['name'];
             $value['cate'] = $this->cate_list[$value['cate_id']]['name'];
             $value['name'] = cutString($value['name'],25);
         }
@@ -46,7 +40,6 @@ class PointOneAction extends PointBaseAction{
         $this->assign('status', $status);
         $this->assign('controller',MODULE_NAME);
         $this->assign('point_list',$point_list);
-        $this->assign('grade_list',$this->grade_list);
         $this->assign('cate_list',$this->cate_list);
         $this->display();
     }
@@ -55,7 +48,6 @@ class PointOneAction extends PointBaseAction{
     public function addOne()
     {
         $this->assign('controller',MODULE_NAME);
-        $this->assign('grade_list',$this->grade_list);
         $this->assign('cate_list',$this->cate_list);
         $this->display();
     }
@@ -87,7 +79,6 @@ class PointOneAction extends PointBaseAction{
             $this->assign('show_header', false);
             $this->assign('controller',MODULE_NAME);
             $this->assign('point_info',$point_info);
-            $this->assign('grade_list',$this->grade_list);
             $this->assign('cate_list',$this->cate_list);
             $this->display();
         }else{
@@ -116,7 +107,6 @@ class PointOneAction extends PointBaseAction{
 	public function insertExcelOne()
 	{
 		//接收前端传来的post和file
-		$grade_id = intval($_POST['grade_id']);
 		$cate_id = intval($_POST['cate_id']);
 		$file = $_FILES['file'];
 
@@ -151,12 +141,12 @@ class PointOneAction extends PointBaseAction{
 			if($xls->sheets[0]['cells'][$i][1]!='' && $xls->sheets[0]['cells'][$i][2]!=''){
 				$alias1 = $xls->sheets[0]['cells'][$i][1];
 				$name1 = $xls->sheets[0]['cells'][$i][2];
-				$data_value1 = "('$alias1','$name1','1','$this->period_id','$grade_id','$cate_id','1','$create_id','$create_time'),";
+				$data_value1 = "('$alias1','$name1','1','$this->period_id','$cate_id','1','$create_id','$create_time'),";
 				$data_values .= $data_value1;
 			}
 		}
 		$data_values = substr($data_values,0,-1); //去掉最后一个逗号
-		$sql = "insert into ".$this->point_tab." (alias,name,level,period_id,grade_id,cate_id,status,create_id,create_time) values $data_values";
+		$sql = "insert into ".$this->point_tab." (alias,name,level,period_id,cate_id,status,create_id,create_time) values $data_values";
 		$result = mysql_query($sql);//批量插入数据表中
 		if($result){
 			$this->success('表格导入成功！', '', 3, 'addExcel');

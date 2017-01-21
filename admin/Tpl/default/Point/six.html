@@ -13,13 +13,6 @@
                     <div class="explain-col">
                         &nbsp;目录名称 :
                         <input name="keyword" id="keyword" type="text" class="input-text" size="25" value="{$keyword}" />
-                        &nbsp;&nbsp;&nbsp;&nbsp;年级 :
-                        <select name="grade_id" id="grade_id">
-                            <option value="">请选择</option>
-                            <volist name="grade_list" id="val">
-                                <option value="{$val.id}" <if condition="$grade_id eq $val['id']">selected="selected"</if>>{$val.name}</option>
-                            </volist>
-                        </select>
                         &nbsp;&nbsp;&nbsp;&nbsp;学科 :
                         <select name="cate_id" id="cate_id">
                             <option value="">请选择</option>
@@ -51,7 +44,6 @@
                 <tr>
                     <th width=50>ID</th>
                     <th width=30><input type="checkbox" value="" id="check_box" onclick="selectall('id[]');"></th>
-                    <th>年级</th>
                     <th>学科</th>
                     <th>一级目录</th>
                     <th>二级目录</th>
@@ -69,7 +61,6 @@
                     <tr>
                         <td align="center">{$val.id}</td>
                         <td align="center"><input type="checkbox" value="{$val.id}" name="id[]"></td>
-                        <td align="center">{$val.grade}</td>
                         <td align="center">{$val.cate}</td>
                         <td align="center">{$val.name1}</td>
                         <td align="center">{$val.name2}</td>
@@ -178,7 +169,6 @@
     //重置
     function clean(){
         $("#keyword").val('');
-        $("#grade_id").val('');
         $("#cate_id").val('');
         $("#status").val('');
         $("#searchform").submit();

@@ -4,16 +4,6 @@
     <form action="admin.php?m={$controller}&a=updateOne" method="post" name="myform" id="myform">
         <table width="100%" cellpadding="2" cellspacing="1" class="table_form">
             <tr>
-                <th width="80">{:L('grade')} :</th>
-                <td>
-                    <select name="grade_id">
-                        <volist name="grade_list" id="val">
-                            <option value="{$val.id}" <if condition="$point_info['grade_id'] eq $val['id']">selected="selected"</if>>{$val.name}</option>
-                        </volist>
-                    </select>
-                </td>
-            </tr>
-            <tr>
                 <th width="80">{:L('cate')} :</th>
                 <td>
                     <select name="cate_id">

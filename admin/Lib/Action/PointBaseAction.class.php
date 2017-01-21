@@ -16,8 +16,6 @@ class PointBaseAction extends BaseAction{
     public $period_id;
     //学科模型
     public $cate_mod;
-    //所有年级列表
-    public $grade_list;
     //所有学科列表
     public $cate_list;
 
@@ -48,13 +46,6 @@ class PointBaseAction extends BaseAction{
                 $this->cate_mod = 'adboard';
         }
 
-        //获取所有年级列表
-        $this->grade_list = M('grade')->where("period_id=$this->period_id")->select();
-        if(!empty($this->grade_list)){
-            //把id的值作为键名，重新组合数组
-            $this->grade_list = array_to_key($this->grade_list,'id');
-        }
-
         //获取所有学科列表
         $this->cate_list = M($this->cate_mod)->select();
         if(!empty($this->cate_list)){
@@ -70,7 +61,6 @@ class PointBaseAction extends BaseAction{
 		$action = empty($level)?'insertExcel':('insertExcel'.$level);
 		$this->assign('action',$action);
 		$this->assign('controller',MODULE_NAME);
-		$this->assign('grade_list',$this->grade_list);
 		$this->assign('cate_list',$this->cate_list);
 		$this->display();
 	}
