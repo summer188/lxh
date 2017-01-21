@@ -198,14 +198,9 @@ $(function(){
 });
 //知识点逐级显示
 function showPoint(){
-    var grade_id = $("#grade_id").val();
     var cate_id = $("#cate_id").val();
-    var k = grade_id+cate_id;
-    if(k==''){
-        k = "{$grade_id}"+"{$cate_id}";
-    }
-    if(k!=''){
-        changePoint(1,k);
+    if(cate_id!=''){
+        changePoint(1,cate_id);
 
     }else{
         removePoint(1);

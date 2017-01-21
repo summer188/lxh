@@ -77,16 +77,16 @@ class QuestionToolAction extends QuestionBaseAction{
 	 * @return Array
 	 */
 	public function getPointAll(){
-		$one = $this->getPoint('','',1,true);
+		$one = $this->getPoint('',1,true);
 		$one_list = array();
 		if(!empty($one)){
 			foreach($one as $key=>$value){
-				$k = strval($value['grade_id']).strval($value['cate_id']);
+				$k = strval($value['cate_id']);
 				$one_list[$k][] = $value;
 			}
 		}
 
-		$two = $this->getPoint('','',2);
+		$two = $this->getPoint('',2);
 		$two_list = array();
 		if(!empty($two)){
 			foreach($two as $key=>$value){
@@ -95,7 +95,7 @@ class QuestionToolAction extends QuestionBaseAction{
 			}
 		}
 
-		$three = $this->getPoint('','',3);
+		$three = $this->getPoint('',3);
 		$three_list = array();
 		if(!empty($three)){
 			foreach($three as $key=>$value){
@@ -104,7 +104,7 @@ class QuestionToolAction extends QuestionBaseAction{
 			}
 		}
 
-		$four = $this->getPoint('','',4);
+		$four = $this->getPoint('',4);
 		$four_list = array();
 		if(!empty($four)){
 			foreach($four as $key=>$value){
@@ -113,7 +113,7 @@ class QuestionToolAction extends QuestionBaseAction{
 			}
 		}
 
-		$five = $this->getPoint('','',5);
+		$five = $this->getPoint('',5);
 		$five_list = array();
 		if(!empty($five)){
 			foreach($five as $key=>$value){
@@ -122,7 +122,7 @@ class QuestionToolAction extends QuestionBaseAction{
 			}
 		}
 
-		$six = $this->getPoint('','',6);
+		$six = $this->getPoint('',6);
 		$six_list = array();
 		if(!empty($six)){
 			foreach($six as $key=>$value){
@@ -145,28 +145,24 @@ class QuestionToolAction extends QuestionBaseAction{
 	/**
 	 * 根据条件获取知识点列表
 	 *
-	 * @param String $grade_id 年级id
 	 * @param String $cate_id 学科id
 	 * @param Int $level 知识点级别
 	 * @param Bool $gc 是否需要年级和学科字段
 	 * @param String $key 结果数组的键名
 	 * @return Array
 	 */
-	public function getPoint($grade_id='',$cate_id='',$level=0,$gc=false,$key='id'){
+	public function getPoint($cate_id='',$level=0,$gc=false,$key='id'){
 		$where = '1=1';
 		if($level>0){
 			$where .= " AND level=$level";
 		}
 		$where .= " AND period_id=$this->period_id";
-		if(!empty($grade_id)){
-			$where .= " AND grade_id=$grade_id";
-		}
 		if(!empty($cate_id)){
 			$where .= " AND cate_id=$cate_id";
 		}
         $where .= " AND status=1";
 		if($gc){
-			$field = 'id,alias,name,grade_id,cate_id';
+			$field = 'id,alias,name,cate_id';
 		}else{
 			$field = 'id,alias,name';
 		}
